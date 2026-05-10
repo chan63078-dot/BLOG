@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>대전클로드학원 카드뉴스</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0A0A14;
+    font-family: 'Noto Sans KR', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    gap: 30px;
+  }
+
+  /* 캡처 가이드 */
+  .capture-guide {
+    background: #1a1a2e;
+    border: 2px dashed #4fc3f7;
+    border-radius: 12px;
+    padding: 16px 28px;
+    color: #4fc3f7;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    max-width: 880px;
+    width: 100%;
+  }
+  .capture-guide strong { color: #81d4fa; }
+
+  /* 카드 공통 */
+  .card {
+    width: 800px;
+    height: 800px;
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  /* ── 카드 1: 표지 ── */
+  .card-cover {
+    background: linear-gradient(160deg, #0D1B3E 0%, #1565C0 55%, #1E88E5 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 50px;
+  }
+  .card-cover .badge-num {
+    position: absolute;
+    top: 24px; right: 28px;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+  }
+  .card-cover .emoji-icon { font-size: 72px; margin-bottom: 24px; }
+  .card-cover .brand-tag {
+    background: rgba(255,255,255,0.18);
+    color: #e3f2fd;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    padding: 6px 20px;
+    border-radius: 20px;
+    margin-bottom: 28px;
+    text-transform: uppercase;
+  }
+  .card-cover .main-title {
+    color: #fff;
+    font-size: 42px;
+    font-weight: 900;
+    line-height: 1.25;
+    margin-bottom: 20px;
+    word-break: keep-all;
+  }
+  .card-cover .main-title span { color: #64b5f6; }
+  .card-cover .sub-copy {
+    color: rgba(255,255,255,0.78);
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.7;
+    max-width: 580px;
+    word-break: keep-all;
+  }
+  .card-cover .footer-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(0,0,0,0.35);
+    padding: 14px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: rgba(255,255,255,0.7);
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  /* ── 본문 카드 공통 ── */
+  .card-body {
+    background: #F0F4FF;
+    display: flex;
+    flex-direction: column;
+    padding: 52px 52px 0;
+  }
+  .card-body .badge-num {
+    position: absolute;
+    top: 24px; right: 28px;
+    background: #1565C0;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+  }
+  .card-body .section-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: #1565C0;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .card-body .section-title {
+    font-size: 30px;
+    font-weight: 900;
+    color: #0D1B3E;
+    line-height: 1.3;
+    margin-bottom: 30px;
+    word-break: keep-all;
+  }
+  .card-body .section-title span { color: #1565C0; }
+
+  /* dot bullet */
+  .dot-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+  .dot-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 15.5px;
+    color: #1a2340;
+    line-height: 1.6;
+    font-weight: 400;
+    word-break: keep-all;
+  }
+  .dot-list li::before {
+    content: '';
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #1565C0;
+    margin-top: 8px;
+    flex-shrink: 0;
+  }
+  .dot-list li strong { color: #0D47A1; font-weight: 700; }
+
+  /* step item */
+  .step-list { display: flex; flex-direction: column; gap: 18px; }
+  .step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px 20px;
+    box-shadow: 0 2px 8px rgba(21,101,192,0.08);
+  }
+  .step-num {
+    background: #1565C0;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 900;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-content .step-name {
+    font-size: 15px; font-weight: 700; color: #0D1B3E; margin-bottom: 4px;
+  }
+  .step-content .step-desc {
+    font-size: 13.5px; color: #445; line-height: 1.55; word-break: keep-all;
+  }
+
+  /* grid 카드 */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .feature-box {
+    background: #fff;
+    border-radius: 14px;
+    padding: 22px 20px;
+    box-shadow: 0 2px 10px rgba(21,101,192,0.08);
+    border-left: 4px solid #1565C0;
+  }
+  .feature-box .f-icon { font-size: 26px; margin-bottom: 10px; }
+  .feature-box .f-name { font-size: 14.5px; font-weight: 700; color: #0D1B3E; margin-bottom: 6px; }
+  .feature-box .f-desc { font-size: 12.5px; color: #556; line-height: 1.55; word-break: keep-all; }
+
+  /* 추천 대상 pill list */
+  .target-list { display: flex; flex-direction: column; gap: 14px; }
+  .target-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 14px 18px;
+    box-shadow: 0 2px 8px rgba(21,101,192,0.07);
+  }
+  .target-emoji { font-size: 22px; flex-shrink: 0; }
+  .target-text { font-size: 14.5px; color: #1a2340; line-height: 1.5; font-weight: 500; word-break: keep-all; }
+
+  /* footer bar on body cards */
+  .card-body .footer-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: #1565C0;
+    padding: 12px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: rgba(255,255,255,0.9);
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  /* ── 마지막 카드: CTA ── */
+  .card-cta {
+    background: linear-gradient(160deg, #0D1B3E 0%, #1a237e 50%, #1565C0 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 50px;
+  }
+  .card-cta .badge-num {
+    position: absolute;
+    top: 24px; right: 28px;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+  }
+  .card-cta .cta-emoji { font-size: 56px; margin-bottom: 20px; }
+  .card-cta .cta-title {
+    color: #fff;
+    font-size: 32px;
+    font-weight: 900;
+    line-height: 1.35;
+    margin-bottom: 12px;
+    word-break: keep-all;
+  }
+  .card-cta .cta-sub {
+    color: rgba(255,255,255,0.72);
+    font-size: 16px;
+    margin-bottom: 36px;
+    line-height: 1.6;
+    word-break: keep-all;
+  }
+  .cta-info-box {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 16px;
+    padding: 28px 40px;
+    width: 100%;
+    max-width: 580px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .cta-info-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 15px;
+    color: #fff;
+    font-weight: 500;
+  }
+  .cta-info-row .info-icon { font-size: 20px; flex-shrink: 0; }
+  .cta-btn {
+    background: linear-gradient(90deg, #42a5f5, #1565C0);
+    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
+    padding: 16px 52px;
+    border-radius: 50px;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 20px rgba(21,101,192,0.5);
+  }
+  .card-cta .footer-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(0,0,0,0.3);
+    padding: 14px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: rgba(255,255,255,0.65);
+    font-size: 13px;
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<!-- 캡처 안내 -->
+<div class="capture-guide">
+  📸 <strong>캡처 방법:</strong> 각 카드를 화면에 꽉 차게 스크롤 → <strong>Win + Shift + S</strong> → 카드 영역 선택 → 저장 &nbsp;|&nbsp; 총 <strong>7장</strong>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 카드 1: 표지 -->
+<!-- ═══════════════════════════════════════ -->
+<div class="card card-cover">
+  <span class="badge-num">1 / 7</span>
+  <div class="emoji-icon">🤖</div>
+  <div class="brand-tag">대전클로드학원</div>
+  <div class="main-title">
+    AI 시대,<br><span>클로드</span>로<br>앞서가세요
+  </div>
+  <div class="sub-copy">
+    업무자동화 · 바이브코딩 · Claude Code<br>
+    초보자도 실무에 바로 써먹는 클로드 실전 교육
+  </div>
+  <div class="footer-bar">
+    <span>대전클로드학원</span>
+    <span>📞 1588-5530 | daejeon.sbsart.com</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 카드 2: 왜 클로드인가 -->
+<!-- ═══════════════════════════════════════ -->
+<div class="card card-body">
+  <span class="badge-num">2 / 7</span>
+  <div class="section-label">Why Claude</div>
+  <div class="section-title">왜 지금<br><span>클로드</span>를 배워야 할까요?</div>
+  <ul class="dot-list">
+    <li><strong>긴 문서 처리 능력 압도적</strong> — 보고서·계약서·논문도 단번에 분석·요약</li>
+    <li><strong>글쓰기 정밀도 최고 수준</strong> — 기획안·이메일·SNS 카피를 몇 초 만에 완성</li>
+    <li><strong>코딩 없이 앱 제작 가능</strong> — 바이브코딩으로 아이디어가 바로 현실로</li>
+    <li><strong>업무 자동화 스킬 내장</strong> — 반복 작업을 클로드 스킬 하나로 자동 처리</li>
+    <li><strong>Claude Code로 AI 개발자 수준 구현</strong> — 개발자라면 생산성이 10배 달라집니다</li>
+  </ul>
+  <div class="footer-bar">
+    <span>대전클로드학원</span>
+    <span>📞 1588-5530</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 카드 3: 배울 수 있는 것들 -->
+<!-- ═══════════════════════════════════════ -->
+<div class="card card-body">
+  <span class="badge-num">3 / 7</span>
+  <div class="section-label">Curriculum</div>
+  <div class="section-title">대전클로드학원에서<br><span>배울 수 있는 것</span></div>
+  <div class="feature-grid">
+    <div class="feature-box">
+      <div class="f-icon">✍️</div>
+      <div class="f-name">프롬프트 엔지니어링</div>
+      <div class="f-desc">원하는 결과를 정확하게 이끌어내는 대화 설계 기술</div>
+    </div>
+    <div class="feature-box">
+      <div class="f-icon">⚡</div>
+      <div class="f-name">업무 자동화</div>
+      <div class="f-desc">보고서·데이터 정리·이메일 발송을 클로드가 대신</div>
+    </div>
+    <div class="feature-box">
+      <div class="f-icon">🎨</div>
+      <div class="f-name">바이브코딩</div>
+      <div class="f-desc">코딩 몰라도 OK — 대화만으로 앱·웹사이트 제작</div>
+    </div>
+    <div class="feature-box">
+      <div class="f-icon">💻</div>
+      <div class="f-name">Claude Code</div>
+      <div class="f-desc">개발자를 위한 AI 협업 코딩 — 생산성 10배 향상</div>
+    </div>
+    <div class="feature-box">
+      <div class="f-icon">🔗</div>
+      <div class="f-name">스킬 & MCP 연동</div>
+      <div class="f-desc">노션·구글·슬랙과 클로드를 연결해 나만의 AI 비서 구축</div>
+    </div>
+    <div class="feature-box">
+      <div class="f-icon">🤖</div>
+      <div class="f-name">AI 에이전트 구축</div>
+      <div class="f-desc">스스로 판단하고 실행하는 나만의 AI 에이전트 만들기</div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전클로드학원</span>
+    <span>📞 1588-5530</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 카드 4: 커리큘럼 단계 -->
+<!-- ═══════════════════════════════════════ -->
+<div class="card card-body">
+  <span class="badge-num">4 / 7</span>
+  <div class="section-label">Step by Step</div>
+  <div class="section-title">단계별<br><span>커리큘럼 구성</span></div>
+  <div class="step-list">
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-name">입문 — Claude AI 기초 & 프롬프트 작성</div>
+        <div class="step-desc">AI와 대화하는 법부터 배웁니다. 실전 문서 작성 실습으로 첫 날부터 바로 써먹습니다.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-name">중급 — 업무 자동화 & 바이브코딩</div>
+        <div class="step-desc">반복 업무를 자동화하고, 코딩 없이 미니 앱·웹을 직접 만들어봅니다.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-name">심화 — Claude Code & AI 에이전트</div>
+        <div class="step-desc">MCP 연동, AI 에이전트 구축, 실무 프로젝트 완성까지 — 전문가 수준으로 도달합니다.</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전클로드학원</span>
+    <span>📞 1588-5530</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 카드 5: 추천 대상 -->
+<!-- ═══════════════════════════════════════ -->
+<div class="card card-body">
+  <span class="badge-num">5 / 7</span>
+  <div class="section-label">Who Needs This</div>
+  <div class="section-title">이런 분께<br><span>강력 추천</span>합니다</div>
+  <div class="target-list">
+    <div class="target-item">
+      <div class="target-emoji">💼</div>
+      <div class="target-text">AI가 필요한 건 알지만 어디서 시작해야 할지 모르는 <strong>직장인</strong></div>
+    </div>
+    <div class="target-item">
+      <div class="target-emoji">📊</div>
+      <div class="target-text">업무 효율을 높이고 싶은 <strong>팀장·관리자</strong></div>
+    </div>
+    <div class="target-item">
+      <div class="target-emoji">🚀</div>
+      <div class="target-text">코딩 없이 앱·웹을 직접 만들고 싶은 <strong>창업 준비생</strong></div>
+    </div>
+    <div class="target-item">
+      <div class="target-emoji">👨‍💻</div>
+      <div class="target-text">AI 협업 능력을 키우고 싶은 <strong>현직 개발자</strong></div>
+    </div>
+    <div class="target-item">
+      <div class="target-emoji">🎯</div>
+      <div class="target-text">클로드를 제대로 배워서 주변과 <strong>차별화</strong>하고 싶은 분</div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전클로드학원</span>
+    <span>📞 1588-5530</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 카드 6: 차별점 -->
+<!-- ═══════════════════════════════════════ -->
+<div class="card card-body">
+  <span class="badge-num">6 / 7</span>
+  <div class="section-label">Why Us</div>
+  <div class="section-title">대전클로드학원만의<br><span>4가지 차별점</span></div>
+  <div class="step-list">
+    <div class="step-item">
+      <div class="step-num">①</div>
+      <div class="step-content">
+        <div class="step-name">소수 정예 밀착 교육</div>
+        <div class="step-desc">적은 인원 운영으로 강사의 집중 지도 보장. 질문이 많아도 걱정 없습니다.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">②</div>
+      <div class="step-content">
+        <div class="step-name">이론보다 실전 중심</div>
+        <div class="step-desc">수업 첫날부터 실무에 바로 써먹을 수 있는 실습 위주 커리큘럼.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">③</div>
+      <div class="step-content">
+        <div class="step-name">대전 유일 클로드 전문 학원</div>
+        <div class="step-desc">온라인 강의로는 채울 수 없는 현장 밀착 교육. 대전에서 클로드 전문 기관은 여기뿐입니다.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">④</div>
+      <div class="step-content">
+        <div class="step-name">커리큘럼 지속 업데이트</div>
+        <div class="step-desc">빠르게 변하는 AI 트렌드에 맞춰 최신 클로드 기능을 항상 반영합니다.</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전클로드학원</span>
+    <span>📞 1588-5530</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 카드 7: CTA -->
+<!-- ═══════════════════════════════════════ -->
+<div class="card card-cta">
+  <span class="badge-num">7 / 7</span>
+  <div class="cta-emoji">🚀</div>
+  <div class="cta-title">지금 바로<br>상담 신청하세요!</div>
+  <div class="cta-sub">
+    AI 시대, 클로드를 먼저 배운 사람이 앞서갑니다.<br>
+    주말·공휴일에도 상담 가능합니다.
+  </div>
+  <div class="cta-info-box">
+    <div class="cta-info-row">
+      <span class="info-icon">📍</span>
+      <span>대전 서구 둔산동 | 대전클로드학원</span>
+    </div>
+    <div class="cta-info-row">
+      <span class="info-icon">📞</span>
+      <span>1588-5530 (주말·공휴일 상담 가능)</span>
+    </div>
+    <div class="cta-info-row">
+      <span class="info-icon">🌐</span>
+      <span>daejeon.sbsart.com</span>
+    </div>
+  </div>
+  <div class="cta-btn">무료 상담 신청하기</div>
+  <div class="footer-bar">
+    <span>대전클로드학원</span>
+    <span>📞 1588-5530 | daejeon.sbsart.com</span>
+  </div>
+</div>
+
+</body>
+</html>

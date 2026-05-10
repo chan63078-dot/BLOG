@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>소득 하위 70% 맞벌이 기준 카드뉴스</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0A0A14;
+    font-family: 'Noto Sans KR', '맑은 고딕', sans-serif;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .guide {
+    background: #fff;
+    border-left: 4px solid #1B5E20;
+    padding: 14px 20px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #555;
+    width: 800px;
+    line-height: 1.8;
+  }
+  .guide strong { color: #1B5E20; }
+
+  .card {
+    width: 800px;
+    height: 800px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    box-shadow: 0 6px 32px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .badge {
+    position: absolute;
+    top: 24px; right: 28px;
+    font-size: 13px; font-weight: 700;
+    opacity: 0.55;
+  }
+
+  .footer-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── 카드 1: 표지 ── */
+  .card-cover {
+    background: linear-gradient(145deg, #0A2E14 0%, #1B5E20 55%, #2E7D32 100%);
+    color: #fff;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 60px 60px 80px;
+  }
+  .card-cover .badge { color: rgba(255,255,255,0.5); }
+  .card-cover .big-emoji { font-size: 72px; margin-bottom: 22px; display: block; }
+  .card-cover .brand-tag {
+    background: rgba(255,255,255,0.15);
+    border: 1.5px solid rgba(255,255,255,0.35);
+    border-radius: 24px;
+    padding: 7px 22px;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 24px;
+    display: inline-block;
+  }
+  .card-cover .main-title {
+    font-size: 36px; font-weight: 900;
+    line-height: 1.3; margin-bottom: 20px;
+    word-break: keep-all;
+  }
+  .card-cover .sub-copy {
+    font-size: 16px;
+    color: rgba(255,255,255,0.82);
+    line-height: 1.65;
+    word-break: keep-all;
+  }
+  .card-cover .footer-bar { background: rgba(0,0,0,0.3); color: rgba(255,255,255,0.6); }
+
+  /* ── 본문 카드 (밝은) ── */
+  .card-light {
+    background: #F1F8E9;
+    padding: 52px 52px 80px;
+    justify-content: flex-start;
+  }
+  .card-light .badge { color: #bbb; }
+  .card-light .section-label {
+    font-size: 11px; font-weight: 900;
+    letter-spacing: 2.5px; color: #2E7D32;
+    margin-bottom: 12px;
+  }
+  .card-light .section-title {
+    font-size: 28px; font-weight: 900;
+    color: #1a3a1a;
+    line-height: 1.3; margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 3px solid #2E7D32;
+    word-break: keep-all;
+  }
+  .card-light .item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px; margin-bottom: 16px;
+  }
+  .card-light .item-dot {
+    width: 8px; height: 8px; min-width: 8px;
+    background: #2E7D32;
+    border-radius: 50%; margin-top: 9px;
+  }
+  .card-light .item-text {
+    font-size: 18px; font-weight: 500;
+    line-height: 1.55; color: #1a2e1a;
+    word-break: keep-all;
+  }
+  .card-light .item-text strong { color: #1B5E20; font-weight: 700; }
+  .card-light .highlight-box {
+    background: #2E7D32;
+    color: #fff;
+    border-radius: 10px;
+    padding: 16px 22px;
+    font-size: 16px; font-weight: 600;
+    line-height: 1.65; margin-top: 22px;
+    word-break: keep-all;
+  }
+  .card-light .footer-bar { background: #1B5E20; color: rgba(255,255,255,0.8); }
+
+  /* 기준표 테이블 */
+  .table-wrap {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+    font-size: 16px;
+  }
+  .table-wrap th {
+    background: #2E7D32;
+    color: #fff;
+    padding: 10px 14px;
+    font-weight: 700;
+    text-align: center;
+  }
+  .table-wrap td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #C8E6C9;
+    text-align: center;
+    color: #1a2e1a;
+    font-weight: 500;
+  }
+  .table-wrap tr:nth-child(even) td { background: #fff; }
+  .table-wrap tr:nth-child(odd) td { background: #F9FBF9; }
+  .table-wrap .highlight-row td {
+    background: #E8F5E9 !important;
+    font-weight: 700;
+    color: #1B5E20;
+  }
+
+  /* 계산 예시 박스 */
+  .calc-box {
+    background: #fff;
+    border: 2px solid #A5D6A7;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+  }
+  .calc-title {
+    font-size: 14px; font-weight: 900;
+    color: #2E7D32; margin-bottom: 8px;
+    letter-spacing: 0.5px;
+  }
+  .calc-text {
+    font-size: 17px; font-weight: 500;
+    line-height: 1.6; color: #1a2e1a;
+    word-break: keep-all;
+  }
+  .calc-text strong { color: #1B5E20; font-weight: 700; }
+  .calc-result {
+    margin-top: 10px;
+    background: #2E7D32;
+    color: #fff;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 16px; font-weight: 700;
+    text-align: center;
+  }
+
+  /* step item */
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+  .step-num {
+    width: 36px; height: 36px; min-width: 36px;
+    background: #2E7D32;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 900; color: #fff;
+  }
+  .step-text {
+    font-size: 18px; font-weight: 500;
+    line-height: 1.45; color: #1a2e1a;
+    word-break: keep-all;
+  }
+  .step-text strong { color: #1B5E20; font-weight: 700; }
+
+  /* tag badge */
+  .tag-row {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .tag {
+    background: #E8F5E9;
+    border: 1.5px solid #A5D6A7;
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 14px; font-weight: 700;
+    color: #2E7D32;
+  }
+
+  /* ── CTA 카드 ── */
+  .card-cta {
+    background: linear-gradient(150deg, #0A2E14 0%, #2E7D32 100%);
+    color: #fff;
+    padding: 52px 52px 80px;
+    justify-content: flex-start;
+  }
+  .card-cta .badge { color: rgba(255,255,255,0.4); }
+  .card-cta .cta-label {
+    font-size: 11px; font-weight: 900;
+    letter-spacing: 2.5px; color: #A5D6A7;
+    margin-bottom: 12px;
+  }
+  .card-cta .cta-title {
+    font-size: 27px; font-weight: 900;
+    line-height: 1.35; margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid rgba(255,255,255,0.2);
+    word-break: keep-all;
+  }
+  .card-cta .info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px; margin-bottom: 18px;
+  }
+  .card-cta .info-icon { font-size: 20px; min-width: 26px; }
+  .card-cta .info-text {
+    font-size: 18px; font-weight: 500;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.9);
+    word-break: keep-all;
+  }
+  .card-cta .info-text strong { color: #A5D6A7; font-weight: 700; }
+  .card-cta .cta-btn {
+    margin-top: 28px;
+    background: #fff;
+    color: #1B5E20;
+    border-radius: 10px;
+    padding: 18px 0;
+    text-align: center;
+    font-size: 20px; font-weight: 900;
+    letter-spacing: 0.3px;
+    word-break: keep-all;
+  }
+  .card-cta .footer-bar { background: rgba(0,0,0,0.3); color: rgba(255,255,255,0.6); }
+
+  .warn-box {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.65;
+    margin-top: 16px;
+    word-break: keep-all;
+  }
+</style>
+</head>
+<body>
+
+<div class="guide">
+  <strong>📸 캡처 방법</strong>: Win+Shift+S → 각 카드 정사각형으로 캡처 → 네이버 블로그 이미지 첨부<br>
+  카드 사이 어두운 여백은 제외하고, 카드 테두리 안쪽만 캡처하세요.
+</div>
+
+<!-- 카드 1: 표지 -->
+<div class="card card-cover">
+  <span class="badge">1 / 7</span>
+  <span class="big-emoji">💰</span>
+  <div class="brand-tag">2026년 최신 기준</div>
+  <div class="main-title">소득 하위 70%<br>맞벌이는 얼마까지?</div>
+  <div class="sub-copy">건보료 계산법 · 가구원수별 기준표<br>+1명 특례까지 한 번에 정리</div>
+  <div class="footer-bar">
+    <span>소득 하위 70% 완벽 가이드</span>
+    <span>2026년 기준</span>
+  </div>
+</div>
+
+<!-- 카드 2: 소득 하위 70% 개념 -->
+<div class="card card-light">
+  <span class="badge">2 / 7</span>
+  <div class="section-label">기본 개념</div>
+  <div class="section-title">소득 하위 70%,<br>정확히 무슨 뜻일까요?</div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">전체 국민을 소득 순으로 세웠을 때 <strong>아래 70%</strong>에 해당하는 구간</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">정부 지원금 기준 = <strong>기준 중위소득의 150% 이하</strong></div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">2026년 <strong>4인 가구 중위소득</strong>: 약 649만 원</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">소득 기준 직접 확인 어려워 → <strong>건강보험료</strong>로 대신 판단</div>
+  </div>
+  <div class="highlight-box">
+    소득 하위 70% = 기준 중위소득 × 150%<br>
+    지원금마다 세부 기준이 다를 수 있으니 공고문 필수 확인!
+  </div>
+  <div class="footer-bar">
+    <span>소득 하위 70% 완벽 가이드</span>
+    <span>2026년 기준</span>
+  </div>
+</div>
+
+<!-- 카드 3: 가구별 기준표 -->
+<div class="card card-light">
+  <span class="badge">3 / 7</span>
+  <div class="section-label">기준 금액표</div>
+  <div class="section-title">2026년 가구원수별<br>소득 하위 70% 기준</div>
+  <table class="table-wrap">
+    <tr>
+      <th>가구원 수</th>
+      <th>기준 중위소득</th>
+      <th>소득 하위 70% (×150%)</th>
+    </tr>
+    <tr>
+      <td>1인</td>
+      <td>약 239만 원</td>
+      <td>약 358만 원</td>
+    </tr>
+    <tr>
+      <td>2인</td>
+      <td>약 393만 원</td>
+      <td>약 590만 원</td>
+    </tr>
+    <tr>
+      <td>3인</td>
+      <td>약 502만 원</td>
+      <td>약 752만 원</td>
+    </tr>
+    <tr class="highlight-row">
+      <td>4인</td>
+      <td>약 649만 원</td>
+      <td>약 974만 원</td>
+    </tr>
+    <tr>
+      <td>5인</td>
+      <td>약 787만 원</td>
+      <td>약 1,181만 원</td>
+    </tr>
+    <tr>
+      <td>6인</td>
+      <td>약 921만 원</td>
+      <td>약 1,381만 원</td>
+    </tr>
+  </table>
+  <div class="highlight-box" style="margin-top:18px; font-size:14px;">※ 세전 월 소득 기준 / 지원사업마다 기준이 다를 수 있음</div>
+  <div class="footer-bar">
+    <span>소득 하위 70% 완벽 가이드</span>
+    <span>2026년 기준</span>
+  </div>
+</div>
+
+<!-- 카드 4: 맞벌이 건보료 계산법 -->
+<div class="card card-light">
+  <span class="badge">4 / 7</span>
+  <div class="section-label">맞벌이 계산법</div>
+  <div class="section-title">맞벌이 건강보험료<br>이렇게 계산합니다</div>
+  <div class="calc-box">
+    <div class="calc-title">📌 계산 방법</div>
+    <div class="calc-text">
+      맞벌이 = <strong>부부 건보료 합산</strong>으로 판단<br>
+      (각자 직장 건보료를 더한 금액 기준)
+    </div>
+  </div>
+  <div class="calc-box">
+    <div class="calc-title">💡 계산 예시 (4인 가구 맞벌이)</div>
+    <div class="calc-text">
+      남편 건보료 <strong>200,000원</strong><br>
+      + 아내 건보료 <strong>160,000원</strong>
+    </div>
+    <div class="calc-result">합산 건보료 360,000원 → 4인 기준 충족 여부 비교</div>
+  </div>
+  <div class="item" style="margin-top:4px;">
+    <div class="item-dot"></div>
+    <div class="item-text">2026년 4인 가구 직장가입자 기준: <strong>약 360,000원 이하</strong></div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">지역가입자는 <strong>별도 기준표</strong> 적용 (재산·차량 포함)</div>
+  </div>
+  <div class="footer-bar">
+    <span>소득 하위 70% 완벽 가이드</span>
+    <span>2026년 기준</span>
+  </div>
+</div>
+
+<!-- 카드 5: +1명 특례 -->
+<div class="card card-light">
+  <span class="badge">5 / 7</span>
+  <div class="section-label">맞벌이 특례</div>
+  <div class="section-title">맞벌이라서 불리하다?<br>+1명 특례가 있습니다</div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">많은 지원금에서 맞벌이 가구에 <strong>가구원 수 +1명</strong> 특례 적용</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">맞벌이 4인 가구 → <strong>5인 가구 기준</strong>으로 판단</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">건보료 기준선이 한 단계 올라가 <strong>대상 범위 확대</strong></div>
+  </div>
+  <div class="highlight-box">
+    외벌이 기준으로 아슬아슬하게 초과해도<br>
+    맞벌이 +1명 특례 적용 시 대상자가 될 수 있습니다!
+  </div>
+  <div class="item" style="margin-top:14px;">
+    <div class="item-dot"></div>
+    <div class="item-text">⚠️ 모든 지원금에 적용되진 않음 → <strong>공고문에서 반드시 확인</strong></div>
+  </div>
+  <div class="footer-bar">
+    <span>소득 하위 70% 완벽 가이드</span>
+    <span>2026년 기준</span>
+  </div>
+</div>
+
+<!-- 카드 6: 건보료 확인 방법 -->
+<div class="card card-light">
+  <span class="badge">6 / 7</span>
+  <div class="section-label">확인 방법</div>
+  <div class="section-title">내 건강보험료<br>이렇게 확인하세요</div>
+  <div class="step-item">
+    <div class="step-num">1</div>
+    <div class="step-text"><strong>국민건강보험공단 홈페이지</strong><br>nhis.or.kr → 로그인 → 보험료 조회</div>
+  </div>
+  <div class="step-item">
+    <div class="step-num">2</div>
+    <div class="step-text"><strong>The건강보험 앱</strong> (모바일)<br>공동인증서 로그인 → 보험료 납부확인서</div>
+  </div>
+  <div class="step-item">
+    <div class="step-num">3</div>
+    <div class="step-text"><strong>급여명세서 확인</strong><br>매월 공제 항목 → 건강보험료 란</div>
+  </div>
+  <div class="highlight-box">
+    맞벌이는 본인과 배우자 건보료를 각각 확인 후 합산<br>
+    피부양자로 등록된 배우자는 건보료 = 0원으로 계산
+  </div>
+  <div class="footer-bar">
+    <span>소득 하위 70% 완벽 가이드</span>
+    <span>2026년 기준</span>
+  </div>
+</div>
+
+<!-- 카드 7: CTA -->
+<div class="card card-cta">
+  <span class="badge">7 / 7</span>
+  <div class="cta-label">핵심 요약</div>
+  <div class="cta-title">맞벌이라고 포기하지 마세요<br>이 3가지만 기억하세요</div>
+  <div class="info-item">
+    <div class="info-icon">✅</div>
+    <div class="info-text">소득 하위 70% = <strong>기준 중위소득 150%</strong> 이하</div>
+  </div>
+  <div class="info-item">
+    <div class="info-icon">✅</div>
+    <div class="info-text">맞벌이 건보료 = <strong>부부 합산</strong>으로 비교</div>
+  </div>
+  <div class="info-item">
+    <div class="info-icon">✅</div>
+    <div class="info-text">맞벌이 특례 = <strong>가구원 수 +1명</strong> 기준 적용 여부 확인</div>
+  </div>
+  <div class="warn-box">
+    ⚠️ 지원금마다 세부 기준이 다릅니다.<br>
+    건보료 조회 후 해당 사업 공고문에서 반드시 최종 확인하세요.
+  </div>
+  <div class="cta-btn">내 건보료 지금 바로 확인하기 →</div>
+  <div class="footer-bar">
+    <span>소득 하위 70% 완벽 가이드</span>
+    <span>2026년 기준</span>
+  </div>
+</div>
+
+</body>
+</html>

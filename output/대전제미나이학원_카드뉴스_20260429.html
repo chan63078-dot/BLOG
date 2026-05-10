@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>대전 제미나이 학원 카드뉴스</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0A0A14;
+    font-family: 'Noto Sans KR', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    gap: 32px;
+  }
+
+  /* 캡처 가이드 */
+  .capture-guide {
+    background: #1a1a2e;
+    border: 2px dashed #4285F4;
+    border-radius: 12px;
+    padding: 16px 28px;
+    color: #8AB4F8;
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.8;
+    max-width: 860px;
+    width: 100%;
+  }
+  .capture-guide strong { color: #fff; font-size: 15px; }
+
+  /* 카드 공통 */
+  .card {
+    width: 800px;
+    height: 800px;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  /* 뱃지 */
+  .badge {
+    position: absolute;
+    top: 24px;
+    right: 28px;
+    background: rgba(255,255,255,0.18);
+    border: 1.5px solid rgba(255,255,255,0.35);
+    border-radius: 20px;
+    padding: 5px 14px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    z-index: 10;
+  }
+  .badge-dark {
+    color: #4285F4;
+    background: rgba(66,133,244,0.12);
+    border-color: rgba(66,133,244,0.35);
+  }
+
+  /* footer-bar */
+  .footer-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    z-index: 10;
+  }
+  .footer-bar span { font-size: 12px; font-weight: 600; letter-spacing: 0.5px; }
+
+  /* ───── CARD 1 : 표지 ───── */
+  .card-cover {
+    background: linear-gradient(145deg, #0A0F2C 0%, #1a237e 45%, #1565C0 75%, #4285F4 100%);
+  }
+  .card-cover .orb1 {
+    position: absolute;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(66,133,244,0.25) 0%, transparent 70%);
+    top: -60px; right: -60px;
+  }
+  .card-cover .orb2 {
+    position: absolute;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(52,168,83,0.18) 0%, transparent 70%);
+    bottom: 80px; left: -40px;
+  }
+  .card-cover .orb3 {
+    position: absolute;
+    width: 150px; height: 150px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(251,188,5,0.12) 0%, transparent 70%);
+    bottom: 120px; right: 80px;
+  }
+  .card-cover .inner {
+    position: relative; z-index: 5;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    height: 100%; padding: 0 52px;
+    text-align: center;
+  }
+  .google-dots {
+    display: flex; gap: 8px; margin-bottom: 22px;
+  }
+  .dot { width: 16px; height: 16px; border-radius: 50%; }
+  .dot-b { background: #4285F4; }
+  .dot-r { background: #EA4335; }
+  .dot-y { background: #FBBC05; }
+  .dot-g { background: #34A853; }
+  .card-cover .brand-tag {
+    background: rgba(66,133,244,0.25);
+    border: 1px solid rgba(66,133,244,0.5);
+    border-radius: 24px;
+    padding: 6px 20px;
+    color: #8AB4F8;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 22px;
+  }
+  .card-cover .main-title {
+    color: #fff;
+    font-size: 40px;
+    font-weight: 900;
+    line-height: 1.25;
+    margin-bottom: 18px;
+    word-break: keep-all;
+  }
+  .card-cover .main-title span { color: #8AB4F8; }
+  .card-cover .sub-copy {
+    color: rgba(255,255,255,0.75);
+    font-size: 16px;
+    line-height: 1.75;
+    word-break: keep-all;
+  }
+  .card-cover .footer-bar { background: rgba(255,255,255,0.08); border-top: 1px solid rgba(255,255,255,0.12); }
+  .card-cover .footer-bar span { color: rgba(255,255,255,0.65); }
+
+  /* ───── 본문 카드 공통 ───── */
+  .card-body { background: #F0F4FF; }
+  .card-body .header-strip {
+    height: 10px; width: 100%;
+    position: absolute; top: 0; left: 0;
+    background: linear-gradient(90deg, #4285F4, #34A853, #FBBC05, #EA4335);
+  }
+  .card-body .inner {
+    padding: 40px 52px 60px;
+    display: flex; flex-direction: column;
+    height: 100%;
+  }
+  .section-label {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; color: #4285F4;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+  .section-title {
+    font-size: 30px; font-weight: 900;
+    color: #0D1B3E; line-height: 1.3;
+    margin-bottom: 28px; word-break: keep-all;
+  }
+  .section-title span { color: #4285F4; }
+  .card-body .footer-bar { background: #4285F4; }
+  .card-body .footer-bar span { color: rgba(255,255,255,0.85); }
+
+  /* dot items */
+  .dot-list { display: flex; flex-direction: column; gap: 14px; }
+  .dot-item {
+    display: flex; align-items: flex-start; gap: 14px;
+    background: #fff; border-radius: 12px;
+    padding: 14px 18px;
+    box-shadow: 0 2px 8px rgba(66,133,244,0.08);
+  }
+  .dot-icon {
+    width: 38px; height: 38px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .di-blue { background: linear-gradient(135deg, #4285F4, #1565C0); }
+  .di-green { background: linear-gradient(135deg, #34A853, #2E7D32); }
+  .di-yellow { background: linear-gradient(135deg, #FBBC05, #F57F17); }
+  .di-red { background: linear-gradient(135deg, #EA4335, #B71C1C); }
+  .dot-text { font-size: 14px; color: #1a2a4a; line-height: 1.6; font-weight: 500; word-break: keep-all; }
+  .dot-text strong { color: #4285F4; }
+
+  /* AI 비교 카드 */
+  .ai-compare { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .ai-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px 14px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(66,133,244,0.08);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .ai-card.highlight {
+    background: linear-gradient(145deg, #1a237e, #4285F4);
+    border: 2px solid #8AB4F8;
+  }
+  .ai-logo { font-size: 28px; }
+  .ai-name { font-size: 15px; font-weight: 800; color: #0D1B3E; }
+  .ai-card.highlight .ai-name { color: #fff; }
+  .ai-tag {
+    background: #EEF4FF; border: 1px solid #B3D0FF;
+    border-radius: 20px; padding: 3px 10px;
+    font-size: 11px; font-weight: 700; color: #4285F4;
+    text-align: center;
+  }
+  .ai-card.highlight .ai-tag { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.4); color: #fff; }
+  .ai-desc { font-size: 12px; color: #556; line-height: 1.5; word-break: keep-all; }
+  .ai-card.highlight .ai-desc { color: rgba(255,255,255,0.82); }
+  .best-badge {
+    background: #FBBC05; color: #000;
+    font-size: 11px; font-weight: 900;
+    border-radius: 12px; padding: 3px 10px;
+  }
+
+  /* 기능 그리드 */
+  .func-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .func-box {
+    background: #fff; border-radius: 14px;
+    padding: 18px 16px;
+    box-shadow: 0 2px 8px rgba(66,133,244,0.07);
+  }
+  .func-icon { font-size: 28px; margin-bottom: 8px; }
+  .func-title { font-size: 14px; font-weight: 800; color: #0D1B3E; margin-bottom: 6px; }
+  .func-desc { font-size: 12px; color: #445; line-height: 1.55; word-break: keep-all; }
+  .func-desc strong { color: #4285F4; }
+  .func-box:nth-child(1) { border-top: 3px solid #4285F4; }
+  .func-box:nth-child(2) { border-top: 3px solid #34A853; }
+  .func-box:nth-child(3) { border-top: 3px solid #FBBC05; }
+  .func-box:nth-child(4) { border-top: 3px solid #EA4335; }
+
+  /* 학원 리스트 */
+  .academy-list { display: flex; flex-direction: column; gap: 12px; }
+  .academy-item {
+    background: #fff;
+    border-left: 5px solid #4285F4;
+    border-radius: 0 14px 14px 0;
+    padding: 13px 16px;
+    box-shadow: 0 2px 8px rgba(66,133,244,0.07);
+  }
+  .academy-item:nth-child(2) { border-left-color: #34A853; }
+  .academy-item:nth-child(3) { border-left-color: #FBBC05; }
+  .academy-item:nth-child(4) { border-left-color: #EA4335; }
+  .academy-name { font-size: 15px; font-weight: 800; color: #0D1B3E; margin-bottom: 5px; }
+  .tag-wrap { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag {
+    background: #EEF4FF; border: 1px solid #B3D0FF;
+    border-radius: 20px; padding: 3px 10px;
+    font-size: 11px; font-weight: 700; color: #4285F4;
+  }
+  .info-alert {
+    background: #E8F5E9; border: 2px solid #43A047;
+    border-radius: 12px; padding: 13px 16px;
+    font-size: 13px; color: #1B5E20; line-height: 1.6;
+    word-break: keep-all; margin-top: 8px;
+  }
+  .info-alert strong { color: #2E7D32; }
+
+  /* 꿀팁 */
+  .tip-list { display: flex; flex-direction: column; gap: 13px; }
+  .tip-item {
+    display: flex; align-items: flex-start; gap: 14px;
+    background: #fff; border-radius: 14px;
+    padding: 14px 18px;
+    box-shadow: 0 2px 8px rgba(66,133,244,0.07);
+  }
+  .tip-num {
+    min-width: 38px; height: 38px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 900; color: #fff; flex-shrink: 0;
+  }
+  .tn1 { background: #4285F4; }
+  .tn2 { background: #34A853; }
+  .tn3 { background: #FBBC05; color: #222; }
+  .tn4 { background: #EA4335; }
+  .tn5 { background: linear-gradient(135deg, #4285F4, #34A853); }
+  .tip-content .tip-title { font-size: 14px; font-weight: 800; color: #0D1B3E; margin-bottom: 4px; }
+  .tip-content .tip-desc { font-size: 13px; color: #445; line-height: 1.5; word-break: keep-all; }
+  .tip-content .tip-desc strong { color: #4285F4; }
+
+  /* CTA */
+  .card-cta {
+    background: linear-gradient(145deg, #0A0F2C 0%, #1a237e 50%, #4285F4 100%);
+  }
+  .card-cta .orb1 {
+    position: absolute; width: 280px; height: 280px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(66,133,244,0.2) 0%, transparent 70%);
+    top: -60px; right: -40px;
+  }
+  .card-cta .orb2 {
+    position: absolute; width: 160px; height: 160px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(52,168,83,0.15) 0%, transparent 70%);
+    bottom: 100px; left: -30px;
+  }
+  .card-cta .inner {
+    position: relative; z-index: 5;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    height: 100%; padding: 0 52px;
+    text-align: center; gap: 20px;
+  }
+  .cta-emoji { font-size: 60px; }
+  .cta-title { font-size: 34px; font-weight: 900; color: #fff; line-height: 1.3; word-break: keep-all; }
+  .cta-title span { color: #8AB4F8; }
+  .cta-sub { font-size: 16px; color: rgba(255,255,255,0.78); line-height: 1.75; word-break: keep-all; }
+  .chip-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .chip {
+    background: rgba(255,255,255,0.12);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    border-radius: 28px; padding: 9px 20px;
+    color: #fff; font-size: 13px; font-weight: 700;
+  }
+  .card-cta .footer-bar { background: rgba(255,255,255,0.08); border-top: 1px solid rgba(255,255,255,0.12); }
+  .card-cta .footer-bar span { color: rgba(255,255,255,0.65); }
+</style>
+</head>
+<body>
+
+<!-- 캡처 가이드 -->
+<div class="capture-guide">
+  <strong>📸 캡처 방법 안내</strong><br>
+  각 카드 위에서 <strong>Win + Shift + S</strong> → 카드 영역 드래그 → 캡처 후 붙여넣기<br>
+  카드 크기: 800×800px | 총 7장
+</div>
+
+<!-- ───── CARD 1 : 표지 ───── -->
+<div class="card card-cover">
+  <div class="orb1"></div>
+  <div class="orb2"></div>
+  <div class="orb3"></div>
+  <div class="badge">1 / 7</div>
+  <div class="inner">
+    <div class="google-dots">
+      <div class="dot dot-b"></div>
+      <div class="dot dot-r"></div>
+      <div class="dot dot-y"></div>
+      <div class="dot dot-g"></div>
+    </div>
+    <div class="brand-tag">Google AI 활용 가이드</div>
+    <div class="main-title">대전<br><span>제미나이(Gemini)</span><br>학원 완벽 가이드</div>
+    <div class="sub-copy">
+      구글 AI 제대로 배우는 법<br>
+      활용법 + 대전 학원 추천 + 국비지원까지
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 AI 교육 정보</span>
+    <span>#구글제미나이 #대전학원</span>
+  </div>
+</div>
+
+<!-- ───── CARD 2 : 제미나이란? ───── -->
+<div class="card card-body">
+  <div class="header-strip"></div>
+  <div class="badge badge-dark">2 / 7</div>
+  <div class="inner">
+    <div class="section-label">ABOUT GEMINI</div>
+    <div class="section-title">구글 <span>제미나이</span>란?</div>
+    <div class="dot-list">
+      <div class="dot-item">
+        <div class="dot-icon di-blue">🤖</div>
+        <div class="dot-text">구글이 개발한 <strong>최신 생성형 AI</strong><br>챗GPT·클로드와 함께 3대 AI 중 하나</div>
+      </div>
+      <div class="dot-item">
+        <div class="dot-icon di-green">🔗</div>
+        <div class="dot-text">구글 검색·지메일·드라이브·시트와 <strong>완벽 연동</strong><br>업무 생산성 극대화 가능</div>
+      </div>
+      <div class="dot-item">
+        <div class="dot-icon di-yellow">🌐</div>
+        <div class="dot-text"><strong>실시간 웹 검색</strong> 기반 최신 정보 제공<br>텍스트·이미지·코드·음성 멀티모달 처리</div>
+      </div>
+      <div class="dot-item">
+        <div class="dot-icon di-red">⭐</div>
+        <div class="dot-text">2026년 <strong>제미나이 2.5 Pro</strong> 출시<br>대학생 Google AI Pro 12개월 <strong>무료 체험</strong> 가능</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 AI 교육 정보</span>
+    <span>#구글제미나이</span>
+  </div>
+</div>
+
+<!-- ───── CARD 3 : AI 비교 ───── -->
+<div class="card card-body">
+  <div class="header-strip"></div>
+  <div class="badge badge-dark">3 / 7</div>
+  <div class="inner">
+    <div class="section-label">AI COMPARE</div>
+    <div class="section-title">챗GPT vs 클로드 vs<br><span>제미나이</span> 비교</div>
+    <div class="ai-compare">
+      <div class="ai-card">
+        <div class="ai-logo">🤖</div>
+        <div class="ai-name">챗GPT</div>
+        <div class="ai-tag">OpenAI</div>
+        <div class="ai-desc">창작·글쓰기·코딩에 강점<br>다양한 플러그인 생태계</div>
+      </div>
+      <div class="ai-card highlight">
+        <div class="best-badge">⭐ 추천</div>
+        <div class="ai-logo">✨</div>
+        <div class="ai-name">제미나이</div>
+        <div class="ai-tag">Google</div>
+        <div class="ai-desc">구글 서비스 연동<br>실시간 검색<br>멀티모달 최강</div>
+      </div>
+      <div class="ai-card">
+        <div class="ai-logo">🧠</div>
+        <div class="ai-name">클로드</div>
+        <div class="ai-tag">Anthropic</div>
+        <div class="ai-desc">긴 문서 분석·요약<br>논리적·안전한 답변</div>
+      </div>
+    </div>
+    <div style="margin-top:20px; background:#EEF4FF; border-radius:12px; padding:16px 18px; border-left:4px solid #4285F4;">
+      <div style="font-size:14px; font-weight:800; color:#0D1B3E; margin-bottom:8px;">💡 구글 서비스를 많이 쓴다면?</div>
+      <div style="font-size:13px; color:#334; line-height:1.6; word-break:keep-all;">
+        Gmail · Drive · Sheets 사용자라면 <strong style="color:#4285F4;">제미나이</strong>가 가장 효율적!<br>
+        업무 자동화 · 문서 분석 · 실시간 정보 검색까지 원스톱으로
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 AI 교육 정보</span>
+    <span>#챗GPT vs 제미나이</span>
+  </div>
+</div>
+
+<!-- ───── CARD 4 : 주요 기능 ───── -->
+<div class="card card-body">
+  <div class="header-strip"></div>
+  <div class="badge badge-dark">4 / 7</div>
+  <div class="inner">
+    <div class="section-label">KEY FEATURES</div>
+    <div class="section-title">제미나이 <span>주요 활용</span> 분야</div>
+    <div class="func-grid">
+      <div class="func-box">
+        <div class="func-icon">📝</div>
+        <div class="func-title">문서·글쓰기 자동화</div>
+        <div class="func-desc">이메일·보고서·블로그 자동 생성<br><strong>구글 Docs 내 AI 바로 활용</strong></div>
+      </div>
+      <div class="func-box">
+        <div class="func-icon">📊</div>
+        <div class="func-title">업무 생산성 향상</div>
+        <div class="func-desc">시트 분석·슬라이드 제작<br><strong>=GEMINI() 함수</strong>로 AI 데이터 분석</div>
+      </div>
+      <div class="func-box">
+        <div class="func-icon">🎓</div>
+        <div class="func-title">학습 보조</div>
+        <div class="func-desc">수학 단계별 풀이, 에세이 작성<br><strong>토익·토플</strong> 시험 대비 가능</div>
+      </div>
+      <div class="func-box">
+        <div class="func-icon">💻</div>
+        <div class="func-title">코딩 지원</div>
+        <div class="func-desc">코드 작성·디버깅·설명<br><strong>초보자도 AI와 함께</strong> 코딩 가능</div>
+      </div>
+    </div>
+    <div style="margin-top:16px; background:#FFF8E1; border:2px solid #FBBC05; border-radius:12px; padding:13px 16px; font-size:13px; color:#5a3e00; line-height:1.6; word-break:keep-all;">
+      🌐 <strong>실시간 검색 강점!</strong> 최신 뉴스·트렌드가 필요할 때는 제미나이가 챗GPT보다 유리해요
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 AI 교육 정보</span>
+    <span>#제미나이활용</span>
+  </div>
+</div>
+
+<!-- ───── CARD 5 : 대전 학원 ───── -->
+<div class="card card-body">
+  <div class="header-strip"></div>
+  <div class="badge badge-dark">5 / 7</div>
+  <div class="inner">
+    <div class="section-label">DAEJEON ACADEMY</div>
+    <div class="section-title">대전 <span>AI 교육 학원</span> 추천</div>
+    <div class="academy-list">
+      <div class="academy-item">
+        <div class="academy-name">🚀 미래융합교육원 (AI캠퍼스) — 서구</div>
+        <div class="tag-wrap">
+          <span class="tag">AI 부트캠프</span>
+          <span class="tag">국비지원</span>
+          <span class="tag">취업연계</span>
+        </div>
+      </div>
+      <div class="academy-item">
+        <div class="academy-name">🏫 그린컴퓨터아트학원 (대전/대전중앙)</div>
+        <div class="tag-wrap">
+          <span class="tag">국비 100% 무료</span>
+          <span class="tag">IT·AI 과정</span>
+          <span class="tag">직장인 가능</span>
+        </div>
+      </div>
+      <div class="academy-item">
+        <div class="academy-name">🎓 SBS아카데미컴퓨터아트학원 대전점</div>
+        <div class="tag-wrap">
+          <span class="tag">전국 17개 지점</span>
+          <span class="tag">AI·데이터 과정</span>
+          <span class="tag">취업 연계</span>
+        </div>
+      </div>
+      <div class="academy-item">
+        <div class="academy-name">🔐 아이티스쿨정보보호교육원</div>
+        <div class="tag-wrap">
+          <span class="tag">국비지원</span>
+          <span class="tag">AI+보안 융합</span>
+          <span class="tag">클라우드</span>
+        </div>
+      </div>
+    </div>
+    <div class="info-alert">
+      💳 <strong>국민내일배움카드</strong>로 학원비 무료 or 일부 지원!<br>
+      고용24(work24.go.kr) → 신청 → 대전 AI 학원 수강
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 AI 교육 정보</span>
+    <span>#대전AI학원 #국비지원</span>
+  </div>
+</div>
+
+<!-- ───── CARD 6 : 꿀팁 ───── -->
+<div class="card card-body">
+  <div class="header-strip"></div>
+  <div class="badge badge-dark">6 / 7</div>
+  <div class="inner">
+    <div class="section-label">TIPS</div>
+    <div class="section-title">제미나이 <span>활용 꿀팁</span> 5가지</div>
+    <div class="tip-list">
+      <div class="tip-item">
+        <div class="tip-num tn1">1</div>
+        <div class="tip-content">
+          <div class="tip-title">구글 계정 먼저 연동</div>
+          <div class="tip-desc">Gmail·Drive·Docs 연동 → 내 파일 기반 <strong>AI 분석·요약</strong> 바로 가능</div>
+        </div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-num tn2">2</div>
+        <div class="tip-content">
+          <div class="tip-title">나만의 "Gem" 만들기</div>
+          <div class="tip-desc">업무 특화 <strong>커스텀 AI 비서</strong> 생성 — 마케터용·교사용·개발자용 등</div>
+        </div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-num tn3">3</div>
+        <div class="tip-content">
+          <div class="tip-title">=GEMINI() 시트 함수 활용</div>
+          <div class="tip-desc">구글 스프레드시트에서 <strong>AI 데이터 분석</strong>을 수식 하나로!</div>
+        </div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-num tn4">4</div>
+        <div class="tip-content">
+          <div class="tip-title">실시간 검색이 필요할 때</div>
+          <div class="tip-desc">최신 뉴스·트렌드 조사엔 <strong>제미나이가 최강!</strong> 웹 검색 연동 기본 지원</div>
+        </div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-num tn5">5</div>
+        <div class="tip-content">
+          <div class="tip-title">대학생 무료 체험 활용</div>
+          <div class="tip-desc">학교 이메일 인증 → <strong>Google AI Pro 12개월 무료</strong> (제미나이 2.5 Pro)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 AI 교육 정보</span>
+    <span>#제미나이꿀팁</span>
+  </div>
+</div>
+
+<!-- ───── CARD 7 : CTA ───── -->
+<div class="card card-cta">
+  <div class="orb1"></div>
+  <div class="orb2"></div>
+  <div class="badge">7 / 7</div>
+  <div class="inner">
+    <div class="cta-emoji">✨</div>
+    <div class="cta-title">지금 바로<br><span>제미나이</span>와<br>AI 시대 시작!</div>
+    <div class="cta-sub">
+      대전 AI 학원에서 실무 중심으로 배우고<br>
+      국비지원으로 부담 없이 도전하세요
+    </div>
+    <div class="chip-row">
+      <div class="chip">📋 국민내일배움카드</div>
+      <div class="chip">💯 국비지원 가능</div>
+      <div class="chip">🎓 대학생 무료 체험</div>
+    </div>
+    <div style="color:rgba(255,255,255,0.5); font-size:13px;">
+      고용24(work24.go.kr)에서 바로 신청
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 AI 교육 정보</span>
+    <span>#대전제미나이학원</span>
+  </div>
+</div>
+
+</body>
+</html>

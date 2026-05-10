@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>아도 뜻 아도치다 뜻 카드뉴스</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0A0A14;
+    font-family: 'Noto Sans KR', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    gap: 40px;
+  }
+
+  .capture-guide {
+    background: #1A1A2E;
+    border: 1px solid #3A3A5C;
+    border-radius: 12px;
+    padding: 20px 30px;
+    max-width: 860px;
+    width: 100%;
+    color: #8888AA;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .capture-guide strong {
+    color: #AAAACC;
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+
+  .card {
+    width: 800px;
+    height: 800px;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .badge {
+    position: absolute;
+    top: 28px;
+    right: 28px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 5px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    z-index: 10;
+  }
+
+  .footer-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    font-size: 12px;
+    z-index: 10;
+  }
+
+  /* ===== 카드 1: 표지 ===== */
+  .card-cover {
+    background: linear-gradient(145deg, #12002A 0%, #3D0066 55%, #6A00B8 100%);
+  }
+  .card-cover .deco-circle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.07;
+  }
+  .card-cover .deco-1 { width: 500px; height: 500px; background: #fff; top: -120px; right: -130px; }
+  .card-cover .deco-2 { width: 320px; height: 320px; background: #fff; bottom: -90px; left: -70px; }
+  .card-cover .content {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 60px 60px 100px;
+  }
+  .card-cover .brand-tag {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.28);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 16px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    margin-bottom: 32px;
+  }
+  .card-cover .main-title {
+    font-size: 56px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 22px;
+    letter-spacing: -1.5px;
+  }
+  .card-cover .main-title span { color: #CE93D8; }
+  .card-cover .sub-copy {
+    font-size: 17px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.7;
+  }
+  .card-cover .answer-box {
+    margin-top: 36px;
+    background: rgba(255,255,255,0.1);
+    border-left: 4px solid #CE93D8;
+    padding: 14px 22px;
+    border-radius: 0 10px 10px 0;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.6;
+  }
+  .card-cover .footer-bar { background: rgba(0,0,0,0.35); color: rgba(255,255,255,0.55); }
+
+  /* ===== 본문 카드 ===== */
+  .card-content { background: #F3F0FF; }
+  .card-content .top-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 8px;
+    background: linear-gradient(90deg, #6A00B8, #9C27B0);
+  }
+  .card-content .inner {
+    position: absolute;
+    top: 8px; left: 0; right: 0; bottom: 52px;
+    padding: 44px 50px 30px;
+    display: flex;
+    flex-direction: column;
+  }
+  .card-content .section-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #7B1FA2;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+  .card-content .section-title {
+    font-size: 30px;
+    font-weight: 900;
+    color: #1A0033;
+    line-height: 1.25;
+    margin-bottom: 28px;
+    padding-bottom: 22px;
+    border-bottom: 2px solid #DDD6F5;
+  }
+  .card-content .section-title span { color: #7B1FA2; }
+  .card-content .footer-bar { background: #6A00B8; color: rgba(255,255,255,0.8); }
+
+  /* 하이라이트 박스 */
+  .highlight-block {
+    background: #fff;
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+    border-left: 5px solid #9C27B0;
+  }
+  .highlight-block .word {
+    font-size: 28px;
+    font-weight: 900;
+    color: #1A0033;
+    margin-bottom: 8px;
+  }
+  .highlight-block .word span { color: #9C27B0; }
+  .highlight-block .def {
+    font-size: 15px;
+    color: #444;
+    line-height: 1.7;
+  }
+  .highlight-block .origin {
+    display: inline-block;
+    margin-top: 10px;
+    background: #EDE7F6;
+    color: #7B1FA2;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  /* 스텝 아이템 */
+  .step-list { display: flex; flex-direction: column; gap: 13px; flex: 1; }
+  .step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .step-num {
+    width: 30px; height: 30px;
+    background: #9C27B0;
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 900;
+    flex-shrink: 0;
+  }
+  .step-text .title { font-size: 14px; font-weight: 700; color: #1A0033; margin-bottom: 4px; }
+  .step-text .desc { font-size: 13px; color: #555; line-height: 1.5; }
+
+  /* 비교 박스 */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    flex: 1;
+    align-content: start;
+  }
+  .compare-item {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 18px;
+    border-top: 4px solid #9C27B0;
+  }
+  .compare-item.right { border-top-color: #E91E8C; }
+  .compare-item .c-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #9C27B0;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .compare-item.right .c-label { color: #E91E8C; }
+  .compare-item .c-word { font-size: 22px; font-weight: 900; color: #1A0033; margin-bottom: 8px; }
+  .compare-item .c-def { font-size: 13px; color: #555; line-height: 1.5; }
+  .compare-bottom {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-top: 14px;
+    border-left: 4px solid #7B1FA2;
+  }
+  .compare-bottom .cb-title { font-size: 13px; font-weight: 700; color: #7B1FA2; margin-bottom: 6px; }
+  .compare-bottom .cb-desc { font-size: 13px; color: #444; line-height: 1.6; }
+
+  /* 예시 카드 */
+  .chat-list { display: flex; flex-direction: column; gap: 14px; flex: 1; }
+  .chat-block {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px 20px;
+  }
+  .chat-block .chat-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #9C27B0;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  .chat-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 7px; }
+  .chat-row:last-child { margin-bottom: 0; }
+  .chat-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1A0033;
+    min-width: 20px;
+  }
+  .chat-bubble {
+    font-size: 13px;
+    color: #444;
+    line-height: 1.55;
+  }
+  .chat-bubble strong { color: #9C27B0; font-weight: 700; }
+
+  /* 도트 리스트 */
+  .dot-list { display: flex; flex-direction: column; gap: 12px; flex: 1; }
+  .dot-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .dot { width: 8px; height: 8px; background: #9C27B0; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+  .dot-text .main { font-size: 14px; font-weight: 700; color: #1A0033; }
+  .dot-text .sub { font-size: 12px; color: #666; margin-top: 3px; line-height: 1.5; }
+
+  /* 상황 카드 */
+  .situation-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    align-content: start;
+  }
+  .sit-box {
+    background: #fff;
+    border-radius: 12px;
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .sit-box .sit-tag {
+    display: inline-block;
+    background: #EDE7F6;
+    color: #7B1FA2;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    width: fit-content;
+    letter-spacing: 0.5px;
+  }
+  .sit-box .sit-title { font-size: 16px; font-weight: 900; color: #1A0033; }
+  .sit-box .sit-ex { font-size: 12px; color: #555; line-height: 1.55; }
+  .sit-box .sit-ex strong { color: #9C27B0; font-weight: 700; }
+
+  /* 표 */
+  .vocab-table { width: 100%; border-collapse: collapse; flex: 1; }
+  .vocab-table th {
+    background: #9C27B0;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 12px 16px;
+    text-align: left;
+  }
+  .vocab-table td {
+    background: #fff;
+    font-size: 13px;
+    color: #333;
+    padding: 12px 16px;
+    border-bottom: 1px solid #EDE7F6;
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .vocab-table tr:last-child td { border-bottom: none; }
+  .vocab-table td:first-child { font-weight: 700; color: #1A0033; width: 30%; }
+
+  /* 주의 박스 */
+  .warn-box {
+    background: #FFF3E0;
+    border-left: 4px solid #FF9800;
+    border-radius: 0 10px 10px 0;
+    padding: 14px 18px;
+    margin-top: 14px;
+    font-size: 13px;
+    color: #5D4037;
+    line-height: 1.65;
+  }
+  .warn-box strong { color: #E65100; font-weight: 700; }
+
+  /* ===== CTA 카드 ===== */
+  .card-cta {
+    background: linear-gradient(145deg, #1A0033 0%, #4A0080 50%, #6A00B8 100%);
+  }
+  .card-cta .deco { position: absolute; border-radius: 50%; opacity: 0.06; }
+  .card-cta .deco-1 { width: 500px; height: 500px; background: #fff; top: -150px; left: -100px; }
+  .card-cta .deco-2 { width: 360px; height: 360px; background: #CE93D8; bottom: -100px; right: -80px; }
+  .card-cta .content {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 60px 100px;
+    text-align: center;
+  }
+  .card-cta .cta-label { font-size: 13px; font-weight: 700; color: #CE93D8; letter-spacing: 2px; margin-bottom: 18px; }
+  .card-cta .cta-title { font-size: 40px; font-weight: 900; color: #fff; line-height: 1.3; margin-bottom: 36px; }
+  .card-cta .summary-box {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 26px 32px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .card-cta .s-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .card-cta .s-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #CE93D8;
+    min-width: 90px;
+    padding-top: 1px;
+  }
+  .card-cta .s-value {
+    font-size: 14px;
+    color: rgba(255,255,255,0.88);
+    line-height: 1.55;
+  }
+  .card-cta .footer-bar { background: rgba(0,0,0,0.4); color: rgba(255,255,255,0.5); }
+</style>
+</head>
+<body>
+
+<!-- 캡처 가이드 -->
+<div class="capture-guide">
+  <strong>카드뉴스 캡처 안내</strong>
+  각 카드를 캡처하려면: Win + Shift + S 를 눌러 영역 선택 캡처 후 저장하세요.<br>
+  카드 크기: 800 x 800px / 총 8장 / 브라우저 확대 100% 상태에서 캡처하세요.
+</div>
+
+
+<!-- 카드 1: 표지 -->
+<div class="card card-cover">
+  <div class="deco-circle deco-1"></div>
+  <div class="deco-circle deco-2"></div>
+  <div class="content">
+    <div class="brand-tag">신조어 / 생활 언어</div>
+    <div class="main-title">아도 뜻?<br>아도치다 뜻이랑<br><span>같은 걸까?</span></div>
+    <div class="sub-copy">5분 안에 완전 정리합니다</div>
+    <div class="answer-box">
+      아도 = 싹쓸이, 독점<br>
+      아도치다 = 전부 처분하다 / 독차지하다
+    </div>
+  </div>
+  <div class="badge">1 / 8</div>
+  <div class="footer-bar">
+    <span>아도 뜻 완전 정리</span>
+    <span>신조어 사전</span>
+  </div>
+</div>
+
+
+<!-- 카드 2: 아도 뜻 -->
+<div class="card card-content">
+  <div class="top-bar"></div>
+  <div class="inner">
+    <div class="section-label">MEANING</div>
+    <div class="section-title"><span>아도</span> 뜻과 어원</div>
+    <div class="highlight-block">
+      <div class="word"><span>아도</span></div>
+      <div class="def">
+        일본어 "아토(あと, 後)"에서 유래한 표현입니다.<br>
+        원래 뜻은 "뒤", "나중", "나머지"인데<br>
+        한국에 들어와 "남은 것을 전부 차지한다",<br>
+        "싹쓸이한다"는 의미로 변형되어 자리 잡았습니다.
+      </div>
+      <span class="origin">일본어 あと(아토) 유래</span>
+    </div>
+    <div class="step-list" style="margin-top: 14px;">
+      <div class="step-item">
+        <div class="step-num">A</div>
+        <div class="step-text">
+          <div class="title">혼자서 다 가져간다</div>
+          <div class="desc">독점, 싹쓸이 행위를 가리키는 명사 개념으로 쓰입니다.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">B</div>
+        <div class="step-text">
+          <div class="title">단독 사용보다 "치다"와 결합</div>
+          <div class="desc">"아도"만 단독으로 쓰는 경우는 드물고 "아도치다" 형태로 주로 씁니다.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="badge">2 / 8</div>
+  <div class="footer-bar">
+    <span>아도 뜻 완전 정리</span>
+    <span>신조어 사전</span>
+  </div>
+</div>
+
+
+<!-- 카드 3: 아도치다 뜻 -->
+<div class="card card-content">
+  <div class="top-bar"></div>
+  <div class="inner">
+    <div class="section-label">MEANING</div>
+    <div class="section-title"><span>아도치다</span> 뜻</div>
+    <div class="highlight-block">
+      <div class="word"><span>아도치다</span></div>
+      <div class="def">
+        아도 + 치다(동사)의 결합 형태.<br>
+        "싹쓸이하다", "독차지하다",<br>
+        "남은 것을 전부 처분하다"는 뜻입니다.
+      </div>
+      <span class="origin">아도 + 치다 = 동사형</span>
+    </div>
+    <div class="step-list" style="margin-top: 14px;">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <div class="title">아도친다</div>
+          <div class="desc">남은 것을 전부 처분하거나 독점하겠다는 의사 표현</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <div class="title">아도쳤다</div>
+          <div class="desc">이미 전부 처분했다는 과거형 표현</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <div class="title">아도쳐버렸다</div>
+          <div class="desc">강조형 - 결단 후 단번에 전부 처분했다는 뜻</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="badge">3 / 8</div>
+  <div class="footer-bar">
+    <span>아도 뜻 완전 정리</span>
+    <span>신조어 사전</span>
+  </div>
+</div>
+
+
+<!-- 카드 4: 아도 vs 아도치다 비교 -->
+<div class="card card-content">
+  <div class="top-bar"></div>
+  <div class="inner">
+    <div class="section-label">COMPARE</div>
+    <div class="section-title">아도 vs <span>아도치다</span> 차이</div>
+    <div class="compare-grid">
+      <div class="compare-item">
+        <div class="c-label">아도</div>
+        <div class="c-word">아도</div>
+        <div class="c-def">명사 개념<br>싹쓸이, 독점이라는<br>행위 자체를 가리킴</div>
+      </div>
+      <div class="compare-item right">
+        <div class="c-label">아도치다</div>
+        <div class="c-word">아도치다</div>
+        <div class="c-def">동사 형태<br>그 행위를 직접<br>실행한다는 표현</div>
+      </div>
+    </div>
+    <div class="compare-bottom">
+      <div class="cb-title">결론 - 의미는 같고 형태가 다르다</div>
+      <div class="cb-desc">
+        "이거 아도 아니냐?" = 싹쓸이하는 거냐는 물음<br>
+        "그냥 아도쳐 버리자" = 전부 처분하겠다는 결단<br>
+        실생활에서는 <strong>아도치다</strong> 형태를 훨씬 많이 씁니다.
+      </div>
+    </div>
+  </div>
+  <div class="badge">4 / 8</div>
+  <div class="footer-bar">
+    <span>아도 뜻 완전 정리</span>
+    <span>신조어 사전</span>
+  </div>
+</div>
+
+
+<!-- 카드 5: 사용 상황 -->
+<div class="card card-content">
+  <div class="top-bar"></div>
+  <div class="inner">
+    <div class="section-label">USAGE</div>
+    <div class="section-title">어떤 <span>상황</span>에서 쓸까?</div>
+    <div class="situation-grid">
+      <div class="sit-box">
+        <span class="sit-tag">장사 / 유통</span>
+        <div class="sit-title">재고 처분</div>
+        <div class="sit-ex">"남은 물건 다 <strong>아도쳐</strong> 버리자"<br>남은 재고를 모두 팔아치울 때</div>
+      </div>
+      <div class="sit-box">
+        <span class="sit-tag">주식 / 투자</span>
+        <div class="sit-title">전량 매도</div>
+        <div class="sit-ex">"더 버티다 더 손해날 것 같아서 <strong>아도쳤어</strong>"<br>보유 종목 전부 매도할 때</div>
+      </div>
+      <div class="sit-box">
+        <span class="sit-tag">도박 / 게임</span>
+        <div class="sit-title">올인</div>
+        <div class="sit-ex">"판돈 <strong>아도쳤다</strong>"<br>남은 금액을 전부 거는 행위</div>
+      </div>
+      <div class="sit-box">
+        <span class="sit-tag">일상</span>
+        <div class="sit-title">체념 / 결단</div>
+        <div class="sit-ex">"냉장고 재료 오늘 요리로 <strong>아도쳐</strong> 버려야지"<br>남은 것을 전부 소진할 때</div>
+      </div>
+    </div>
+  </div>
+  <div class="badge">5 / 8</div>
+  <div class="footer-bar">
+    <span>아도 뜻 완전 정리</span>
+    <span>신조어 사전</span>
+  </div>
+</div>
+
+
+<!-- 카드 6: 실제 대화 예시 -->
+<div class="card card-content">
+  <div class="top-bar"></div>
+  <div class="inner">
+    <div class="section-label">EXAMPLE</div>
+    <div class="section-title">실제 <span>대화 예시</span></div>
+    <div class="chat-list">
+      <div class="chat-block">
+        <div class="chat-label">상황 1 - 장사</div>
+        <div class="chat-row"><div class="chat-name">A</div><div class="chat-bubble">남은 재고 어쩔 거야?</div></div>
+        <div class="chat-row"><div class="chat-name">B</div><div class="chat-bubble">이참에 그냥 <strong>아도쳐</strong> 버리자. 다음 달에 새 물건 들어오잖아.</div></div>
+      </div>
+      <div class="chat-block">
+        <div class="chat-label">상황 2 - 주식</div>
+        <div class="chat-row"><div class="chat-name">A</div><div class="chat-bubble">이 종목 계속 들고 갈 거야?</div></div>
+        <div class="chat-row"><div class="chat-name">B</div><div class="chat-bubble">더 버티다가 더 손해 볼 것 같아서 <strong>아도쳤어</strong>.</div></div>
+      </div>
+      <div class="chat-block">
+        <div class="chat-label">상황 3 - 일상</div>
+        <div class="chat-row"><div class="chat-name">A</div><div class="chat-bubble">냉장고에 식재료 남은 거 많잖아.</div></div>
+        <div class="chat-row"><div class="chat-name">B</div><div class="chat-bubble">오늘 요리로 <strong>아도쳐</strong> 버려야겠다.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="badge">6 / 8</div>
+  <div class="footer-bar">
+    <span>아도 뜻 완전 정리</span>
+    <span>신조어 사전</span>
+  </div>
+</div>
+
+
+<!-- 카드 7: 비슷한 표현 -->
+<div class="card card-content">
+  <div class="top-bar"></div>
+  <div class="inner">
+    <div class="section-label">SIMILAR WORDS</div>
+    <div class="section-title"><span>비슷한 표현</span> 정리</div>
+    <table class="vocab-table">
+      <tr>
+        <th>표현</th>
+        <th>뜻</th>
+        <th>특징</th>
+      </tr>
+      <tr>
+        <td>아도치다</td>
+        <td>싹쓸이하다 / 전부 처분하다</td>
+        <td>체념, 결단의 뉘앙스</td>
+      </tr>
+      <tr>
+        <td>싹쓸이하다</td>
+        <td>남김없이 다 가져가다</td>
+        <td>표준어, 중립적</td>
+      </tr>
+      <tr>
+        <td>독차지하다</td>
+        <td>혼자 전부 가지다</td>
+        <td>독점 강조</td>
+      </tr>
+      <tr>
+        <td>올인(All-in)</td>
+        <td>가진 것을 전부 걸다</td>
+        <td>도박/게임 유래</td>
+      </tr>
+      <tr>
+        <td>몰빵</td>
+        <td>한 곳에 전부 집중하다</td>
+        <td>투자 상황에서 자주 사용</td>
+      </tr>
+    </table>
+    <div class="warn-box">
+      <strong>주의</strong> &nbsp;아도치다는 일본어 유래 구어 표현입니다.<br>
+      공식 문서나 격식 있는 자리에서는 "싹쓸이했다", "전량 처분했다"로 바꿔 쓰는 것이 적절합니다.
+    </div>
+  </div>
+  <div class="badge">7 / 8</div>
+  <div class="footer-bar">
+    <span>아도 뜻 완전 정리</span>
+    <span>신조어 사전</span>
+  </div>
+</div>
+
+
+<!-- 카드 8: CTA -->
+<div class="card card-cta">
+  <div class="deco deco-1"></div>
+  <div class="deco deco-2"></div>
+  <div class="content">
+    <div class="cta-label">5분 정리 완료</div>
+    <div class="cta-title">아도치다,<br>이제 바로 써먹어요</div>
+    <div class="summary-box">
+      <div class="s-row">
+        <div class="s-label">아도 뜻</div>
+        <div class="s-value">싹쓸이, 독점 (일본어 あと 유래)</div>
+      </div>
+      <div class="s-row">
+        <div class="s-label">아도치다 뜻</div>
+        <div class="s-value">싹쓸이하다 / 남은 것을 전부 처분하다</div>
+      </div>
+      <div class="s-row">
+        <div class="s-label">차이점</div>
+        <div class="s-value">아도(명사 개념) vs 아도치다(동사) — 의미는 같음</div>
+      </div>
+      <div class="s-row">
+        <div class="s-label">주요 상황</div>
+        <div class="s-value">장사, 주식 매도, 도박 올인, 일상 결단</div>
+      </div>
+      <div class="s-row">
+        <div class="s-label">주의</div>
+        <div class="s-value">일본어 유래 구어 표현 — 공식 자리 사용 자제</div>
+      </div>
+    </div>
+  </div>
+  <div class="badge">8 / 8</div>
+  <div class="footer-bar">
+    <span>아도 뜻 완전 정리</span>
+    <span>신조어 사전</span>
+  </div>
+</div>
+
+</body>
+</html>

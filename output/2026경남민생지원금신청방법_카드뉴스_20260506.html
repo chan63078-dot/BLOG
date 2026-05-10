@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 경남 민생지원금 신청 방법 카드뉴스</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0A0A14;
+    font-family: 'Noto Sans KR', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    gap: 40px;
+  }
+
+  /* 캡처 가이드 박스 */
+  .capture-guide {
+    background: #1A1A2E;
+    border: 1px solid #3A3A5C;
+    border-radius: 12px;
+    padding: 20px 30px;
+    max-width: 860px;
+    width: 100%;
+    color: #8888AA;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .capture-guide strong {
+    color: #AAAACC;
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+
+  /* 카드 공통 */
+  .card {
+    width: 800px;
+    height: 800px;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  /* 배지 */
+  .badge {
+    position: absolute;
+    top: 28px;
+    right: 28px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 5px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    z-index: 10;
+  }
+
+  /* 하단 푸터바 */
+  .footer-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    font-size: 12px;
+    z-index: 10;
+  }
+
+  /* ===== 카드 1: 표지 ===== */
+  .card-cover {
+    background: linear-gradient(145deg, #0D1B3E 0%, #1565C0 55%, #1E88E5 100%);
+  }
+  .card-cover .deco-circle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.08;
+  }
+  .card-cover .deco-circle-1 {
+    width: 500px; height: 500px;
+    background: #fff;
+    top: -120px; right: -140px;
+  }
+  .card-cover .deco-circle-2 {
+    width: 300px; height: 300px;
+    background: #fff;
+    bottom: -80px; left: -80px;
+  }
+  .card-cover .content {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 60px 60px 100px;
+  }
+  .card-cover .brand-tag {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 16px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    margin-bottom: 36px;
+  }
+  .card-cover .main-title {
+    font-size: 52px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 24px;
+    letter-spacing: -1px;
+  }
+  .card-cover .main-title span {
+    color: #FFD54F;
+  }
+  .card-cover .sub-copy {
+    font-size: 17px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.7;
+  }
+  .card-cover .highlight-box {
+    margin-top: 36px;
+    background: rgba(255,255,255,0.1);
+    border-left: 4px solid #FFD54F;
+    padding: 14px 20px;
+    border-radius: 0 8px 8px 0;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .card-cover .footer-bar {
+    background: rgba(0,0,0,0.3);
+    color: rgba(255,255,255,0.6);
+  }
+
+  /* ===== 본문 카드 ===== */
+  .card-content {
+    background: #F0F4FF;
+  }
+  .card-content .top-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 8px;
+    background: linear-gradient(90deg, #1565C0, #1E88E5);
+  }
+  .card-content .inner {
+    position: absolute;
+    top: 8px; left: 0; right: 0; bottom: 52px;
+    padding: 44px 50px 30px;
+    display: flex;
+    flex-direction: column;
+  }
+  .card-content .section-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1565C0;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .card-content .section-title {
+    font-size: 30px;
+    font-weight: 900;
+    color: #0D1B3E;
+    line-height: 1.25;
+    margin-bottom: 30px;
+    padding-bottom: 22px;
+    border-bottom: 2px solid #D0D8F0;
+  }
+  .card-content .section-title span {
+    color: #1565C0;
+  }
+  .card-content .footer-bar {
+    background: #1565C0;
+    color: rgba(255,255,255,0.85);
+  }
+
+  /* 정보 그리드 */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    flex: 1;
+    align-content: start;
+  }
+  .info-item {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 22px;
+    border-left: 4px solid #1565C0;
+  }
+  .info-item .label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #888;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .info-item .value {
+    font-size: 20px;
+    font-weight: 900;
+    color: #0D1B3E;
+    line-height: 1.3;
+  }
+  .info-item .value .accent {
+    color: #1565C0;
+    font-size: 26px;
+  }
+  .info-item .sub {
+    font-size: 12px;
+    color: #666;
+    margin-top: 6px;
+  }
+  .info-item.full {
+    grid-column: 1 / -1;
+  }
+  .info-item.highlight {
+    border-left-color: #E53935;
+    background: #FFF5F5;
+  }
+
+  /* 스텝 아이템 */
+  .step-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    flex: 1;
+  }
+  .step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .step-num {
+    width: 32px;
+    height: 32px;
+    background: #1565C0;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+  .step-text .title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0D1B3E;
+    margin-bottom: 4px;
+  }
+  .step-text .desc {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.5;
+  }
+
+  /* 도트 불릿 */
+  .dot-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+  }
+  .dot-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px 18px;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    background: #1565C0;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .dot-text .main {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0D1B3E;
+  }
+  .dot-text .sub {
+    font-size: 12px;
+    color: #666;
+    margin-top: 3px;
+  }
+  .dot-item.disabled .dot { background: #E53935; }
+  .dot-item.disabled .dot-text .main { color: #E53935; }
+
+  /* 2단 리스트 */
+  .two-col-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    flex: 1;
+    align-content: start;
+  }
+  .col-box {
+    background: #fff;
+    border-radius: 12px;
+    padding: 18px 18px;
+  }
+  .col-box .col-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1565C0;
+    border-bottom: 1px solid #E0E8FF;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+  }
+  .col-box .col-item {
+    font-size: 13px;
+    color: #444;
+    padding: 5px 0;
+    padding-left: 12px;
+    position: relative;
+    line-height: 1.4;
+  }
+  .col-box .col-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 5px;
+    height: 5px;
+    background: #1565C0;
+    border-radius: 50%;
+  }
+  .col-box.disabled .col-title { color: #E53935; }
+  .col-box.disabled .col-item::before { background: #E53935; }
+
+  /* ===== 마지막 카드: CTA ===== */
+  .card-cta {
+    background: linear-gradient(145deg, #0D1B3E 0%, #1A237E 50%, #283593 100%);
+  }
+  .card-cta .deco {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.06;
+  }
+  .card-cta .deco-1 {
+    width: 500px; height: 500px;
+    background: #fff;
+    top: -150px; left: -100px;
+  }
+  .card-cta .deco-2 {
+    width: 350px; height: 350px;
+    background: #FFD54F;
+    bottom: -100px; right: -80px;
+  }
+  .card-cta .content {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 60px 100px;
+    text-align: center;
+  }
+  .card-cta .cta-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #FFD54F;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+  }
+  .card-cta .cta-title {
+    font-size: 40px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.25;
+    margin-bottom: 36px;
+  }
+  .card-cta .summary-box {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 28px 36px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 32px;
+  }
+  .card-cta .summary-item {
+    text-align: left;
+  }
+  .card-cta .summary-item .s-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .card-cta .summary-item .s-value {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .card-cta .url-chip {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.8);
+    font-size: 14px;
+    padding: 10px 28px;
+    border-radius: 30px;
+  }
+  .card-cta .footer-bar {
+    background: rgba(0,0,0,0.4);
+    color: rgba(255,255,255,0.55);
+  }
+
+  /* 경고 박스 */
+  .warn-box {
+    background: #FFF8E1;
+    border-left: 4px solid #FFA000;
+    border-radius: 0 10px 10px 0;
+    padding: 14px 18px;
+    margin-top: 14px;
+    font-size: 13px;
+    color: #5D4037;
+    line-height: 1.6;
+  }
+  .warn-box strong {
+    color: #E65100;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<!-- 캡처 가이드 -->
+<div class="capture-guide">
+  <strong>카드뉴스 캡처 안내</strong>
+  각 카드를 캡처하려면: Win + Shift + S 를 눌러 영역 선택 캡처 후 저장하세요.<br>
+  카드 크기: 800 x 800px / 총 8장 / 브라우저 확대 100% 상태에서 캡처하세요.
+</div>
+
+
+<!-- 카드 1: 표지 -->
+<div class="card card-cover">
+  <div class="deco-circle deco-circle-1"></div>
+  <div class="deco-circle deco-circle-2"></div>
+  <div class="content">
+    <div class="brand-tag">경상남도 도민 지원금</div>
+    <div class="main-title">2026 경남<br>민생지원금<br><span>신청 방법</span></div>
+    <div class="sub-copy">소득 조건 없이 경남 도민 전체 지급<br>신청 기간 마감 전 꼭 챙기세요</div>
+    <div class="highlight-box">1인당 10만 원 &nbsp;|&nbsp; 신청 마감 6월 30일</div>
+  </div>
+  <div class="badge">1 / 8</div>
+  <div class="footer-bar">
+    <span>2026 경남 민생지원금</span>
+    <span>경남도민생활지원금.kr</span>
+  </div>
+</div>
+
+
+<!-- 카드 2: 지원 개요 -->
+<div class="card card-content">
+  <div class="top-bar"></div>
+  <div class="inner">
+    <div class="section-label">OVERVIEW</div>
+    <div class="section-title">지원 <span>대상과 금액</span></div>
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="label">지원 금액</div>
+        <div class="value"><span class="accent">10만 원</span></div>
+        <div class="sub">1인당 지급</div>
+      </div>
+      <div class="info-item">
+        <div class="label">4인 가구 기준</div>
+        <div class="value"><span class="accent">40만 원</span></div>
+        <div class="sub">인원수 x 10만 원</div>
+      </div>
+      <div class="info-item full">
+        <div class="label">지원 대상</div>
+        <div class="value" style="font-size:17px;">2026년 3월 18일 기준 경상남도 주민등록 도민 전체</div>
+        <div class="sub" style="margin-top:8px;">소득 조건 없음 / 재산 조건 없음 / 결혼이민자, 영주권자, 난민인정자 포함</div>
+      </div>
+      <div class="info-item">
+        <div class="label">소득 기준</div>
+        <div class="value" style="color:#1565C0;">없음</div>
+        <div class="sub">전 소득층 해당</div>
+      </div>
+      <div class="info-item">
+        <div class="label">신청 기간 중 출생아</div>
+        <div class="value" style="color:#1565C0;">포함</div>
+        <div class="sub">신생아도 지원 대상</div>
+      </div>
+    </div>
+  </div>
+  <div class="badge">2 / 8</div>
+  <div class="footer-bar">
+    <span>2026 경남 민생지원금</span>
+    <span>경남도민생활지원금.kr</span>
+  </div>
+</div>
+
+
+<!-- 카드 3: 신청 기간 -->
+<div class="card card-content">
+  <div class="top-bar"></div>
+  <div class="inner">
+    <div class="section-label">SCHEDULE</div>
+    <div class="section-title">신청 <span>기간 안내</span></div>
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="label">신청 시작</div>
+        <div class="value">4월 30일</div>
+        <div class="sub">2026년 (목)</div>
+      </div>
+      <div class="info-item highlight">
+        <div class="label">신청 마감</div>
+        <div class="value">6월 30일</div>
+        <div class="sub">2026년 (화) 오후 6시</div>
+      </div>
+      <div class="info-item full">
+        <div class="label">사용 기한</div>
+        <div class="value" style="font-size:20px;">2026년 7월 31일 (금)까지</div>
+        <div class="sub" style="margin-top:6px;">기한 내 미사용 금액은 소멸됩니다. 수령 후 7월 말 이전 반드시 사용하세요.</div>
+      </div>
+      <div class="info-item full">
+        <div class="label">신청 채널</div>
+        <div class="value" style="font-size:17px;">온라인 + 오프라인 동시 접수</div>
+        <div class="sub" style="margin-top:6px;">온라인: 경남도민생활지원금.kr &nbsp;|&nbsp; 오프라인: 읍·면·동 행정복지센터</div>
+      </div>
+    </div>
+  </div>
+  <div class="badge">3 / 8</div>
+  <div class="footer-bar">
+    <span>2026 경남 민생지원금</span>
+    <span>경남도민생활지원금.kr</span>
+  </div>
+</div>
+
+
+<!-- 카드 4: 온라인 신청 -->
+<div class="card card-content">
+  <div class="top-bar"></div>
+  <div class="inner">
+    <div class="section-label">ONLINE APPLICATION</div>
+    <div class="section-title">온라인 <span>신청 방법</span></div>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <div class="title">전용 누리집 접속</div>
+          <div class="desc">경남도민생활지원금.kr 접속</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <div class="title">본인 인증</div>
+          <div class="desc">휴대폰 인증, 공동인증서, 간편인증 중 선택</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <div class="title">지원 대상 여부 확인</div>
+          <div class="desc">기준일 기준 경남 주민등록 여부 자동 확인</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-text">
+          <div class="title">지급 수단 선택</div>
+          <div class="desc">지역사랑상품권 / 선불카드 / 신용·체크카드 중 1개 선택</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">5</div>
+        <div class="step-text">
+          <div class="title">신청 완료</div>
+          <div class="desc">24시간 이용 가능 / 본인 명의 휴대폰 또는 공동인증서 필요</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="badge">4 / 8</div>
+  <div class="footer-bar">
+    <span>2026 경남 민생지원금</span>
+    <span>경남도민생활지원금.kr</span>
+  </div>
+</div>
+
+
+<!-- 카드 5: 오프라인 신청 -->
+<div class="card card-content">
+  <div class="top-bar"></div>
+  <div class="inner">
+    <div class="section-label">OFFLINE APPLICATION</div>
+    <div class="section-title">오프라인 <span>신청 방법</span></div>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <div class="title">주소지 행정복지센터 방문</div>
+          <div class="desc">주민등록 주소지 읍·면·동 행정복지센터</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <div class="title">신분증 지참</div>
+          <div class="desc">주민등록증, 운전면허증 등 신분증 1개</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <div class="title">신청서 작성 후 제출</div>
+          <div class="desc">현장에서 안내에 따라 작성</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-text">
+          <div class="title">지급 수단 선택 후 완료</div>
+          <div class="desc">대리 신청 시: 대리인 신분증 + 위임장 필요</div>
+        </div>
+      </div>
+    </div>
+    <div class="warn-box">
+      <strong>대리 신청 안내</strong><br>
+      대리인 신분증 + 위임장 지참 필요 / 위임장 서식은 경남도청 누리집 또는 행정복지센터에서 수령
+    </div>
+  </div>
+  <div class="badge">5 / 8</div>
+  <div class="footer-bar">
+    <span>2026 경남 민생지원금</span>
+    <span>경남도민생활지원금.kr</span>
+  </div>
+</div>
+
+
+<!-- 카드 6: 지급 수단 -->
+<div class="card card-content">
+  <div class="top-bar"></div>
+  <div class="inner">
+    <div class="section-label">PAYMENT METHOD</div>
+    <div class="section-title">지급 <span>수단 선택</span></div>
+    <div class="dot-list">
+      <div class="dot-item">
+        <div class="dot"></div>
+        <div class="dot-text">
+          <div class="main">지역사랑상품권</div>
+          <div class="sub">지류형 또는 모바일 상품권으로 수령 / 경남 지정 가맹점에서 사용</div>
+        </div>
+      </div>
+      <div class="dot-item">
+        <div class="dot"></div>
+        <div class="dot-text">
+          <div class="main">선불카드</div>
+          <div class="sub">별도 카드 수령 후 가맹점 결제에 사용 / 수령 장소 안내에 따라 수령</div>
+        </div>
+      </div>
+      <div class="dot-item">
+        <div class="dot"></div>
+        <div class="dot-text">
+          <div class="main">신용·체크카드 포인트 충전</div>
+          <div class="sub">본인 명의 카드에 포인트로 충전 / 가맹점 결제 시 자동 사용</div>
+        </div>
+      </div>
+    </div>
+    <div class="warn-box">
+      <strong>주의</strong><br>
+      지급 수단은 신청 완료 후 변경이 어렵습니다. 신청 시 본인에게 맞는 수단을 신중하게 선택하세요.
+    </div>
+  </div>
+  <div class="badge">6 / 8</div>
+  <div class="footer-bar">
+    <span>2026 경남 민생지원금</span>
+    <span>경남도민생활지원금.kr</span>
+  </div>
+</div>
+
+
+<!-- 카드 7: 사용처 -->
+<div class="card card-content">
+  <div class="top-bar"></div>
+  <div class="inner">
+    <div class="section-label">USAGE</div>
+    <div class="section-title">사용처 <span>안내</span></div>
+    <div class="two-col-list">
+      <div class="col-box">
+        <div class="col-title">사용 가능한 곳</div>
+        <div class="col-item">동네 식당, 카페, 제과점</div>
+        <div class="col-item">전통시장, 로컬 마트</div>
+        <div class="col-item">미용실, 세탁소</div>
+        <div class="col-item">학원, 병원, 약국</div>
+        <div class="col-item">주유소</div>
+        <div class="col-item">소규모 의류·잡화 매장</div>
+      </div>
+      <div class="col-box disabled">
+        <div class="col-title">사용 불가 업종</div>
+        <div class="col-item">대형마트 (이마트 등)</div>
+        <div class="col-item">백화점</div>
+        <div class="col-item">온라인 쇼핑몰</div>
+        <div class="col-item">유흥업소</div>
+        <div class="col-item">연매출 30억 초과 매장</div>
+      </div>
+    </div>
+    <div class="warn-box" style="margin-top:16px;">
+      <strong>가맹점 기준</strong><br>
+      연매출 30억 원 이하 소상공인 매장에서만 사용 가능합니다.
+    </div>
+  </div>
+  <div class="badge">7 / 8</div>
+  <div class="footer-bar">
+    <span>2026 경남 민생지원금</span>
+    <span>경남도민생활지원금.kr</span>
+  </div>
+</div>
+
+
+<!-- 카드 8: CTA -->
+<div class="card card-cta">
+  <div class="deco deco-1"></div>
+  <div class="deco deco-2"></div>
+  <div class="content">
+    <div class="cta-label">지금 바로 신청하세요</div>
+    <div class="cta-title">마감 전에<br>꼭 챙겨가세요</div>
+    <div class="summary-box">
+      <div class="summary-item">
+        <div class="s-label">지원 금액</div>
+        <div class="s-value">1인당 10만 원</div>
+      </div>
+      <div class="summary-item">
+        <div class="s-label">신청 마감</div>
+        <div class="s-value">2026년 6월 30일</div>
+      </div>
+      <div class="summary-item">
+        <div class="s-label">사용 기한</div>
+        <div class="s-value">2026년 7월 31일</div>
+      </div>
+      <div class="summary-item">
+        <div class="s-label">온라인 신청</div>
+        <div class="s-value">경남도민생활지원금.kr</div>
+      </div>
+    </div>
+    <div class="url-chip">오프라인: 주소지 읍·면·동 행정복지센터 방문</div>
+  </div>
+  <div class="badge">8 / 8</div>
+  <div class="footer-bar">
+    <span>2026 경남 민생지원금</span>
+    <span>경남도민생활지원금.kr</span>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>카멜레온 분양 카드뉴스</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1E2A1E;
+    font-family: 'Noto Sans KR', '맑은 고딕', sans-serif;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .guide {
+    background: #fff;
+    border-left: 4px solid #4A8C3F;
+    padding: 14px 20px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #555;
+    width: 800px;
+    line-height: 1.8;
+  }
+  .guide strong { color: #4A8C3F; }
+
+  .card {
+    width: 800px;
+    height: 800px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    box-shadow: 0 6px 28px rgba(0,0,0,0.35);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .badge {
+    position: absolute;
+    top: 24px;
+    right: 28px;
+    font-size: 13px;
+    font-weight: 700;
+    opacity: 0.6;
+  }
+
+  .footer-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── 카드 1: 표지 ── */
+  .card-cover {
+    background: linear-gradient(150deg, #1B3A1B 0%, #2D5A2D 50%, #4A8C3F 100%);
+    color: #fff;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 60px 60px 80px;
+  }
+  .card-cover .badge { color: rgba(255,255,255,0.55); }
+  .card-cover .emoji { font-size: 72px; margin-bottom: 28px; display: block; }
+  .card-cover .tag {
+    background: rgba(255,255,255,0.15);
+    border: 1.5px solid rgba(255,255,255,0.35);
+    border-radius: 24px;
+    padding: 7px 22px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 24px;
+    display: inline-block;
+  }
+  .card-cover .main-title {
+    font-size: 34px;
+    font-weight: 900;
+    line-height: 1.35;
+    margin-bottom: 20px;
+    word-break: keep-all;
+  }
+  .card-cover .sub-copy {
+    font-size: 16px;
+    color: rgba(255,255,255,0.78);
+    line-height: 1.65;
+    word-break: keep-all;
+  }
+  .card-cover .footer-bar { background: rgba(0,0,0,0.3); color: rgba(255,255,255,0.65); }
+
+  /* ── 카드 2~6: 본문 ── */
+  .card-content {
+    background: #F7F9F4;
+    padding: 52px 52px 80px;
+    justify-content: flex-start;
+  }
+  .card-content .badge { color: #bbb; }
+  .card-content .check-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px; height: 40px;
+    background: #4A8C3F;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 900;
+    border-radius: 50%;
+    margin-bottom: 16px;
+  }
+  .card-content .section-label {
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 2.5px;
+    color: #4A8C3F;
+    margin-bottom: 10px;
+  }
+  .card-content .section-title {
+    font-size: 27px;
+    font-weight: 900;
+    color: #1a2e1a;
+    line-height: 1.3;
+    margin-bottom: 30px;
+    padding-bottom: 18px;
+    border-bottom: 3px solid #4A8C3F;
+    word-break: keep-all;
+  }
+  .card-content .item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .card-content .item-dot {
+    width: 8px; height: 8px;
+    min-width: 8px;
+    background: #4A8C3F;
+    border-radius: 50%;
+    margin-top: 9px;
+  }
+  .card-content .item-text {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.55;
+    color: #2a2a2a;
+    word-break: keep-all;
+  }
+  .card-content .item-text strong { color: #2D5A2D; font-weight: 700; }
+  .card-content .warn-text {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.55;
+    color: #2a2a2a;
+    word-break: keep-all;
+  }
+  .card-content .warn-text strong { color: #C0392B; font-weight: 700; }
+  .card-content .highlight-box {
+    background: #2D5A2D;
+    color: #fff;
+    border-radius: 10px;
+    padding: 16px 22px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.65;
+    margin-top: 22px;
+    word-break: keep-all;
+  }
+  .card-content .footer-bar { background: #2D5A2D; color: rgba(255,255,255,0.8); }
+
+  /* ── 카드 7: 마무리 ── */
+  .card-closing {
+    background: linear-gradient(150deg, #1B3A1B 0%, #2D5A2D 100%);
+    color: #fff;
+    padding: 52px 52px 80px;
+    justify-content: flex-start;
+  }
+  .card-closing .badge { color: rgba(255,255,255,0.45); }
+  .card-closing .closing-label {
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 2.5px;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 12px;
+  }
+  .card-closing .closing-title {
+    font-size: 27px;
+    font-weight: 900;
+    line-height: 1.35;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid rgba(255,255,255,0.2);
+    word-break: keep-all;
+  }
+  .card-closing .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .card-closing .check-icon { font-size: 18px; min-width: 22px; margin-top: 1px; }
+  .card-closing .check-text {
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.9);
+    word-break: keep-all;
+  }
+  .card-closing .final-copy {
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(255,255,255,0.18);
+    font-size: 15px;
+    font-weight: 600;
+    color: #A8D5A2;
+    line-height: 1.65;
+    word-break: keep-all;
+  }
+  .card-closing .footer-bar { background: rgba(0,0,0,0.25); color: rgba(255,255,255,0.6); }
+</style>
+</head>
+<body>
+
+<div class="guide">
+  <strong>📸 캡처 방법</strong>: Win+Shift+S → 각 카드 정사각형으로 캡처 → 네이버 블로그 이미지 첨부<br>
+  카드 사이 어두운 여백은 제외하고, 카드 테두리 안쪽만 캡처하세요.
+</div>
+
+<!-- 카드 1: 표지 -->
+<div class="card card-cover">
+  <span class="badge">1 / 7</span>
+  <span class="emoji">🦎</span>
+  <div class="tag">카멜레온 분양 가이드</div>
+  <div class="main-title">카멜레온 분양 받기 전<br>3가지 체크리스트</div>
+  <div class="sub-copy">충동 분양 전 꼭 확인하세요<br>모르면 후회합니다</div>
+  <div class="footer-bar">
+    <span>카멜레온 분양 체크리스트</span>
+    <span>2026</span>
+  </div>
+</div>
+
+<!-- 카드 2: 체크 1 - 난이도 & 비용 -->
+<div class="card card-content">
+  <span class="badge">2 / 7</span>
+  <div class="section-label">CHECK 1</div>
+  <div class="section-title">사육 난이도 & 초기 비용<br>현실적으로 계산했나요?</div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">사육장 (그물망 케이지) → <strong>5~10만원</strong></div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">UVB + 열 램프 → <strong>3~6만원</strong></div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">미스트 분사기·드리퍼 → <strong>2~5만원</strong></div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">개체 구입비 → <strong>5~15만원</strong></div>
+  </div>
+  <div class="highlight-box">초기 세팅 합산 최소 20~40만원<br>매월 먹이·전기세 유지비도 추가됩니다</div>
+  <div class="footer-bar">
+    <span>카멜레온 분양 체크리스트</span>
+    <span>2026</span>
+  </div>
+</div>
+
+<!-- 카드 3: 체크 2 - 사육 환경 -->
+<div class="card card-content">
+  <span class="badge">3 / 7</span>
+  <div class="section-label">CHECK 2</div>
+  <div class="section-title">사육 환경, 분양 전에<br>완벽히 세팅됐나요?</div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text"><strong>온도</strong> 바스킹존 30~32도 / 저온 24~26도 / 야간 20~24도</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text"><strong>습도</strong> 50~70% / 미스트 분사기 필수</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text"><strong>UVB 램프</strong> 하루 6~8시간 / 6개월마다 교체</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text"><strong>식물</strong> 벤자민·히비스커스·스킨답서스</div>
+  </div>
+  <div class="highlight-box">개체 도착 전 환경 세팅 완료가 원칙!<br>나중에 준비하면 이미 늦습니다</div>
+  <div class="footer-bar">
+    <span>카멜레온 분양 체크리스트</span>
+    <span>2026</span>
+  </div>
+</div>
+
+<!-- 카드 4: 체크 3 - 개체 선택 -->
+<div class="card card-content">
+  <span class="badge">4 / 7</span>
+  <div class="section-label">CHECK 3</div>
+  <div class="section-title">건강한 개체 고르는 법<br>알고 계신가요?</div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">눈이 <strong>또렷하게 열려 있는지</strong> 확인</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">몸 색깔이 <strong>선명하고 무기력하지 않은지</strong></div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">다리·꼬리에 <strong>힘이 있고 잘 쥐는지</strong></div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="warn-text"><strong>야생 채집 개체는 절대 금지</strong> → CB 번식 개체 선택</div>
+  </div>
+  <div class="highlight-box">초보자 추천: 베일드 카멜레온 수컷<br>환경 적응력이 높고 관리가 단순합니다</div>
+  <div class="footer-bar">
+    <span>카멜레온 분양 체크리스트</span>
+    <span>2026</span>
+  </div>
+</div>
+
+<!-- 카드 5: 먹이 & 영양 -->
+<div class="card card-content">
+  <span class="badge">5 / 7</span>
+  <div class="section-label">먹이 & 영양</div>
+  <div class="section-title">살아있는 먹이 +<br>더스팅이 필수입니다</div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">주식: <strong>귀뚜라미</strong>, 슈퍼밀웜, 혼웜</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text"><strong>칼슘 파우더 더스팅</strong> 주 2~3회 필수</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text"><strong>비타민 더스팅</strong> 주 1회 추가</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">물은 <strong>나뭇잎에 분무</strong>해서 핥아 먹게 유도<br>(물그릇 X, 드리퍼·분무기 O)</div>
+  </div>
+  <div class="highlight-box">더스팅 없이 키우면 대사성 골질환(MBD) 발생<br>칼슘 보충은 선택이 아닌 필수입니다</div>
+  <div class="footer-bar">
+    <span>카멜레온 분양 체크리스트</span>
+    <span>2026</span>
+  </div>
+</div>
+
+<!-- 카드 6: 주의사항 -->
+<div class="card card-content">
+  <span class="badge">6 / 7</span>
+  <div class="section-label">주의사항</div>
+  <div class="section-title">카멜레온을 키우기 전<br>이것만큼은 알아두세요</div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="warn-text"><strong>핸들링 최소화</strong><br>손을 싫어함 → 자주 만지면 스트레스로 폐사</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="warn-text"><strong>단독 사육 필수</strong><br>여러 마리 합사 시 스트레스·영역 다툼</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="warn-text"><strong>감정 교감 기대 금지</strong><br>주인에게 애정 표현 거의 없음</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">보는 즐거움을 위한 동물 → <strong>관찰형 반려동물</strong></div>
+  </div>
+  <div class="highlight-box">카멜레온은 예쁘지만 교감보다 관찰하는 동물<br>현실을 알고 분양받으세요</div>
+  <div class="footer-bar">
+    <span>카멜레온 분양 체크리스트</span>
+    <span>2026</span>
+  </div>
+</div>
+
+<!-- 카드 7: 마무리 -->
+<div class="card card-closing">
+  <span class="badge">7 / 7</span>
+  <div class="closing-label">핵심 요약</div>
+  <div class="closing-title">카멜레온 분양 전<br>이것만 기억하세요 🦎</div>
+  <div class="check-item">
+    <div class="check-icon">✔</div>
+    <div class="check-text">초기 비용 최소 <strong>20~40만원</strong> 예상</div>
+  </div>
+  <div class="check-item">
+    <div class="check-icon">✔</div>
+    <div class="check-text">온도·습도·UVB 세팅 <strong>분양 전에</strong> 완료</div>
+  </div>
+  <div class="check-item">
+    <div class="check-icon">✔</div>
+    <div class="check-text">야생 채집 금지 → <strong>CB 번식 개체</strong> 선택</div>
+  </div>
+  <div class="check-item">
+    <div class="check-icon">✔</div>
+    <div class="check-text">핸들링 최소화 / <strong>단독 사육</strong> 필수</div>
+  </div>
+  <div class="check-item">
+    <div class="check-icon">✔</div>
+    <div class="check-text">초보자는 <strong>베일드 카멜레온 수컷</strong>부터</div>
+  </div>
+  <div class="final-copy">충분히 준비된 상태에서 분양받으세요.<br>준비 없는 분양은 카멜레온도, 나도 힘들어집니다.</div>
+  <div class="footer-bar">
+    <span>카멜레온 분양 체크리스트</span>
+    <span>2026</span>
+  </div>
+</div>
+
+</body>
+</html>

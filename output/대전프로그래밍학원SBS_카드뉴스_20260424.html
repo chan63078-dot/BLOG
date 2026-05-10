@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>대전프로그래밍학원 SBS 카드뉴스</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0A0A14;
+    font-family: 'Noto Sans KR', '맑은 고딕', sans-serif;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .guide {
+    background: #fff;
+    border-left: 4px solid #1565C0;
+    padding: 14px 20px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #555;
+    width: 800px;
+    line-height: 1.8;
+  }
+  .guide strong { color: #1565C0; }
+
+  .card {
+    width: 800px;
+    height: 800px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    box-shadow: 0 6px 32px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .badge {
+    position: absolute;
+    top: 24px; right: 28px;
+    font-size: 13px; font-weight: 700;
+    opacity: 0.55;
+  }
+
+  .footer-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── 카드 1: 표지 ── */
+  .card-cover {
+    background: linear-gradient(145deg, #0D1B3E 0%, #1565C0 60%, #1E88E5 100%);
+    color: #fff;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 60px 60px 80px;
+  }
+  .card-cover .badge { color: rgba(255,255,255,0.5); }
+  .card-cover .big-emoji { font-size: 72px; margin-bottom: 22px; display: block; }
+  .card-cover .brand-tag {
+    background: rgba(255,255,255,0.15);
+    border: 1.5px solid rgba(255,255,255,0.35);
+    border-radius: 24px;
+    padding: 7px 22px;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 24px;
+    display: inline-block;
+  }
+  .card-cover .main-title {
+    font-size: 36px; font-weight: 900;
+    line-height: 1.3; margin-bottom: 20px;
+    word-break: keep-all;
+  }
+  .card-cover .sub-copy {
+    font-size: 16px;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.65;
+    word-break: keep-all;
+  }
+  .card-cover .footer-bar { background: rgba(0,0,0,0.3); color: rgba(255,255,255,0.6); }
+
+  /* ── 본문 카드 (밝은) ── */
+  .card-light {
+    background: #F0F4FF;
+    padding: 52px 52px 80px;
+    justify-content: flex-start;
+  }
+  .card-light .badge { color: #bbb; }
+  .card-light .section-label {
+    font-size: 11px; font-weight: 900;
+    letter-spacing: 2.5px; color: #1565C0;
+    margin-bottom: 12px;
+  }
+  .card-light .section-title {
+    font-size: 28px; font-weight: 900;
+    color: #0D1B3E;
+    line-height: 1.3; margin-bottom: 30px;
+    padding-bottom: 18px;
+    border-bottom: 3px solid #1565C0;
+    word-break: keep-all;
+  }
+  .card-light .item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px; margin-bottom: 16px;
+  }
+  .card-light .item-dot {
+    width: 8px; height: 8px; min-width: 8px;
+    background: #1565C0;
+    border-radius: 50%; margin-top: 9px;
+  }
+  .card-light .item-text {
+    font-size: 18px; font-weight: 500;
+    line-height: 1.55; color: #1a1a2e;
+    word-break: keep-all;
+  }
+  .card-light .item-text strong { color: #0D47A1; font-weight: 700; }
+  .card-light .highlight-box {
+    background: #1565C0;
+    color: #fff;
+    border-radius: 10px;
+    padding: 16px 22px;
+    font-size: 16px; font-weight: 600;
+    line-height: 1.65; margin-top: 22px;
+    word-break: keep-all;
+  }
+  .card-light .footer-bar { background: #0D47A1; color: rgba(255,255,255,0.8); }
+
+  /* 언어 태그 그리드 */
+  .lang-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 4px;
+  }
+  .lang-card {
+    background: #fff;
+    border: 2px solid #BBDEFB;
+    border-radius: 10px;
+    padding: 14px 18px;
+  }
+  .lang-name {
+    font-size: 18px; font-weight: 900;
+    color: #1565C0; margin-bottom: 4px;
+  }
+  .lang-desc {
+    font-size: 13px; color: #555;
+    line-height: 1.4; word-break: keep-all;
+  }
+
+  /* 수강 단계 */
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+  .step-num {
+    width: 36px; height: 36px; min-width: 36px;
+    background: #1565C0;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 900; color: #fff;
+  }
+  .step-text {
+    font-size: 18px; font-weight: 500;
+    line-height: 1.45; color: #1a1a2e;
+    word-break: keep-all;
+  }
+  .step-text strong { color: #0D47A1; font-weight: 700; }
+
+  /* ── CTA 카드 7 ── */
+  .card-cta {
+    background: linear-gradient(150deg, #0D1B3E 0%, #1565C0 100%);
+    color: #fff;
+    padding: 52px 52px 80px;
+    justify-content: flex-start;
+  }
+  .card-cta .badge { color: rgba(255,255,255,0.4); }
+  .card-cta .cta-label {
+    font-size: 11px; font-weight: 900;
+    letter-spacing: 2.5px; color: #90CAF9;
+    margin-bottom: 12px;
+  }
+  .card-cta .cta-title {
+    font-size: 27px; font-weight: 900;
+    line-height: 1.35; margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid rgba(255,255,255,0.2);
+    word-break: keep-all;
+  }
+  .card-cta .info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px; margin-bottom: 18px;
+  }
+  .card-cta .info-icon { font-size: 20px; min-width: 26px; }
+  .card-cta .info-text {
+    font-size: 18px; font-weight: 500;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.9);
+    word-break: keep-all;
+  }
+  .card-cta .info-text strong { color: #90CAF9; font-weight: 700; }
+  .card-cta .cta-btn {
+    margin-top: 28px;
+    background: #fff;
+    color: #1565C0;
+    border-radius: 10px;
+    padding: 18px 0;
+    text-align: center;
+    font-size: 20px; font-weight: 900;
+    letter-spacing: 0.3px;
+    word-break: keep-all;
+  }
+  .card-cta .footer-bar { background: rgba(0,0,0,0.3); color: rgba(255,255,255,0.6); }
+</style>
+</head>
+<body>
+
+<div class="guide">
+  <strong>📸 캡처 방법</strong>: Win+Shift+S → 각 카드 정사각형으로 캡처 → 네이버 블로그 이미지 첨부<br>
+  카드 사이 어두운 여백은 제외하고, 카드 테두리 안쪽만 캡처하세요.
+</div>
+
+<!-- 카드 1: 표지 -->
+<div class="card card-cover">
+  <span class="badge">1 / 7</span>
+  <span class="big-emoji">💻</span>
+  <div class="brand-tag">SBS컴퓨터아트학원 대전점</div>
+  <div class="main-title">대전프로그래밍학원<br>이제 고민 끝내세요</div>
+  <div class="sub-copy">파이썬 · 자바 · 웹개발<br>국비지원으로 부담 없이 시작</div>
+  <div class="footer-bar">
+    <span>SBS컴퓨터아트학원 대전점</span>
+    <span>1588-5530</span>
+  </div>
+</div>
+
+<!-- 카드 2: 프로그래밍 과정 -->
+<div class="card card-light">
+  <span class="badge">2 / 7</span>
+  <div class="section-label">수강 과정</div>
+  <div class="section-title">어떤 언어를<br>배울 수 있나요?</div>
+  <div class="lang-grid">
+    <div class="lang-card">
+      <div class="lang-name">🐍 Python</div>
+      <div class="lang-desc">기초부터 백엔드까지<br>AI·데이터 분석 연계</div>
+    </div>
+    <div class="lang-card">
+      <div class="lang-name">☕ JAVA</div>
+      <div class="lang-desc">국내 기업 1순위 언어<br>웹 애플리케이션 개발</div>
+    </div>
+    <div class="lang-card">
+      <div class="lang-name">⚙️ C / C++</div>
+      <div class="lang-desc">프로그래밍 기초 탄탄히<br>임베디드·시스템 개발</div>
+    </div>
+    <div class="lang-card">
+      <div class="lang-name">🌐 웹개발</div>
+      <div class="lang-desc">HTML·CSS·JS 기초<br>프론트엔드 개발자 목표</div>
+    </div>
+  </div>
+  <div class="highlight-box">어떤 언어를 선택할지 모르겠다면?<br>방문 상담에서 목표에 맞는 과정을 추천해드립니다</div>
+  <div class="footer-bar">
+    <span>SBS컴퓨터아트학원 대전점</span>
+    <span>1588-5530</span>
+  </div>
+</div>
+
+<!-- 카드 3: 국비지원 -->
+<div class="card card-light">
+  <span class="badge">3 / 7</span>
+  <div class="section-label">국비지원</div>
+  <div class="section-title">수강료 걱정 없이<br>프로그래밍 시작하세요</div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text"><strong>국민내일배움카드</strong><br>최대 500만원 수강료 지원</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text"><strong>국민취업지원제도</strong><br>훈련 중 월 최대 80만원 장려금</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">구직자 · 재직자 · 경력단절자 <strong>모두 신청 가능</strong></div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">비전공자도 <strong>국비지원 신청 가능</strong></div>
+  </div>
+  <div class="highlight-box">방문 상담 시 국비지원 가능 여부<br>무료로 확인해드립니다</div>
+  <div class="footer-bar">
+    <span>SBS컴퓨터아트학원 대전점</span>
+    <span>1588-5530</span>
+  </div>
+</div>
+
+<!-- 카드 4: 추천 대상 -->
+<div class="card card-light">
+  <span class="badge">4 / 7</span>
+  <div class="section-label">추천 대상</div>
+  <div class="section-title">이런 분이라면<br>꼭 상담받으세요</div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">코딩이 처음인데 <strong>개발자로 취업</strong>하고 싶은 분</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">비전공자인데 <strong>IT로 커리어 전환</strong>을 고민 중인 분</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">퇴근 후 <strong>새로운 기술</strong>을 배우고 싶은 재직자</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text"><strong>국비지원</strong>으로 수강료 부담 없이 시작하고 싶은 분</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">검증된 <strong>전국 브랜드 학원</strong>을 원하는 분</div>
+  </div>
+  <div class="footer-bar">
+    <span>SBS컴퓨터아트학원 대전점</span>
+    <span>1588-5530</span>
+  </div>
+</div>
+
+<!-- 카드 5: SBS 강점 -->
+<div class="card card-light">
+  <span class="badge">5 / 7</span>
+  <div class="section-label">SBS만의 강점</div>
+  <div class="section-title">다른 학원과<br>이게 다릅니다</div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text"><strong>전국 17개 지점</strong> 검증된 동일 커리큘럼</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text"><strong>수강에서 취업까지</strong> 책임 연계 지원</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">파이썬·자바·C·웹개발 <strong>한 곳에서</strong> 모두 가능</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text"><strong>주말·공휴일</strong> 상담 및 접수 가능</div>
+  </div>
+  <div class="highlight-box">단순 수업이 아닌 취업까지 함께합니다<br>목표가 있다면 SBS가 함께 달립니다</div>
+  <div class="footer-bar">
+    <span>SBS컴퓨터아트학원 대전점</span>
+    <span>1588-5530</span>
+  </div>
+</div>
+
+<!-- 카드 6: 수강 프로세스 -->
+<div class="card card-light">
+  <span class="badge">6 / 7</span>
+  <div class="section-label">수강 프로세스</div>
+  <div class="section-title">시작부터 취업까지<br>이렇게 진행됩니다</div>
+  <div class="step-item">
+    <div class="step-num">1</div>
+    <div class="step-text"><strong>무료 상담</strong> — 목표·수준·일정 확인</div>
+  </div>
+  <div class="step-item">
+    <div class="step-num">2</div>
+    <div class="step-text"><strong>국비지원 확인</strong> — 지원 가능 여부 안내</div>
+  </div>
+  <div class="step-item">
+    <div class="step-num">3</div>
+    <div class="step-text"><strong>과정 등록</strong> — 파이썬·자바·웹 등 선택</div>
+  </div>
+  <div class="step-item">
+    <div class="step-num">4</div>
+    <div class="step-text"><strong>실습 중심 수업</strong> — 기초부터 실무까지</div>
+  </div>
+  <div class="step-item">
+    <div class="step-num">5</div>
+    <div class="step-text"><strong>취업 연계</strong> — 포트폴리오·면접 지원</div>
+  </div>
+  <div class="footer-bar">
+    <span>SBS컴퓨터아트학원 대전점</span>
+    <span>1588-5530</span>
+  </div>
+</div>
+
+<!-- 카드 7: CTA -->
+<div class="card card-cta">
+  <span class="badge">7 / 7</span>
+  <div class="cta-label">지금 바로 상담받으세요</div>
+  <div class="cta-title">대전에서 프로그래밍<br>SBS와 함께 시작하세요</div>
+  <div class="info-item">
+    <div class="info-icon">📍</div>
+    <div class="info-text">대전 서구 <strong>둔산동</strong></div>
+  </div>
+  <div class="info-item">
+    <div class="info-icon">📞</div>
+    <div class="info-text"><strong>1588-5530</strong> (주말·공휴일 가능)</div>
+  </div>
+  <div class="info-item">
+    <div class="info-icon">🌐</div>
+    <div class="info-text"><strong>daejeon.sbsart.com</strong></div>
+  </div>
+  <div class="info-item">
+    <div class="info-icon">💬</div>
+    <div class="info-text">홈페이지 <strong>온라인 상담 예약</strong> 가능</div>
+  </div>
+  <div class="cta-btn">무료 상담 신청하기 →</div>
+  <div class="footer-bar">
+    <span>SBS컴퓨터아트학원 대전점</span>
+    <span>1588-5530</span>
+  </div>
+</div>
+
+</body>
+</html>

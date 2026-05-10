@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>대전 정보처리기능사 학원 카드뉴스</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0A0A14;
+    font-family: 'Noto Sans KR', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    gap: 32px;
+  }
+
+  /* 캡처 가이드 */
+  .capture-guide {
+    background: #1a1a2e;
+    border: 2px dashed #4A90D9;
+    border-radius: 12px;
+    padding: 16px 28px;
+    color: #7EC8FF;
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.8;
+    max-width: 860px;
+    width: 100%;
+  }
+  .capture-guide strong { color: #fff; font-size: 15px; }
+
+  /* 카드 공통 */
+  .card {
+    width: 800px;
+    height: 800px;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  /* 뱃지 */
+  .badge {
+    position: absolute;
+    top: 24px;
+    right: 28px;
+    background: rgba(255,255,255,0.18);
+    border: 1.5px solid rgba(255,255,255,0.35);
+    border-radius: 20px;
+    padding: 5px 14px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    z-index: 10;
+  }
+
+  /* footer-bar */
+  .footer-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    z-index: 10;
+  }
+  .footer-bar span {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  /* ───────────────── CARD 1 : 표지 ───────────────── */
+  .card-cover {
+    background: linear-gradient(145deg, #0D1B3E 0%, #1565C0 55%, #1E88E5 100%);
+  }
+  .card-cover .deco-circle1 {
+    position: absolute;
+    width: 360px; height: 360px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    top: -80px; right: -80px;
+  }
+  .card-cover .deco-circle2 {
+    position: absolute;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    bottom: 60px; left: -60px;
+  }
+  .card-cover .inner {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 0 56px;
+    text-align: center;
+  }
+  .card-cover .emoji { font-size: 72px; margin-bottom: 20px; }
+  .card-cover .brand-tag {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 24px;
+    padding: 6px 20px;
+    color: #B3D9FF;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 22px;
+    text-transform: uppercase;
+  }
+  .card-cover .main-title {
+    color: #fff;
+    font-size: 40px;
+    font-weight: 900;
+    line-height: 1.25;
+    margin-bottom: 18px;
+    word-break: keep-all;
+  }
+  .card-cover .main-title span { color: #7EC8FF; }
+  .card-cover .sub-copy {
+    color: rgba(255,255,255,0.78);
+    font-size: 17px;
+    line-height: 1.7;
+    word-break: keep-all;
+  }
+  .card-cover .footer-bar {
+    background: rgba(255,255,255,0.1);
+    border-top: 1px solid rgba(255,255,255,0.15);
+  }
+  .card-cover .footer-bar span { color: rgba(255,255,255,0.75); }
+
+  /* ───────────────── 본문 카드 공통 ───────────────── */
+  .card-body {
+    background: #F0F4FF;
+  }
+  .card-body .header-strip {
+    background: linear-gradient(90deg, #1565C0, #1E88E5);
+    height: 10px;
+    width: 100%;
+    position: absolute;
+    top: 0; left: 0;
+  }
+  .card-body .inner {
+    padding: 40px 52px 60px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .card-body .section-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    color: #1565C0;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .card-body .section-title {
+    font-size: 30px;
+    font-weight: 900;
+    color: #0D1B3E;
+    line-height: 1.3;
+    margin-bottom: 32px;
+    word-break: keep-all;
+  }
+  .card-body .section-title span { color: #1565C0; }
+  .card-body .footer-bar {
+    background: #1565C0;
+  }
+  .card-body .footer-bar span { color: rgba(255,255,255,0.85); }
+
+  /* ─── dot bullet ─── */
+  .dot-list { display: flex; flex-direction: column; gap: 16px; }
+  .dot-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 14px 18px;
+    box-shadow: 0 2px 8px rgba(21,101,192,0.08);
+  }
+  .dot-icon {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1565C0, #1E88E5);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+  .dot-text { font-size: 15px; color: #1a2a4a; line-height: 1.55; font-weight: 500; word-break: keep-all; }
+  .dot-text strong { color: #1565C0; }
+
+  /* ─── info grid ─── */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .info-box {
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px 18px;
+    box-shadow: 0 2px 8px rgba(21,101,192,0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .info-box .ib-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #1E88E5;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .info-box .ib-value {
+    font-size: 22px;
+    font-weight: 900;
+    color: #0D1B3E;
+    line-height: 1.2;
+  }
+  .info-box .ib-desc {
+    font-size: 13px;
+    color: #556;
+    line-height: 1.5;
+    word-break: keep-all;
+  }
+  .info-box.highlight { background: linear-gradient(135deg, #1565C0, #1E88E5); }
+  .info-box.highlight .ib-label { color: rgba(255,255,255,0.75); }
+  .info-box.highlight .ib-value { color: #fff; }
+  .info-box.highlight .ib-desc { color: rgba(255,255,255,0.82); }
+
+  /* ─── step items ─── */
+  .step-list { display: flex; flex-direction: column; gap: 14px; }
+  .step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px 20px;
+    box-shadow: 0 2px 8px rgba(21,101,192,0.07);
+  }
+  .step-num {
+    min-width: 40px; height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1565C0, #42A5F5);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-content .step-title { font-size: 15px; font-weight: 800; color: #0D1B3E; margin-bottom: 4px; }
+  .step-content .step-desc { font-size: 13px; color: #445; line-height: 1.55; word-break: keep-all; }
+  .step-content .step-desc strong { color: #1565C0; }
+
+  /* ─── academy cards ─── */
+  .academy-list { display: flex; flex-direction: column; gap: 14px; }
+  .academy-item {
+    background: #fff;
+    border-left: 5px solid #1565C0;
+    border-radius: 0 14px 14px 0;
+    padding: 14px 18px;
+    box-shadow: 0 2px 8px rgba(21,101,192,0.07);
+  }
+  .academy-item:nth-child(2) { border-left-color: #1E88E5; }
+  .academy-item:nth-child(3) { border-left-color: #42A5F5; }
+  .academy-item:nth-child(4) { border-left-color: #90CAF9; }
+  .academy-name { font-size: 16px; font-weight: 800; color: #0D1B3E; margin-bottom: 5px; }
+  .academy-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag {
+    background: #EEF4FF;
+    border: 1px solid #B3D0FF;
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #1565C0;
+  }
+
+  /* ─── 2-col compare ─── */
+  .compare-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .compare-box {
+    background: #fff;
+    border-radius: 14px;
+    padding: 18px 16px;
+    box-shadow: 0 2px 8px rgba(21,101,192,0.07);
+  }
+  .compare-box.active { background: linear-gradient(145deg, #0D1B3E, #1565C0); }
+  .compare-title { font-size: 15px; font-weight: 800; color: #0D1B3E; margin-bottom: 12px; }
+  .compare-box.active .compare-title { color: #7EC8FF; }
+  .compare-list { display: flex; flex-direction: column; gap: 8px; }
+  .compare-row { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; line-height: 1.5; color: #334; word-break: keep-all; }
+  .compare-box.active .compare-row { color: rgba(255,255,255,0.85); }
+  .compare-row::before { content: "✔"; color: #1E88E5; font-weight: 900; flex-shrink: 0; }
+  .compare-box.active .compare-row::before { color: #7EC8FF; }
+
+  /* ─── alert box ─── */
+  .alert-box {
+    background: #FFF8E1;
+    border: 2px solid #FFB300;
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 14px;
+    color: #5a3e00;
+    line-height: 1.65;
+    word-break: keep-all;
+    margin-top: 6px;
+  }
+  .alert-box strong { color: #E65100; }
+
+  /* ───────────────── CARD 7 : CTA ───────────────── */
+  .card-cta {
+    background: linear-gradient(145deg, #0A0F2C 0%, #1a237e 50%, #1565C0 100%);
+  }
+  .card-cta .deco1 {
+    position: absolute;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    top: -80px; right: -60px;
+  }
+  .card-cta .deco2 {
+    position: absolute;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    bottom: 80px; left: -50px;
+  }
+  .card-cta .inner {
+    position: relative; z-index: 5;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    height: 100%; padding: 0 52px;
+    text-align: center; gap: 20px;
+  }
+  .card-cta .cta-emoji { font-size: 64px; }
+  .card-cta .cta-title { font-size: 34px; font-weight: 900; color: #fff; line-height: 1.3; word-break: keep-all; }
+  .card-cta .cta-title span { color: #7EC8FF; }
+  .card-cta .cta-sub { font-size: 16px; color: rgba(255,255,255,0.78); line-height: 1.75; word-break: keep-all; }
+  .card-cta .info-chips { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .chip {
+    background: rgba(255,255,255,0.12);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    border-radius: 28px;
+    padding: 10px 22px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .card-cta .footer-bar { background: rgba(255,255,255,0.1); border-top: 1px solid rgba(255,255,255,0.15); }
+  .card-cta .footer-bar span { color: rgba(255,255,255,0.75); }
+</style>
+</head>
+<body>
+
+<!-- 캡처 가이드 -->
+<div class="capture-guide">
+  <strong>📸 캡처 방법 안내</strong><br>
+  각 카드 위에서 <strong>Win + Shift + S</strong> → 카드 영역 드래그 → 캡처 후 붙여넣기<br>
+  카드 크기: 800×800px | 총 7장
+</div>
+
+<!-- ───── CARD 1 : 표지 ───── -->
+<div class="card card-cover">
+  <div class="deco-circle1"></div>
+  <div class="deco-circle2"></div>
+  <div class="badge">1 / 7</div>
+  <div class="inner">
+    <div class="emoji">🏫</div>
+    <div class="brand-tag">IT 자격증 가이드</div>
+    <div class="main-title">대전<br><span>정보처리기능사</span><br>학원 완벽 가이드</div>
+    <div class="sub-copy">2026 변경사항 총정리<br>필기·실기 합격 전략 + 학원 추천까지</div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 IT 자격증 정보</span>
+    <span>#정보처리기능사 #대전학원</span>
+  </div>
+</div>
+
+<!-- ───── CARD 2 : 정보처리기능사란? ───── -->
+<div class="card card-body">
+  <div class="header-strip"></div>
+  <div class="badge" style="color:#1565C0; background:rgba(21,101,192,0.1); border-color:rgba(21,101,192,0.3);">2 / 7</div>
+  <div class="inner">
+    <div class="section-label">ABOUT</div>
+    <div class="section-title">정보처리기능사<br><span>2026 중요 변경!</span></div>
+    <div class="dot-list">
+      <div class="dot-item">
+        <div class="dot-icon">💡</div>
+        <div class="dot-text">한국산업인력공단 주관 <strong>국가기술자격증</strong><br>IT 기초 실력 검증 / 취업 가산점 혜택</div>
+      </div>
+      <div class="dot-item">
+        <div class="dot-icon">🔄</div>
+        <div class="dot-text"><strong>2026년 1회부터</strong> 명칭 변경<br>정보처리기능사 → <strong>프로그래밍기능사</strong></div>
+      </div>
+      <div class="dot-item">
+        <div class="dot-icon">⚠️</div>
+        <div class="dot-text">실기 방식 변경: 필답형 → <strong>작업형(코딩 테스트)</strong><br>지금 준비 중이라면 일정 확인 필수!</div>
+      </div>
+      <div class="dot-item">
+        <div class="dot-icon">✅</div>
+        <div class="dot-text">전공자·비전공자 모두 응시 가능<br>연 <strong>4회</strong> 시험 실시</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 IT 자격증 정보</span>
+    <span>#정보처리기능사</span>
+  </div>
+</div>
+
+<!-- ───── CARD 3 : 시험 구성 ───── -->
+<div class="card card-body">
+  <div class="header-strip"></div>
+  <div class="badge" style="color:#1565C0; background:rgba(21,101,192,0.1); border-color:rgba(21,101,192,0.3);">3 / 7</div>
+  <div class="inner">
+    <div class="section-label">EXAM INFO</div>
+    <div class="section-title">시험 구성<br><span>한눈에 보기</span></div>
+    <div class="info-grid">
+      <div class="info-box highlight">
+        <div class="ib-label">시험 횟수</div>
+        <div class="ib-value">연 4회</div>
+        <div class="ib-desc">1년에 4번 응시 기회</div>
+      </div>
+      <div class="info-box">
+        <div class="ib-label">합격 기준</div>
+        <div class="ib-value">60점 이상</div>
+        <div class="ib-desc">필기 · 실기 각각 60점</div>
+      </div>
+      <div class="info-box">
+        <div class="ib-label">필기 문항</div>
+        <div class="ib-value">60문항</div>
+        <div class="ib-desc">CBT 방식 / 60분<br>시험 종료 즉시 합격 확인</div>
+      </div>
+      <div class="info-box">
+        <div class="ib-label">실기 시간</div>
+        <div class="ib-value">90분</div>
+        <div class="ib-desc">2026년부터<br>코딩 테스트로 변경</div>
+      </div>
+    </div>
+    <div class="alert-box" style="margin-top:16px;">
+      🚨 <strong>2026년 1회부터</strong> 실기가 작업형(코딩 테스트)으로 전환!<br>
+      변경 전 응시를 원한다면 <strong>일정 확인 필수</strong>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 IT 자격증 정보</span>
+    <span>#정보처리기능사시험</span>
+  </div>
+</div>
+
+<!-- ───── CARD 4 : 혼자 vs 학원 ───── -->
+<div class="card card-body">
+  <div class="header-strip"></div>
+  <div class="badge" style="color:#1565C0; background:rgba(21,101,192,0.1); border-color:rgba(21,101,192,0.3);">4 / 7</div>
+  <div class="inner">
+    <div class="section-label">STRATEGY</div>
+    <div class="section-title">혼자 공부 vs<br><span>학원 수강</span> 비교</div>
+    <div class="compare-wrap">
+      <div class="compare-box">
+        <div class="compare-title">📖 필기 — 독학 가능</div>
+        <div class="compare-list">
+          <div class="compare-row">기출문제 반복 풀이로 충분</div>
+          <div class="compare-row">6~10시간 집중 학습</div>
+          <div class="compare-row">시나공·수제비 교재 추천</div>
+          <div class="compare-row">CBT 모의고사 적극 활용</div>
+        </div>
+      </div>
+      <div class="compare-box active">
+        <div class="compare-title">💻 실기 — 학원 추천</div>
+        <div class="compare-list">
+          <div class="compare-row">특정 회차 합격률 1~2%도 있음</div>
+          <div class="compare-row">2026년 코딩 테스트 전환</div>
+          <div class="compare-row">체계적 커리큘럼 필요</div>
+          <div class="compare-row">강사 피드백으로 합격률 UP</div>
+        </div>
+      </div>
+    </div>
+    <div class="alert-box" style="margin-top:16px; background:#E3F2FD; border-color:#1E88E5; color:#0D47A1;">
+      💡 <strong>추천 조합:</strong> 필기는 독학 + 실기는 학원 수강<br>
+      IT 취업까지 목표라면 처음부터 학원 등록이 유리해요!
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 IT 자격증 정보</span>
+    <span>#정보처리기능사준비</span>
+  </div>
+</div>
+
+<!-- ───── CARD 5 : 대전 추천 학원 ───── -->
+<div class="card card-body">
+  <div class="header-strip"></div>
+  <div class="badge" style="color:#1565C0; background:rgba(21,101,192,0.1); border-color:rgba(21,101,192,0.3);">5 / 7</div>
+  <div class="inner">
+    <div class="section-label">DAEJEON ACADEMY</div>
+    <div class="section-title">대전 <span>추천 학원</span> 4곳</div>
+    <div class="academy-list">
+      <div class="academy-item">
+        <div class="academy-name">🏫 그린컴퓨터아트학원 (대전)</div>
+        <div class="academy-tags">
+          <span class="tag">국비 100% 무료</span>
+          <span class="tag">IT·디자인</span>
+          <span class="tag">시청역 인근</span>
+        </div>
+      </div>
+      <div class="academy-item">
+        <div class="academy-name">🎓 SBS아카데미컴퓨터아트학원</div>
+        <div class="academy-tags">
+          <span class="tag">전국 17개 지점</span>
+          <span class="tag">안정적 커리큘럼</span>
+          <span class="tag">다양한 IT 자격증</span>
+        </div>
+      </div>
+      <div class="academy-item">
+        <div class="academy-name">🔐 아이티스쿨정보보호교육원</div>
+        <div class="academy-tags">
+          <span class="tag">국비지원</span>
+          <span class="tag">정보보안·클라우드</span>
+          <span class="tag">프로그래밍</span>
+        </div>
+      </div>
+      <div class="academy-item">
+        <div class="academy-name">🏆 대신정보통신 직업전문학교</div>
+        <div class="academy-tags">
+          <span class="tag">20년+ 운영</span>
+          <span class="tag">대통령표창</span>
+          <span class="tag">은행동</span>
+        </div>
+      </div>
+    </div>
+    <div class="alert-box" style="margin-top:12px; background:#E8F5E9; border-color:#43A047; color:#1B5E20; font-size:13px;">
+      💳 <strong>국민내일배움카드</strong>로 학원비 전액 또는 일부 지원!<br>
+      고용24에서 신청 → 대전 학원 검색 후 수강 등록
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 IT 자격증 정보</span>
+    <span>#대전IT학원 #국비지원</span>
+  </div>
+</div>
+
+<!-- ───── CARD 6 : 합격 꿀팁 ───── -->
+<div class="card card-body">
+  <div class="header-strip"></div>
+  <div class="badge" style="color:#1565C0; background:rgba(21,101,192,0.1); border-color:rgba(21,101,192,0.3);">6 / 7</div>
+  <div class="inner">
+    <div class="section-label">TIPS</div>
+    <div class="section-title"><span>합격 꿀팁</span> 5가지</div>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">기출문제 우선 공략</div>
+          <div class="step-desc">최근 5개년 기출 <strong>3회 이상 반복</strong> → 합격권 진입 가능</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">CBT 모의고사 활용</div>
+          <div class="step-desc">Q-Net · 수제비 CBT로 <strong>실전 감각</strong> 키우기</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">실기 핵심 3개 영역</div>
+          <div class="step-desc"><strong>SQL · 알고리즘 · DB 설계</strong> 집중 암기 필수</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">2026 변경 전 일정 공략</div>
+          <div class="step-desc">필답형 실기 방식이 유리하다면 <strong>변경 전 취득</strong> 전략도 OK!</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">학원 무료 상담 활용</div>
+          <div class="step-desc">대전 학원 대부분 <strong>무료 상담</strong> 제공 → 맞춤 커리큘럼 안내</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 IT 자격증 정보</span>
+    <span>#정보처리기능사합격</span>
+  </div>
+</div>
+
+<!-- ───── CARD 7 : CTA ───── -->
+<div class="card card-cta">
+  <div class="deco1"></div>
+  <div class="deco2"></div>
+  <div class="badge">7 / 7</div>
+  <div class="inner">
+    <div class="cta-emoji">🎯</div>
+    <div class="cta-title">지금 바로<br><span>대전 학원</span>에서<br>시작하세요!</div>
+    <div class="cta-sub">
+      2026년 시험 방식 변경 전,<br>
+      국비지원으로 부담 없이 도전하세요
+    </div>
+    <div class="info-chips">
+      <div class="chip">📋 국민내일배움카드</div>
+      <div class="chip">💯 국비 100% 지원</div>
+      <div class="chip">📞 무료 상담 가능</div>
+    </div>
+    <div style="color:rgba(255,255,255,0.55); font-size:13px; margin-top:8px;">
+      고용24(work24.go.kr)에서 신청 가능
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 IT 자격증 정보</span>
+    <span>#대전정보처리기능사학원</span>
+  </div>
+</div>
+
+</body>
+</html>

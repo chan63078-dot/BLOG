@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>SBTI 테스트 카드뉴스</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0F0F1A;
+    font-family: 'Noto Sans KR', '맑은 고딕', sans-serif;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .guide {
+    background: #fff;
+    border-left: 4px solid #7B5EA7;
+    padding: 14px 20px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #555;
+    width: 800px;
+    line-height: 1.8;
+  }
+  .guide strong { color: #7B5EA7; }
+
+  .card {
+    width: 800px;
+    height: 800px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    box-shadow: 0 6px 32px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .badge {
+    position: absolute;
+    top: 24px;
+    right: 28px;
+    font-size: 13px;
+    font-weight: 700;
+    opacity: 0.55;
+  }
+
+  .footer-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── 카드 1: 표지 ── */
+  .card-cover {
+    background: linear-gradient(135deg, #1A0533 0%, #3D1A6E 50%, #7B5EA7 100%);
+    color: #fff;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 60px 60px 80px;
+  }
+  .card-cover .badge { color: rgba(255,255,255,0.5); }
+  .card-cover .big-emoji { font-size: 80px; margin-bottom: 24px; display: block; }
+  .card-cover .tag {
+    background: rgba(255,255,255,0.12);
+    border: 1.5px solid rgba(255,255,255,0.3);
+    border-radius: 24px;
+    padding: 7px 22px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 24px;
+    display: inline-block;
+  }
+  .card-cover .main-title {
+    font-size: 40px;
+    font-weight: 900;
+    line-height: 1.25;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+  }
+  .card-cover .sub-copy {
+    font-size: 17px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.65;
+    word-break: keep-all;
+  }
+  .card-cover .footer-bar { background: rgba(0,0,0,0.35); color: rgba(255,255,255,0.6); }
+
+  /* ── 카드 2~6: 본문 (다크) ── */
+  .card-dark {
+    background: #1A1A2E;
+    color: #fff;
+    padding: 52px 52px 80px;
+    justify-content: flex-start;
+  }
+  .card-dark .badge { color: rgba(255,255,255,0.4); }
+  .card-dark .section-label {
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 2.5px;
+    color: #B39DDB;
+    margin-bottom: 12px;
+  }
+  .card-dark .section-title {
+    font-size: 28px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.3;
+    margin-bottom: 30px;
+    padding-bottom: 18px;
+    border-bottom: 2px solid #7B5EA7;
+    word-break: keep-all;
+  }
+  .card-dark .item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .card-dark .item-dot {
+    width: 8px; height: 8px;
+    min-width: 8px;
+    background: #9C7CC4;
+    border-radius: 50%;
+    margin-top: 9px;
+  }
+  .card-dark .item-text {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.55;
+    color: rgba(255,255,255,0.88);
+    word-break: keep-all;
+  }
+  .card-dark .item-text strong { color: #CE93D8; font-weight: 700; }
+  .card-dark .highlight-box {
+    background: rgba(123,94,167,0.35);
+    border: 1.5px solid #7B5EA7;
+    border-radius: 10px;
+    padding: 16px 22px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.65;
+    margin-top: 22px;
+    color: rgba(255,255,255,0.92);
+    word-break: keep-all;
+  }
+  .card-dark .footer-bar { background: #0D0D1A; color: rgba(255,255,255,0.5); }
+
+  /* 유형 뱃지들 */
+  .type-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .type-badge {
+    background: rgba(123,94,167,0.3);
+    border: 1.5px solid #7B5EA7;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 16px;
+    font-weight: 900;
+    color: #CE93D8;
+    letter-spacing: 0.5px;
+  }
+  .type-badge.special {
+    background: rgba(255,100,100,0.2);
+    border-color: #FF6B6B;
+    color: #FF8E8E;
+  }
+
+  /* 비교 테이블 */
+  .compare-table { width: 100%; margin-top: 8px; }
+  .compare-row {
+    display: flex;
+    margin-bottom: 14px;
+    gap: 10px;
+  }
+  .compare-label {
+    width: 72px;
+    min-width: 72px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #B39DDB;
+    padding-top: 3px;
+  }
+  .compare-vals { flex: 1; }
+  .compare-mbti {
+    font-size: 15px;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 3px;
+    word-break: keep-all;
+  }
+  .compare-sbti {
+    font-size: 16px;
+    font-weight: 600;
+    color: #CE93D8;
+    word-break: keep-all;
+  }
+
+  /* 링크 카드 */
+  .link-card {
+    background: rgba(123,94,167,0.2);
+    border: 1.5px solid #7B5EA7;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+  }
+  .link-domain {
+    font-size: 17px;
+    font-weight: 900;
+    color: #CE93D8;
+    margin-bottom: 4px;
+  }
+  .link-desc {
+    font-size: 14px;
+    color: rgba(255,255,255,0.65);
+  }
+
+  /* ── 카드 7: 마무리 ── */
+  .card-closing {
+    background: linear-gradient(150deg, #1A0533 0%, #3D1A6E 100%);
+    color: #fff;
+    padding: 52px 52px 80px;
+    justify-content: flex-start;
+  }
+  .card-closing .badge { color: rgba(255,255,255,0.4); }
+  .card-closing .closing-label {
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 2.5px;
+    color: #B39DDB;
+    margin-bottom: 12px;
+  }
+  .card-closing .closing-title {
+    font-size: 27px;
+    font-weight: 900;
+    line-height: 1.35;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid rgba(255,255,255,0.15);
+    word-break: keep-all;
+  }
+  .card-closing .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .card-closing .check-icon { font-size: 18px; min-width: 22px; }
+  .card-closing .check-text {
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.88);
+    word-break: keep-all;
+  }
+  .card-closing .check-text strong { color: #CE93D8; }
+  .card-closing .final-copy {
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    font-size: 15px;
+    font-weight: 600;
+    color: #B39DDB;
+    line-height: 1.65;
+    word-break: keep-all;
+  }
+  .card-closing .footer-bar { background: rgba(0,0,0,0.35); color: rgba(255,255,255,0.5); }
+</style>
+</head>
+<body>
+
+<div class="guide">
+  <strong>📸 캡처 방법</strong>: Win+Shift+S → 각 카드 정사각형으로 캡처 → 네이버 블로그 이미지 첨부<br>
+  카드 사이 어두운 여백은 제외하고, 카드 테두리 안쪽만 캡처하세요.
+</div>
+
+<!-- 카드 1: 표지 -->
+<div class="card card-cover">
+  <span class="badge">1 / 7</span>
+  <span class="big-emoji">🧠</span>
+  <div class="tag">2026 화제의 성격 테스트</div>
+  <div class="main-title">SBTI 테스트</div>
+  <div class="sub-copy">링크 · 유형 · MBTI 차이<br>이 카드 하나로 끝냅니다</div>
+  <div class="footer-bar">
+    <span>SBTI 테스트 총정리</span>
+    <span>2026</span>
+  </div>
+</div>
+
+<!-- 카드 2: SBTI란? -->
+<div class="card card-dark">
+  <span class="badge">2 / 7</span>
+  <div class="section-label">SBTI란?</div>
+  <div class="section-title">SNS에서 난리 난<br>그 테스트가 뭔가요?</div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text"><strong>Silly Behavioral Type Indicator</strong><br>2026년 4월 중국 빌리빌리에서 탄생</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">MBTI보다 가볍고 재미 중심의 성격 테스트</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">15차원 × 30문항 → <strong>27가지 유형</strong> 결과</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text">무료 · 회원가입 없이 <strong>3~5분</strong>이면 완료</div>
+  </div>
+  <div class="highlight-box">MBTI가 자기소개서용이라면<br>SBTI는 단톡방용 테스트입니다 😄</div>
+  <div class="footer-bar">
+    <span>SBTI 테스트 총정리</span>
+    <span>2026</span>
+  </div>
+</div>
+
+<!-- 카드 3: 링크 바로가기 -->
+<div class="card card-dark">
+  <span class="badge">3 / 7</span>
+  <div class="section-label">테스트 링크</div>
+  <div class="section-title">SBTI 테스트<br>여기서 바로 하세요</div>
+  <div class="link-card">
+    <div class="link-domain">sbti-test.com</div>
+    <div class="link-desc">한국어 지원 · 26+2 유형 · 가장 많이 사용</div>
+  </div>
+  <div class="link-card">
+    <div class="link-domain">sbti.fast/ko</div>
+    <div class="link-desc">한국어 인터페이스 · 빠른 결과 확인</div>
+  </div>
+  <div class="link-card">
+    <div class="link-domain">sbti.digital</div>
+    <div class="link-desc">글로벌 버전 · 상세 분석 제공</div>
+  </div>
+  <div class="highlight-box">네이버에서 "SBTI 테스트" 검색 후<br>접속해도 바로 찾을 수 있습니다</div>
+  <div class="footer-bar">
+    <span>SBTI 테스트 총정리</span>
+    <span>2026</span>
+  </div>
+</div>
+
+<!-- 카드 4: MBTI vs SBTI -->
+<div class="card card-dark">
+  <span class="badge">4 / 7</span>
+  <div class="section-label">MBTI vs SBTI</div>
+  <div class="section-title">뭐가 다른가요?</div>
+  <div class="compare-table">
+    <div class="compare-row">
+      <div class="compare-label">차원</div>
+      <div class="compare-vals">
+        <div class="compare-mbti">MBTI: 4가지 축</div>
+        <div class="compare-sbti">SBTI: 15차원 × L/M/H 점수</div>
+      </div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-label">유형 수</div>
+      <div class="compare-vals">
+        <div class="compare-mbti">MBTI: 16가지</div>
+        <div class="compare-sbti">SBTI: 27가지 (숨김 유형 포함)</div>
+      </div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-label">목적</div>
+      <div class="compare-vals">
+        <div class="compare-mbti">MBTI: 구조적 자기 이해</div>
+        <div class="compare-sbti">SBTI: 재미 · 무드 표현 · SNS 공유</div>
+      </div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-label">이름</div>
+      <div class="compare-vals">
+        <div class="compare-mbti">MBTI: INFP, ESTJ …</div>
+        <div class="compare-sbti">SBTI: BOSS, DRUNK, ZZZZ …</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>SBTI 테스트 총정리</span>
+    <span>2026</span>
+  </div>
+</div>
+
+<!-- 카드 5: 유형 소개 -->
+<div class="card card-dark">
+  <span class="badge">5 / 7</span>
+  <div class="section-label">대표 유형</div>
+  <div class="section-title">총 27가지 유형<br>어떤 것들이 있나요?</div>
+  <div class="type-grid">
+    <div class="type-badge">BOSS</div>
+    <div class="type-badge">CTRL</div>
+    <div class="type-badge">SEXY</div>
+    <div class="type-badge">ZZZZ</div>
+    <div class="type-badge">IMSB</div>
+    <div class="type-badge">HHHH</div>
+    <div class="type-badge special">DRUNK 🍺</div>
+  </div>
+  <div class="item" style="margin-top: 24px">
+    <div class="item-dot"></div>
+    <div class="item-text"><strong>BOSS</strong> 리더 기질, 강한 추진력</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text"><strong>CTRL</strong> 통제욕 강하고 계획적</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text"><strong>DRUNK</strong> 특수 문항 반응 시 나오는 숨겨진 유형</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text"><strong>HHHH</strong> 어떤 유형과도 안 맞는 예외 유형</div>
+  </div>
+  <div class="footer-bar">
+    <span>SBTI 테스트 총정리</span>
+    <span>2026</span>
+  </div>
+</div>
+
+<!-- 카드 6: 테스트 방법 -->
+<div class="card card-dark">
+  <span class="badge">6 / 7</span>
+  <div class="section-label">테스트 방법</div>
+  <div class="section-title">5단계로<br>3분이면 끝납니다</div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text"><strong>1단계</strong> sbti-test.com 접속</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text"><strong>2단계</strong> 언어 설정 → 한국어 선택</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text"><strong>3단계</strong> 30문항 솔직하게 선택</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text"><strong>4단계</strong> 유형 코드 + 캐릭터 + 15차원 점수 확인</div>
+  </div>
+  <div class="item">
+    <div class="item-dot"></div>
+    <div class="item-text"><strong>5단계</strong> 캡처 후 카톡·인스타 공유 🎉</div>
+  </div>
+  <div class="highlight-box">너무 오래 고민 말고 느끼는 대로 선택!<br>빠르게 답할수록 더 정확하게 나옵니다</div>
+  <div class="footer-bar">
+    <span>SBTI 테스트 총정리</span>
+    <span>2026</span>
+  </div>
+</div>
+
+<!-- 카드 7: 마무리 -->
+<div class="card card-closing">
+  <span class="badge">7 / 7</span>
+  <div class="closing-label">핵심 요약</div>
+  <div class="closing-title">SBTI 테스트<br>이것만 알면 됩니다 🧠</div>
+  <div class="check-item">
+    <div class="check-icon">✔</div>
+    <div class="check-text"><strong>sbti-test.com</strong> 무료 · 회원가입 없음</div>
+  </div>
+  <div class="check-item">
+    <div class="check-icon">✔</div>
+    <div class="check-text">30문항 / <strong>3~5분</strong> / 27가지 유형 결과</div>
+  </div>
+  <div class="check-item">
+    <div class="check-icon">✔</div>
+    <div class="check-text">MBTI보다 <strong>가볍고 재미 중심</strong></div>
+  </div>
+  <div class="check-item">
+    <div class="check-icon">✔</div>
+    <div class="check-text"><strong>DRUNK</strong> 숨겨진 유형 존재 (특수 문항 반응)</div>
+  </div>
+  <div class="check-item">
+    <div class="check-icon">✔</div>
+    <div class="check-text">느끼는 대로 빠르게 답하는 게 포인트</div>
+  </div>
+  <div class="final-copy">SBTI 아직 안 해보셨다면 지금 바로 해보세요.<br>친구들이랑 결과 비교하면 더 재미있습니다!</div>
+  <div class="footer-bar">
+    <span>SBTI 테스트 총정리</span>
+    <span>2026</span>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>대전 챗GPT 학원 카드뉴스</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0A0A14;
+    font-family: 'Noto Sans KR', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    gap: 32px;
+  }
+
+  .capture-guide {
+    background: #1a1a2e;
+    border: 2px dashed #10A37F;
+    border-radius: 12px;
+    padding: 16px 28px;
+    color: #5FCFAD;
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.8;
+    max-width: 860px;
+    width: 100%;
+  }
+  .capture-guide strong { color: #fff; font-size: 15px; }
+
+  .card {
+    width: 800px;
+    height: 800px;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .badge {
+    position: absolute;
+    top: 24px; right: 28px;
+    background: rgba(255,255,255,0.18);
+    border: 1.5px solid rgba(255,255,255,0.35);
+    border-radius: 20px;
+    padding: 5px 14px;
+    color: #fff;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 1px; z-index: 10;
+  }
+  .badge-dark {
+    color: #10A37F;
+    background: rgba(16,163,127,0.1);
+    border-color: rgba(16,163,127,0.35);
+  }
+
+  .footer-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 28px; z-index: 10;
+  }
+  .footer-bar span { font-size: 12px; font-weight: 600; letter-spacing: 0.5px; }
+
+  /* ── CARD 1: 표지 ── */
+  .card-cover {
+    background: linear-gradient(145deg, #0A1A14 0%, #064E3B 45%, #065F46 70%, #10A37F 100%);
+  }
+  .card-cover .orb1 {
+    position: absolute; width: 340px; height: 340px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(16,163,127,0.28) 0%, transparent 70%);
+    top: -70px; right: -70px;
+  }
+  .card-cover .orb2 {
+    position: absolute; width: 200px; height: 200px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(16,163,127,0.15) 0%, transparent 70%);
+    bottom: 90px; left: -50px;
+  }
+  .card-cover .inner {
+    position: relative; z-index: 5;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    height: 100%; padding: 0 52px; text-align: center;
+  }
+  .gpt-badge-wrap { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+  .gpt-icon {
+    width: 56px; height: 56px; border-radius: 14px;
+    background: #10A37F;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+  }
+  .gpt-name { color: #fff; font-size: 24px; font-weight: 900; letter-spacing: 1px; }
+  .card-cover .brand-tag {
+    background: rgba(16,163,127,0.25);
+    border: 1px solid rgba(16,163,127,0.5);
+    border-radius: 24px;
+    padding: 6px 20px;
+    color: #5FCFAD;
+    font-size: 13px; font-weight: 700; letter-spacing: 2px;
+    margin-bottom: 22px;
+  }
+  .card-cover .main-title {
+    color: #fff; font-size: 40px; font-weight: 900;
+    line-height: 1.25; margin-bottom: 18px; word-break: keep-all;
+  }
+  .card-cover .main-title span { color: #5FCFAD; }
+  .card-cover .sub-copy {
+    color: rgba(255,255,255,0.75); font-size: 16px;
+    line-height: 1.75; word-break: keep-all;
+  }
+  .card-cover .footer-bar { background: rgba(255,255,255,0.08); border-top: 1px solid rgba(255,255,255,0.12); }
+  .card-cover .footer-bar span { color: rgba(255,255,255,0.65); }
+
+  /* ── 본문 카드 공통 ── */
+  .card-body { background: #F0FBF7; }
+  .card-body .header-strip {
+    height: 10px; width: 100%;
+    position: absolute; top: 0; left: 0;
+    background: linear-gradient(90deg, #10A37F, #34D399, #10A37F);
+  }
+  .card-body .inner {
+    padding: 40px 52px 60px;
+    display: flex; flex-direction: column; height: 100%;
+  }
+  .section-label {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; color: #10A37F;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+  .section-title {
+    font-size: 30px; font-weight: 900;
+    color: #064E3B; line-height: 1.3;
+    margin-bottom: 26px; word-break: keep-all;
+  }
+  .section-title span { color: #10A37F; }
+  .card-body .footer-bar { background: #10A37F; }
+  .card-body .footer-bar span { color: rgba(255,255,255,0.88); }
+
+  /* stat 박스 */
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+  .stat-box {
+    background: #fff; border-radius: 14px;
+    padding: 18px 16px;
+    box-shadow: 0 2px 8px rgba(16,163,127,0.1);
+  }
+  .stat-box.hi { background: linear-gradient(135deg, #064E3B, #10A37F); }
+  .stat-emoji { font-size: 24px; margin-bottom: 8px; }
+  .stat-num { font-size: 26px; font-weight: 900; color: #064E3B; }
+  .stat-box.hi .stat-num { color: #fff; }
+  .stat-label { font-size: 12px; color: #456; line-height: 1.5; word-break: keep-all; }
+  .stat-box.hi .stat-label { color: rgba(255,255,255,0.8); }
+
+  /* 활용 4분면 */
+  .quad-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .quad-box {
+    background: #fff; border-radius: 14px;
+    padding: 18px 16px;
+    box-shadow: 0 2px 8px rgba(16,163,127,0.07);
+  }
+  .quad-box:nth-child(1) { border-top: 3px solid #10A37F; }
+  .quad-box:nth-child(2) { border-top: 3px solid #34D399; }
+  .quad-box:nth-child(3) { border-top: 3px solid #065F46; }
+  .quad-box:nth-child(4) { border-top: 3px solid #6EE7B7; }
+  .quad-icon { font-size: 26px; margin-bottom: 8px; }
+  .quad-title { font-size: 14px; font-weight: 800; color: #064E3B; margin-bottom: 6px; }
+  .quad-desc { font-size: 12px; color: #445; line-height: 1.55; word-break: keep-all; }
+  .quad-desc strong { color: #10A37F; }
+
+  /* 프롬프트 비교 */
+  .prompt-compare { display: flex; flex-direction: column; gap: 16px; }
+  .prompt-box {
+    background: #fff; border-radius: 14px;
+    padding: 18px 20px;
+    box-shadow: 0 2px 8px rgba(16,163,127,0.07);
+  }
+  .prompt-box.bad { border-left: 5px solid #EF4444; }
+  .prompt-box.good { border-left: 5px solid #10A37F; }
+  .prompt-label {
+    font-size: 11px; font-weight: 800;
+    letter-spacing: 1.5px; margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .prompt-box.bad .prompt-label { color: #EF4444; }
+  .prompt-box.good .prompt-label { color: #10A37F; }
+  .prompt-text { font-size: 14px; color: #222; line-height: 1.6; word-break: keep-all; }
+  .prompt-box.good .prompt-text { font-weight: 600; }
+  .result-box {
+    background: #ECFDF5; border: 2px solid #34D399;
+    border-radius: 12px; padding: 14px 18px;
+    font-size: 13px; color: #064E3B; line-height: 1.65;
+    word-break: keep-all;
+  }
+  .result-box strong { color: #10A37F; }
+
+  /* 학원 리스트 */
+  .academy-list { display: flex; flex-direction: column; gap: 11px; }
+  .academy-item {
+    background: #fff;
+    border-left: 5px solid #10A37F;
+    border-radius: 0 12px 12px 0;
+    padding: 12px 16px;
+    box-shadow: 0 2px 6px rgba(16,163,127,0.07);
+  }
+  .academy-item:nth-child(2) { border-left-color: #34D399; }
+  .academy-item:nth-child(3) { border-left-color: #065F46; }
+  .academy-item:nth-child(4) { border-left-color: #6EE7B7; }
+  .academy-item:nth-child(5) { border-left-color: #A7F3D0; }
+  .academy-name { font-size: 14px; font-weight: 800; color: #064E3B; margin-bottom: 5px; }
+  .tag-wrap { display: flex; gap: 5px; flex-wrap: wrap; }
+  .tag {
+    background: #ECFDF5; border: 1px solid #6EE7B7;
+    border-radius: 20px; padding: 2px 9px;
+    font-size: 11px; font-weight: 700; color: #065F46;
+  }
+  .alert-green {
+    background: #ECFDF5; border: 2px solid #10A37F;
+    border-radius: 12px; padding: 12px 16px;
+    font-size: 13px; color: #064E3B;
+    line-height: 1.65; word-break: keep-all; margin-top: 8px;
+  }
+  .alert-green strong { color: #065F46; }
+
+  /* 꿀팁 */
+  .tip-list { display: flex; flex-direction: column; gap: 12px; }
+  .tip-item {
+    display: flex; align-items: flex-start; gap: 14px;
+    background: #fff; border-radius: 12px;
+    padding: 13px 16px;
+    box-shadow: 0 2px 6px rgba(16,163,127,0.07);
+  }
+  .tip-num {
+    min-width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, #065F46, #10A37F);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 15px; font-weight: 900; flex-shrink: 0;
+  }
+  .tip-title { font-size: 14px; font-weight: 800; color: #064E3B; margin-bottom: 3px; }
+  .tip-desc { font-size: 12px; color: #445; line-height: 1.5; word-break: keep-all; }
+  .tip-desc strong { color: #10A37F; }
+
+  /* CTA */
+  .card-cta {
+    background: linear-gradient(145deg, #0A1A14 0%, #064E3B 50%, #10A37F 100%);
+  }
+  .card-cta .orb1 {
+    position: absolute; width: 300px; height: 300px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(16,163,127,0.22) 0%, transparent 70%);
+    top: -60px; right: -50px;
+  }
+  .card-cta .orb2 {
+    position: absolute; width: 170px; height: 170px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(52,211,153,0.15) 0%, transparent 70%);
+    bottom: 90px; left: -30px;
+  }
+  .card-cta .inner {
+    position: relative; z-index: 5;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    height: 100%; padding: 0 52px;
+    text-align: center; gap: 20px;
+  }
+  .cta-emoji { font-size: 62px; }
+  .cta-title { font-size: 34px; font-weight: 900; color: #fff; line-height: 1.3; word-break: keep-all; }
+  .cta-title span { color: #5FCFAD; }
+  .cta-sub { font-size: 16px; color: rgba(255,255,255,0.78); line-height: 1.75; word-break: keep-all; }
+  .who-chips { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 100%; }
+  .who-chip {
+    background: rgba(255,255,255,0.1);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    border-radius: 14px; padding: 12px 8px;
+    text-align: center;
+  }
+  .who-chip .wc-emoji { font-size: 22px; margin-bottom: 6px; }
+  .who-chip .wc-label { font-size: 12px; font-weight: 700; color: #fff; }
+  .who-chip .wc-desc { font-size: 11px; color: rgba(255,255,255,0.65); line-height: 1.4; word-break: keep-all; }
+  .card-cta .footer-bar { background: rgba(255,255,255,0.08); border-top: 1px solid rgba(255,255,255,0.12); }
+  .card-cta .footer-bar span { color: rgba(255,255,255,0.65); }
+</style>
+</head>
+<body>
+
+<div class="capture-guide">
+  <strong>📸 캡처 방법 안내</strong><br>
+  각 카드 위에서 <strong>Win + Shift + S</strong> → 카드 영역 드래그 → 캡처 후 붙여넣기<br>
+  카드 크기: 800×800px | 총 7장
+</div>
+
+<!-- CARD 1: 표지 -->
+<div class="card card-cover">
+  <div class="orb1"></div><div class="orb2"></div>
+  <div class="badge">1 / 7</div>
+  <div class="inner">
+    <div class="gpt-badge-wrap">
+      <div class="gpt-icon">🤖</div>
+      <div class="gpt-name">ChatGPT</div>
+    </div>
+    <div class="brand-tag">대전 AI 교육 가이드</div>
+    <div class="main-title">대전<br><span>챗GPT</span> 학원<br>완벽 가이드</div>
+    <div class="sub-copy">
+      직장인·취준생 모두 OK!<br>
+      실무 활용 + 업무자동화 + 학원 추천까지
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 AI 교육 정보</span>
+    <span>#챗GPT #대전학원</span>
+  </div>
+</div>
+
+<!-- CARD 2: 왜 배워야 하나 -->
+<div class="card card-body">
+  <div class="header-strip"></div>
+  <div class="badge badge-dark">2 / 7</div>
+  <div class="inner">
+    <div class="section-label">WHY NOW</div>
+    <div class="section-title">지금 챗GPT<br><span>왜 배워야 할까?</span></div>
+    <div class="stat-grid">
+      <div class="stat-box hi">
+        <div class="stat-emoji">🏢</div>
+        <div class="stat-num">500대</div>
+        <div class="stat-label">국내 500대 기업<br>챗GPT 직원 교육 진행</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-emoji">⚡</div>
+        <div class="stat-num">3배+</div>
+        <div class="stat-label">프롬프트 숙달 시<br>업무 효율 향상</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-emoji">🎓</div>
+        <div class="stat-num">폴리텍</div>
+        <div class="stat-label">대전 폴리텍캠퍼스<br>챗GPT 실전 특강 개설</div>
+      </div>
+      <div class="stat-box hi">
+        <div class="stat-emoji">🚀</div>
+        <div class="stat-num">필수</div>
+        <div class="stat-label">선택 아닌<br>생존 업무 도구</div>
+      </div>
+    </div>
+    <div style="background:#fff; border-radius:14px; padding:16px 18px; border-left:4px solid #10A37F; box-shadow:0 2px 8px rgba(16,163,127,0.1);">
+      <div style="font-size:13px; color:#064E3B; line-height:1.7; word-break:keep-all;">
+        💼 삼성·현대·코레일 등 <strong style="color:#10A37F;">국내 500대 기업</strong> 직원 챗GPT 교육 실시<br>
+        🏫 대전 폴리텍·그린컴퓨터 등 학원 AI 과정 급증
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 AI 교육 정보</span>
+    <span>#챗GPT교육</span>
+  </div>
+</div>
+
+<!-- CARD 3: 챗GPT로 할 수 있는 것 -->
+<div class="card card-body">
+  <div class="header-strip"></div>
+  <div class="badge badge-dark">3 / 7</div>
+  <div class="inner">
+    <div class="section-label">WHAT YOU CAN DO</div>
+    <div class="section-title">챗GPT로<br><span>이런 것</span>이 가능해요!</div>
+    <div class="quad-grid">
+      <div class="quad-box">
+        <div class="quad-icon">📝</div>
+        <div class="quad-title">문서 작업 자동화</div>
+        <div class="quad-desc">보고서·기획서 <strong>5분 완성</strong><br>이메일·회의록 자동 작성</div>
+      </div>
+      <div class="quad-box">
+        <div class="quad-icon">📊</div>
+        <div class="quad-title">엑셀·PPT 자동화</div>
+        <div class="quad-desc"><strong>엑셀 함수·VBA</strong> 자동 생성<br>슬라이드 구성·내용 자동화</div>
+      </div>
+      <div class="quad-box">
+        <div class="quad-icon">🎯</div>
+        <div class="quad-title">마케팅·홍보</div>
+        <div class="quad-desc">블로그·SNS <strong>홍보글 자동 생성</strong><br>사업계획서·마케팅 전략</div>
+      </div>
+      <div class="quad-box">
+        <div class="quad-icon">💻</div>
+        <div class="quad-title">코딩·개발 보조</div>
+        <div class="quad-desc"><strong>API 연동</strong> 챗봇 제작<br>코드 작성·디버깅 지원</div>
+      </div>
+    </div>
+    <div style="margin-top:16px; background:#fff; border-radius:12px; padding:14px 18px; border-left:4px solid #34D399; box-shadow:0 2px 6px rgba(16,163,127,0.07); font-size:13px; color:#064E3B; line-height:1.65; word-break:keep-all;">
+      ✅ 직장인·취준생·자영업자·대학생 <strong style="color:#10A37F;">모두에게 필요한 도구!</strong>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 AI 교육 정보</span>
+    <span>#챗GPT활용</span>
+  </div>
+</div>
+
+<!-- CARD 4: 프롬프트 엔지니어링 -->
+<div class="card card-body">
+  <div class="header-strip"></div>
+  <div class="badge badge-dark">4 / 7</div>
+  <div class="inner">
+    <div class="section-label">PROMPT ENGINEERING</div>
+    <div class="section-title">잘 쓰는 법<br><span>프롬프트 엔지니어링</span></div>
+    <div class="prompt-compare">
+      <div class="prompt-box bad">
+        <div class="prompt-label">❌ 나쁜 프롬프트</div>
+        <div class="prompt-text">"블로그 써줘"</div>
+      </div>
+      <div class="prompt-box good">
+        <div class="prompt-label">✅ 좋은 프롬프트</div>
+        <div class="prompt-text">"30대 직장인을 대상으로 대전 챗GPT 학원을 소개하는 네이버 블로그 글을 SEO 최적화하여 800자 이상 작성해줘"</div>
+      </div>
+    </div>
+    <div class="result-box">
+      🎯 <strong>학원에서 배우는 핵심 4가지</strong><br>
+      ① 역할 지정 프롬프트 작성법<br>
+      ② 분야별 실무 프롬프트 템플릿<br>
+      ③ 챗GPT + 엑셀/PPT 연동 실습<br>
+      ④ 나만의 자동화 워크플로우 구축
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 AI 교육 정보</span>
+    <span>#프롬프트엔지니어링</span>
+  </div>
+</div>
+
+<!-- CARD 5: 대전 학원 추천 -->
+<div class="card card-body">
+  <div class="header-strip"></div>
+  <div class="badge badge-dark">5 / 7</div>
+  <div class="inner">
+    <div class="section-label">DAEJEON ACADEMY</div>
+    <div class="section-title">대전 <span>챗GPT 학원</span> 5곳</div>
+    <div class="academy-list">
+      <div class="academy-item">
+        <div class="academy-name">🌿 그린컴퓨터아트학원 (대전/대전중앙)</div>
+        <div class="tag-wrap">
+          <span class="tag">챗GPT+엑셀 자동화</span>
+          <span class="tag">국비 100%</span>
+          <span class="tag">AI 아트</span>
+        </div>
+      </div>
+      <div class="academy-item">
+        <div class="academy-name">💻 코리아IT아카데미 (대전)</div>
+        <div class="tag-wrap">
+          <span class="tag">챗GPT API 개발</span>
+          <span class="tag">국비지원</span>
+          <span class="tag">042-369-5890</span>
+        </div>
+      </div>
+      <div class="academy-item">
+        <div class="academy-name">🚀 미래융합교육원 AI캠퍼스 (둔산동)</div>
+        <div class="tag-wrap">
+          <span class="tag">AI 부트캠프</span>
+          <span class="tag">100개+ 취업연계</span>
+          <span class="tag">042-471-9222</span>
+        </div>
+      </div>
+      <div class="academy-item">
+        <div class="academy-name">🏛️ 한국폴리텍Ⅳ 대전캠퍼스</div>
+        <div class="tag-wrap">
+          <span class="tag">챗GPT 실전 특강</span>
+          <span class="tag">보고서·홍보 실무</span>
+        </div>
+      </div>
+      <div class="academy-item">
+        <div class="academy-name">🎓 SBS아카데미컴퓨터아트학원 대전점</div>
+        <div class="tag-wrap">
+          <span class="tag">AI·데이터 과정</span>
+          <span class="tag">전국 17개 지점</span>
+        </div>
+      </div>
+    </div>
+    <div class="alert-green">
+      💳 <strong>국민내일배움카드</strong>로 무료 수강 가능!<br>
+      고용24(work24.go.kr) 신청 → 대전 AI 과정 등록
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 AI 교육 정보</span>
+    <span>#대전챗GPT학원</span>
+  </div>
+</div>
+
+<!-- CARD 6: 꿀팁 -->
+<div class="card card-body">
+  <div class="header-strip"></div>
+  <div class="badge badge-dark">6 / 7</div>
+  <div class="inner">
+    <div class="section-label">TIPS</div>
+    <div class="section-title">수강 전 알아두면<br><span>좋은 꿀팁</span> 5가지</div>
+    <div class="tip-list">
+      <div class="tip-item">
+        <div class="tip-num">1</div>
+        <div>
+          <div class="tip-title">유료 플랜 먼저 체험해 보기</div>
+          <div class="tip-desc">ChatGPT Plus: GPT-4o + 이미지 생성 + 파일 분석<br>수업 전 써보면 <strong>이해 속도 2배</strong></div>
+        </div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-num">2</div>
+        <div>
+          <div class="tip-title">업무 고민 들고 입학</div>
+          <div class="tip-desc">"이 업무를 자동화하고 싶다"는 목표 → <strong>학습 효율 극대화</strong></div>
+        </div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-num">3</div>
+        <div>
+          <div class="tip-title">프롬프트 노트 만들기</div>
+          <div class="tip-desc">잘 된 프롬프트는 반드시 기록 → <strong>나만의 프롬프트 라이브러리</strong></div>
+        </div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-num">4</div>
+        <div>
+          <div class="tip-title">실습형 커리큘럼 선택</div>
+          <div class="tip-desc">이론보다 <strong>내 업무에 바로 적용</strong>하는 실습 위주 학원이 효과적</div>
+        </div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-num">5</div>
+        <div>
+          <div class="tip-title">무료 상담 먼저 활용</div>
+          <div class="tip-desc">대부분 무료 상담 제공 → <strong>내 수준에 맞는 과정</strong> 추천받기</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 AI 교육 정보</span>
+    <span>#챗GPT꿀팁</span>
+  </div>
+</div>
+
+<!-- CARD 7: CTA -->
+<div class="card card-cta">
+  <div class="orb1"></div><div class="orb2"></div>
+  <div class="badge">7 / 7</div>
+  <div class="inner">
+    <div class="cta-emoji">🤖</div>
+    <div class="cta-title"><span>챗GPT</span>로<br>내 업무를<br>바꿔보세요!</div>
+    <div class="cta-sub">대전 학원에서 실무 중심으로 배우고<br>국비지원으로 부담 없이 시작하세요</div>
+    <div class="who-chips">
+      <div class="who-chip">
+        <div class="wc-emoji">💼</div>
+        <div class="wc-label">직장인</div>
+        <div class="wc-desc">업무 자동화<br>퇴근 시간 단축</div>
+      </div>
+      <div class="who-chip">
+        <div class="wc-emoji">📚</div>
+        <div class="wc-label">취준생</div>
+        <div class="wc-desc">AI 역량으로<br>취업 경쟁력 UP</div>
+      </div>
+      <div class="who-chip">
+        <div class="wc-emoji">🏪</div>
+        <div class="wc-label">자영업자</div>
+        <div class="wc-desc">마케팅·고객관리<br>자동화</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 AI 교육 정보</span>
+    <span>#대전챗GPT학원</span>
+  </div>
+</div>
+
+</body>
+</html>

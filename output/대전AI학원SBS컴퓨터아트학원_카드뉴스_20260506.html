@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>대전 AI 학원 SBS컴퓨터아트학원 카드뉴스</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0A0A14;
+    font-family: 'Noto Sans KR', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    gap: 40px;
+  }
+
+  .capture-guide {
+    background: #1A1A2E;
+    border: 1px solid #3A3A5C;
+    border-radius: 12px;
+    padding: 20px 30px;
+    max-width: 860px;
+    width: 100%;
+    color: #8888AA;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .capture-guide strong { color: #AAAACC; display: block; margin-bottom: 6px; font-size: 14px; }
+
+  .card { width: 800px; height: 800px; position: relative; overflow: hidden; flex-shrink: 0; }
+
+  .badge {
+    position: absolute; top: 28px; right: 28px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff; font-size: 13px; font-weight: 500;
+    padding: 5px 14px; border-radius: 20px;
+    letter-spacing: 0.5px; z-index: 10;
+  }
+
+  .footer-bar {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 52px; display: flex; align-items: center;
+    justify-content: space-between; padding: 0 30px;
+    font-size: 12px; z-index: 10;
+  }
+
+  /* ===== 카드 1: 표지 ===== */
+  .card-cover { background: linear-gradient(145deg, #001A0D 0%, #00521A 55%, #007A28 100%); }
+  .card-cover .deco-circle { position: absolute; border-radius: 50%; opacity: 0.07; }
+  .card-cover .deco-1 { width: 520px; height: 520px; background: #fff; top: -130px; right: -130px; }
+  .card-cover .deco-2 { width: 300px; height: 300px; background: #fff; bottom: -80px; left: -70px; }
+  .card-cover .content {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: flex-start;
+    padding: 60px 60px 100px;
+  }
+  .card-cover .brand-tag {
+    background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.28);
+    color: #fff; font-size: 12px; font-weight: 500;
+    padding: 6px 16px; border-radius: 20px;
+    letter-spacing: 1px; margin-bottom: 28px;
+  }
+  .card-cover .main-title {
+    font-size: 50px; font-weight: 900; color: #fff;
+    line-height: 1.2; margin-bottom: 20px; letter-spacing: -1.5px;
+  }
+  .card-cover .main-title span { color: #69F0AE; }
+  .card-cover .sub-copy { font-size: 16px; color: rgba(255,255,255,0.72); line-height: 1.7; margin-bottom: 32px; }
+  .card-cover .highlight-box {
+    background: rgba(255,255,255,0.1); border-left: 4px solid #69F0AE;
+    padding: 14px 22px; border-radius: 0 10px 10px 0;
+    color: #fff; font-size: 14px; font-weight: 700; line-height: 1.7;
+  }
+  .card-cover .footer-bar { background: rgba(0,0,0,0.35); color: rgba(255,255,255,0.55); }
+
+  /* ===== 본문 카드 ===== */
+  .card-content { background: #F0FFF4; }
+  .card-content .top-bar {
+    position: absolute; top: 0; left: 0; right: 0; height: 8px;
+    background: linear-gradient(90deg, #00521A, #00A040);
+  }
+  .card-content .inner {
+    position: absolute; top: 8px; left: 0; right: 0; bottom: 52px;
+    padding: 44px 50px 30px;
+    display: flex; flex-direction: column;
+  }
+  .card-content .section-label {
+    font-size: 12px; font-weight: 700; color: #007A28;
+    letter-spacing: 2px; margin-bottom: 10px;
+  }
+  .card-content .section-title {
+    font-size: 30px; font-weight: 900; color: #001A0D;
+    line-height: 1.25; margin-bottom: 28px;
+    padding-bottom: 20px; border-bottom: 2px solid #C8F0D6;
+  }
+  .card-content .section-title span { color: #007A28; }
+  .card-content .footer-bar { background: #00521A; color: rgba(255,255,255,0.8); }
+
+  /* 과정 카드 그리드 */
+  .course-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; flex: 1; align-content: start; }
+  .course-item {
+    background: #fff; border-radius: 12px; padding: 18px 16px;
+    border-top: 4px solid #007A28;
+  }
+  .course-item .c-tag {
+    font-size: 10px; font-weight: 700; color: #007A28;
+    letter-spacing: 1px; margin-bottom: 8px;
+  }
+  .course-item .c-name { font-size: 16px; font-weight: 900; color: #001A0D; margin-bottom: 7px; }
+  .course-item .c-desc { font-size: 12px; color: #555; line-height: 1.55; }
+  .course-item.full { grid-column: 1 / -1; border-top-color: #00A040; }
+  .course-item .c-tools {
+    display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px;
+  }
+  .course-item .tool-chip {
+    background: #E8F5E9; color: #2E7D32;
+    font-size: 11px; font-weight: 600;
+    padding: 3px 10px; border-radius: 20px;
+  }
+
+  /* 정보 그리드 */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; flex: 1; align-content: start; }
+  .info-item {
+    background: #fff; border-radius: 12px; padding: 20px 18px;
+    border-left: 4px solid #007A28;
+  }
+  .info-item .label { font-size: 11px; font-weight: 700; color: #888; letter-spacing: 1px; margin-bottom: 8px; }
+  .info-item .value { font-size: 20px; font-weight: 900; color: #001A0D; line-height: 1.3; }
+  .info-item .value .accent { color: #007A28; font-size: 26px; }
+  .info-item .sub { font-size: 12px; color: #666; margin-top: 6px; line-height: 1.5; }
+  .info-item.full { grid-column: 1 / -1; }
+  .info-item.highlight { border-left-color: #E53935; background: #FFF5F5; }
+
+  /* 스텝 */
+  .step-list { display: flex; flex-direction: column; gap: 12px; flex: 1; }
+  .step-item {
+    display: flex; align-items: flex-start; gap: 14px;
+    background: #fff; border-radius: 12px; padding: 16px 18px;
+  }
+  .step-num {
+    width: 30px; height: 30px; background: #007A28; color: #fff;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 900; flex-shrink: 0;
+  }
+  .step-text .title { font-size: 14px; font-weight: 700; color: #001A0D; margin-bottom: 4px; }
+  .step-text .desc { font-size: 13px; color: #555; line-height: 1.5; }
+
+  /* 도트 */
+  .dot-list { display: flex; flex-direction: column; gap: 11px; flex: 1; }
+  .dot-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: #fff; border-radius: 10px; padding: 13px 16px;
+  }
+  .dot { width: 8px; height: 8px; background: #007A28; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+  .dot-text .main { font-size: 14px; font-weight: 700; color: #001A0D; }
+  .dot-text .sub { font-size: 12px; color: #666; margin-top: 3px; line-height: 1.5; }
+
+  /* 강점 카드 */
+  .strength-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; flex: 1; align-content: start; }
+  .str-item {
+    background: #fff; border-radius: 12px; padding: 18px 16px;
+  }
+  .str-item .str-icon {
+    width: 36px; height: 36px; background: #E8F5E9;
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    margin-bottom: 10px;
+  }
+  .str-item .str-icon svg { width: 20px; height: 20px; }
+  .str-item .str-title { font-size: 14px; font-weight: 900; color: #001A0D; margin-bottom: 6px; }
+  .str-item .str-desc { font-size: 12px; color: #555; line-height: 1.55; }
+
+  /* 시간/위치 */
+  .schedule-box {
+    background: #fff; border-radius: 12px; padding: 20px 22px;
+    margin-bottom: 12px;
+  }
+  .schedule-box .sch-row {
+    display: flex; align-items: center; gap: 16px;
+    padding: 10px 0; border-bottom: 1px solid #E8F5E9;
+  }
+  .schedule-box .sch-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .schedule-box .sch-label {
+    font-size: 12px; font-weight: 700; color: #007A28;
+    min-width: 70px;
+  }
+  .schedule-box .sch-value { font-size: 14px; color: #333; font-weight: 500; line-height: 1.5; }
+
+  /* ===== CTA 카드 ===== */
+  .card-cta { background: linear-gradient(145deg, #001A0D 0%, #004D1A 50%, #007A28 100%); }
+  .card-cta .deco { position: absolute; border-radius: 50%; opacity: 0.06; }
+  .card-cta .deco-1 { width: 500px; height: 500px; background: #fff; top: -150px; left: -100px; }
+  .card-cta .deco-2 { width: 360px; height: 360px; background: #69F0AE; bottom: -100px; right: -80px; }
+  .card-cta .content {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    display: flex; flex-direction: column; justify-content: center;
+    align-items: center; padding: 60px 60px 100px; text-align: center;
+  }
+  .card-cta .cta-label { font-size: 13px; font-weight: 700; color: #69F0AE; letter-spacing: 2px; margin-bottom: 16px; }
+  .card-cta .cta-title { font-size: 38px; font-weight: 900; color: #fff; line-height: 1.3; margin-bottom: 32px; }
+  .card-cta .summary-box {
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px; padding: 26px 30px; width: 100%;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .card-cta .s-row { display: flex; align-items: flex-start; gap: 14px; }
+  .card-cta .s-label { font-size: 12px; font-weight: 700; color: #69F0AE; min-width: 80px; padding-top: 1px; }
+  .card-cta .s-value { font-size: 14px; color: rgba(255,255,255,0.88); line-height: 1.55; }
+  .card-cta .footer-bar { background: rgba(0,0,0,0.4); color: rgba(255,255,255,0.5); }
+</style>
+</head>
+<body>
+
+<div class="capture-guide">
+  <strong>카드뉴스 캡처 안내</strong>
+  각 카드를 캡처하려면: Win + Shift + S 를 눌러 영역 선택 캡처 후 저장하세요.<br>
+  카드 크기: 800 x 800px / 총 8장 / 브라우저 확대 100% 상태에서 캡처하세요.
+</div>
+
+
+<!-- 카드 1: 표지 -->
+<div class="card card-cover">
+  <div class="deco-circle deco-1"></div>
+  <div class="deco-circle deco-2"></div>
+  <div class="content">
+    <div class="brand-tag">대전 AI 학원 추천</div>
+    <div class="main-title">AI 크리에이터,<br>대전에서<br><span>시작하세요</span></div>
+    <div class="sub-copy">영상 - 유튜브 - CG - 프롬프트 엔지니어링<br>실무 포트폴리오 완성까지</div>
+    <div class="highlight-box">
+      SBS컴퓨터아트학원 대전점<br>
+      국비지원 가능 - 042-719-8383
+    </div>
+  </div>
+  <div class="badge">1 / 8</div>
+  <div class="footer-bar">
+    <span>SBS컴퓨터아트학원 대전점</span>
+    <span>daejeon.sbsart.com</span>
+  </div>
+</div>
+
+
+<!-- 카드 2: 학원 소개 -->
+<div class="card card-content">
+  <div class="top-bar"></div>
+  <div class="inner">
+    <div class="section-label">ABOUT</div>
+    <div class="section-title">SBS컴퓨터아트학원<br><span>대전점</span>이란?</div>
+    <div class="dot-list">
+      <div class="dot-item">
+        <div class="dot"></div>
+        <div class="dot-text">
+          <div class="main">전국 17개 지점 운영</div>
+          <div class="sub">검증된 교육 네트워크 - 전국 단위 취업 연계 가능</div>
+        </div>
+      </div>
+      <div class="dot-item">
+        <div class="dot"></div>
+        <div class="dot-text">
+          <div class="main">Brand of the Year 연속 수상</div>
+          <div class="sub">2017년부터 2025년까지 취업교육 서비스 부문 수상</div>
+        </div>
+      </div>
+      <div class="dot-item">
+        <div class="dot"></div>
+        <div class="dot-text">
+          <div class="main">AI 크리에이터 양성 특화</div>
+          <div class="sub">영상, 유튜브, CG, 프롬프트 엔지니어링 전문 커리큘럼</div>
+        </div>
+      </div>
+      <div class="dot-item">
+        <div class="dot"></div>
+        <div class="dot-text">
+          <div class="main">실무 포트폴리오 완성</div>
+          <div class="sub">단순 교육이 아닌 취업에 바로 쓸 수 있는 결과물 완성</div>
+        </div>
+      </div>
+      <div class="dot-item">
+        <div class="dot"></div>
+        <div class="dot-text">
+          <div class="main">국비지원 과정 운영</div>
+          <div class="sub">국민내일배움카드로 수강료 부담 최소화</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="badge">2 / 8</div>
+  <div class="footer-bar">
+    <span>SBS컴퓨터아트학원 대전점</span>
+    <span>daejeon.sbsart.com</span>
+  </div>
+</div>
+
+
+<!-- 카드 3: AI 과정 라인업 -->
+<div class="card card-content">
+  <div class="top-bar"></div>
+  <div class="inner">
+    <div class="section-label">COURSES</div>
+    <div class="section-title">AI <span>과정 라인업</span></div>
+    <div class="course-grid">
+      <div class="course-item">
+        <div class="c-tag">AI CREATOR</div>
+        <div class="c-name">영상 모션</div>
+        <div class="c-desc">AI 기반 영상 편집<br>모션그래픽 실무</div>
+        <div class="c-tools">
+          <span class="tool-chip">Runway</span>
+          <span class="tool-chip">After Effects</span>
+        </div>
+      </div>
+      <div class="course-item">
+        <div class="c-tag">AI CREATOR</div>
+        <div class="c-name">유튜브</div>
+        <div class="c-desc">기획부터 채널 운영<br>AI 콘텐츠 제작</div>
+        <div class="c-tools">
+          <span class="tool-chip">ChatGPT</span>
+          <span class="tool-chip">Canva</span>
+        </div>
+      </div>
+      <div class="course-item">
+        <div class="c-tag">AI CREATOR</div>
+        <div class="c-name">CG / Maya</div>
+        <div class="c-desc">3D 모델링 + AI<br>영화 게임 광고 대비</div>
+        <div class="c-tools">
+          <span class="tool-chip">Maya</span>
+          <span class="tool-chip">AI 렌더링</span>
+        </div>
+      </div>
+      <div class="course-item">
+        <div class="c-tag">AI SKILL</div>
+        <div class="c-name">프롬프트 엔지니어링</div>
+        <div class="c-desc">AI 활용 능력<br>업무 자동화 적용</div>
+        <div class="c-tools">
+          <span class="tool-chip">Claude</span>
+          <span class="tool-chip">Midjourney</span>
+        </div>
+      </div>
+      <div class="course-item full">
+        <div class="c-tag">CERTIFICATION</div>
+        <div class="c-name">ACA(Adobe Certified Associate) 자격증 대비</div>
+        <div class="c-desc">포토샵, 일러스트레이터 기반 국제 자격증 / AI 디자인 도구 병행</div>
+        <div class="c-tools">
+          <span class="tool-chip">Photoshop</span>
+          <span class="tool-chip">Illustrator</span>
+          <span class="tool-chip">AI 디자인</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="badge">3 / 8</div>
+  <div class="footer-bar">
+    <span>SBS컴퓨터아트학원 대전점</span>
+    <span>daejeon.sbsart.com</span>
+  </div>
+</div>
+
+
+<!-- 카드 4: 국비지원 -->
+<div class="card card-content">
+  <div class="top-bar"></div>
+  <div class="inner">
+    <div class="section-label">SUBSIDY</div>
+    <div class="section-title"><span>국비지원</span>으로 배울 수 있어요</div>
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="label">지원 한도</div>
+        <div class="value"><span class="accent">300</span>만 원~</div>
+        <div class="sub">최대 500만 원 (5년 유효)</div>
+      </div>
+      <div class="info-item">
+        <div class="label">국가 부담 비율</div>
+        <div class="value"><span class="accent">45~85</span>%</div>
+        <div class="sub">나머지만 본인 부담</div>
+      </div>
+      <div class="info-item full">
+        <div class="label">국민내일배움카드란?</div>
+        <div class="value" style="font-size:16px;">구직자, 재직자, 자영업자 모두 신청 가능</div>
+        <div class="sub" style="margin-top:8px;">정부가 직업훈련비를 지원하는 카드 / 출석률 충족 시 훈련장려금 추가 지급</div>
+      </div>
+    </div>
+    <div class="step-list" style="margin-top:14px; flex:0;">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <div class="title">고용24에서 국민내일배움카드 신청</div>
+          <div class="desc">work24.go.kr 접속 후 신청</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <div class="title">SBS컴퓨터아트학원 대전점 무료 상담</div>
+          <div class="desc">042-719-8383 / daejeon.sbsart.com</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="badge">4 / 8</div>
+  <div class="footer-bar">
+    <span>SBS컴퓨터아트학원 대전점</span>
+    <span>daejeon.sbsart.com</span>
+  </div>
+</div>
+
+
+<!-- 카드 5: 취업 연계 -->
+<div class="card card-content">
+  <div class="top-bar"></div>
+  <div class="inner">
+    <div class="section-label">CAREER</div>
+    <div class="section-title">수료 후 <span>취업</span>까지 연결</div>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <div class="title">전용 취업지원센터 운영</div>
+          <div class="desc">수료 후 취업 상담 전담 조직 운영</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <div class="title">1:1 이력서 및 포트폴리오 컨설팅</div>
+          <div class="desc">개인 목표와 수준에 맞는 맞춤형 취업 서류 완성</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <div class="title">기업 맞춤형 모의 면접</div>
+          <div class="desc">실전 대비 면접 연습 및 피드백 제공</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-text">
+          <div class="title">협력 기업 채용 연계</div>
+          <div class="desc">영상, 광고, 콘텐츠, 미디어 업계 채용 연결</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="badge">5 / 8</div>
+  <div class="footer-bar">
+    <span>SBS컴퓨터아트학원 대전점</span>
+    <span>daejeon.sbsart.com</span>
+  </div>
+</div>
+
+
+<!-- 카드 6: 학원 강점 -->
+<div class="card card-content">
+  <div class="top-bar"></div>
+  <div class="inner">
+    <div class="section-label">STRENGTH</div>
+    <div class="section-title">SBS만의 <span>강점</span></div>
+    <div class="strength-grid">
+      <div class="str-item">
+        <div class="str-title">검증된 브랜드</div>
+        <div class="str-desc">2017~2025년 Brand of the Year 취업교육 서비스 부문 연속 수상</div>
+      </div>
+      <div class="str-item">
+        <div class="str-title">AI 크리에이터 특화</div>
+        <div class="str-desc">영상, 유튜브, CG, 프롬프트까지 크리에이터 전 분야 커리큘럼</div>
+      </div>
+      <div class="str-item">
+        <div class="str-title">실무 포트폴리오</div>
+        <div class="str-desc">수료 시 채용 현장에 바로 제출 가능한 결과물 완성</div>
+      </div>
+      <div class="str-item">
+        <div class="str-title">유연한 수업 일정</div>
+        <div class="str-desc">평일 야간반 + 주말반 운영 - 직장인, 학생 모두 가능</div>
+      </div>
+      <div class="str-item">
+        <div class="str-title">전국 네트워크</div>
+        <div class="str-desc">17개 지점 운영 - 전국 단위 취업 연계 및 교육 노하우</div>
+      </div>
+      <div class="str-item">
+        <div class="str-title">국비지원 적용</div>
+        <div class="str-desc">국민내일배움카드로 수강료 최소화 - 무료 상담 가능</div>
+      </div>
+    </div>
+  </div>
+  <div class="badge">6 / 8</div>
+  <div class="footer-bar">
+    <span>SBS컴퓨터아트학원 대전점</span>
+    <span>daejeon.sbsart.com</span>
+  </div>
+</div>
+
+
+<!-- 카드 7: 수업 시간 및 위치 -->
+<div class="card card-content">
+  <div class="top-bar"></div>
+  <div class="inner">
+    <div class="section-label">INFO</div>
+    <div class="section-title">수업 시간 및 <span>위치 안내</span></div>
+    <div class="schedule-box">
+      <div class="sch-row">
+        <div class="sch-label">평일반</div>
+        <div class="sch-value">오후 6시 ~ 오후 10시<br>직장인 - 학생 수강 가능</div>
+      </div>
+      <div class="sch-row">
+        <div class="sch-label">주말반</div>
+        <div class="sch-value">오전 9시 ~ 오후 6시<br>집중 수강 희망자 추천</div>
+      </div>
+      <div class="sch-row">
+        <div class="sch-label">주소</div>
+        <div class="sch-value">대전광역시 서구 대덕대로 179<br>굿모닝어학원빌딩 9층</div>
+      </div>
+      <div class="sch-row">
+        <div class="sch-label">전화</div>
+        <div class="sch-value">042-719-8383</div>
+      </div>
+      <div class="sch-row">
+        <div class="sch-label">홈페이지</div>
+        <div class="sch-value">daejeon.sbsart.com</div>
+      </div>
+    </div>
+    <div class="dot-list" style="flex:0; margin-top:8px;">
+      <div class="dot-item">
+        <div class="dot"></div>
+        <div class="dot-text">
+          <div class="main">이런 분께 추천합니다</div>
+          <div class="sub">AI 도구 업무 활용 - 영상/유튜브/CG 취업 준비 - 직장 병행 수강 - 포트폴리오 완성이 목표인 분</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="badge">7 / 8</div>
+  <div class="footer-bar">
+    <span>SBS컴퓨터아트학원 대전점</span>
+    <span>daejeon.sbsart.com</span>
+  </div>
+</div>
+
+
+<!-- 카드 8: CTA -->
+<div class="card card-cta">
+  <div class="deco deco-1"></div>
+  <div class="deco deco-2"></div>
+  <div class="content">
+    <div class="cta-label">무료 상담 신청</div>
+    <div class="cta-title">지금 바로<br>상담받아 보세요</div>
+    <div class="summary-box">
+      <div class="s-row">
+        <div class="s-label">학원명</div>
+        <div class="s-value">SBS컴퓨터아트학원 대전점</div>
+      </div>
+      <div class="s-row">
+        <div class="s-label">대표 과정</div>
+        <div class="s-value">AI 크리에이터 (영상 - 유튜브 - CG) / 프롬프트 엔지니어링</div>
+      </div>
+      <div class="s-row">
+        <div class="s-label">국비지원</div>
+        <div class="s-value">국민내일배움카드 적용 가능</div>
+      </div>
+      <div class="s-row">
+        <div class="s-label">수업 시간</div>
+        <div class="s-value">평일 오후 6시~10시 / 주말 9시~18시</div>
+      </div>
+      <div class="s-row">
+        <div class="s-label">연락처</div>
+        <div class="s-value">042-719-8383 / daejeon.sbsart.com</div>
+      </div>
+    </div>
+  </div>
+  <div class="badge">8 / 8</div>
+  <div class="footer-bar">
+    <span>SBS컴퓨터아트학원 대전점</span>
+    <span>daejeon.sbsart.com</span>
+  </div>
+</div>
+
+</body>
+</html>

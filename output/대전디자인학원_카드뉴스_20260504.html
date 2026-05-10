@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>대전 디자인 학원 카드뉴스</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0A0A14;
+    font-family: 'Noto Sans KR', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    gap: 32px;
+  }
+
+  .capture-guide {
+    background: #1a1a2e;
+    border: 2px dashed #C026D3;
+    border-radius: 12px;
+    padding: 16px 28px;
+    color: #E879F9;
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.8;
+    max-width: 860px;
+    width: 100%;
+  }
+  .capture-guide strong { color: #fff; font-size: 15px; }
+
+  .card {
+    width: 800px; height: 800px;
+    border-radius: 20px;
+    position: relative; overflow: hidden; flex-shrink: 0;
+  }
+
+  .badge {
+    position: absolute; top: 24px; right: 28px;
+    background: rgba(255,255,255,0.18);
+    border: 1.5px solid rgba(255,255,255,0.35);
+    border-radius: 20px; padding: 5px 14px;
+    color: #fff; font-size: 13px; font-weight: 700;
+    letter-spacing: 1px; z-index: 10;
+  }
+  .badge-dark {
+    color: #C026D3;
+    background: rgba(192,38,211,0.1);
+    border-color: rgba(192,38,211,0.35);
+  }
+
+  .footer-bar {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 48px; display: flex; align-items: center;
+    justify-content: space-between; padding: 0 28px; z-index: 10;
+  }
+  .footer-bar span { font-size: 12px; font-weight: 600; letter-spacing: 0.5px; }
+
+  /* ── CARD 1: 표지 ── */
+  .card-cover {
+    background: linear-gradient(145deg, #1a0526 0%, #6B21A8 45%, #C026D3 75%, #E879F9 100%);
+  }
+  .card-cover .orb1 {
+    position: absolute; width: 360px; height: 360px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,121,249,0.25) 0%, transparent 70%);
+    top: -80px; right: -70px;
+  }
+  .card-cover .orb2 {
+    position: absolute; width: 220px; height: 220px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(192,38,211,0.2) 0%, transparent 70%);
+    bottom: 80px; left: -50px;
+  }
+  .card-cover .inner {
+    position: relative; z-index: 5;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    height: 100%; padding: 0 52px; text-align: center;
+  }
+  .palette-row { display: flex; gap: 10px; margin-bottom: 22px; }
+  .palette-dot { width: 18px; height: 18px; border-radius: 50%; }
+  .card-cover .brand-tag {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 24px; padding: 6px 20px;
+    color: #F5D0FE; font-size: 13px; font-weight: 700;
+    letter-spacing: 2px; margin-bottom: 22px;
+  }
+  .card-cover .main-title {
+    color: #fff; font-size: 42px; font-weight: 900;
+    line-height: 1.25; margin-bottom: 18px; word-break: keep-all;
+  }
+  .card-cover .main-title span { color: #F5D0FE; }
+  .card-cover .sub-copy {
+    color: rgba(255,255,255,0.78); font-size: 16px;
+    line-height: 1.8; word-break: keep-all;
+  }
+  .card-cover .footer-bar { background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.12); }
+  .card-cover .footer-bar span { color: rgba(255,255,255,0.65); }
+
+  /* ── 본문 카드 공통 ── */
+  .card-body { background: #FDF4FF; }
+  .card-body .header-strip {
+    height: 10px; width: 100%;
+    position: absolute; top: 0; left: 0;
+    background: linear-gradient(90deg, #6B21A8, #C026D3, #E879F9, #FB923C);
+  }
+  .card-body .inner {
+    padding: 40px 52px 60px;
+    display: flex; flex-direction: column; height: 100%;
+  }
+  .section-label {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; color: #C026D3;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+  .section-title {
+    font-size: 30px; font-weight: 900;
+    color: #3B0764; line-height: 1.3;
+    margin-bottom: 26px; word-break: keep-all;
+  }
+  .section-title span { color: #C026D3; }
+  .card-body .footer-bar { background: linear-gradient(90deg, #6B21A8, #C026D3); }
+  .card-body .footer-bar span { color: rgba(255,255,255,0.88); }
+
+  /* 전망 그리드 */
+  .prospect-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .prospect-box {
+    background: #fff; border-radius: 14px;
+    padding: 18px 16px;
+    box-shadow: 0 2px 8px rgba(192,38,211,0.1);
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .prospect-box.hi { background: linear-gradient(135deg, #6B21A8, #C026D3); }
+  .pb-label-top {
+    font-size: 11px; font-weight: 700; color: #C026D3;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+  .prospect-box.hi .pb-label-top { color: rgba(255,255,255,0.7); }
+  .pb-num { font-size: 22px; font-weight: 900; color: #3B0764; line-height: 1.2; }
+  .prospect-box.hi .pb-num { color: #fff; }
+  .pb-label { font-size: 12px; color: #556; line-height: 1.5; word-break: keep-all; }
+  .prospect-box.hi .pb-label { color: rgba(255,255,255,0.82); }
+
+  /* 분야 4개 */
+  .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .field-box {
+    background: #fff; border-radius: 14px;
+    padding: 18px 16px;
+    box-shadow: 0 2px 8px rgba(192,38,211,0.07);
+  }
+  .field-box:nth-child(1) { border-top: 4px solid #C026D3; }
+  .field-box:nth-child(2) { border-top: 4px solid #7C3AED; }
+  .field-box:nth-child(3) { border-top: 4px solid #DB2777; }
+  .field-box:nth-child(4) { border-top: 4px solid #0284C7; }
+  .field-title { font-size: 15px; font-weight: 800; color: #3B0764; margin-bottom: 8px; }
+  .prog-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+  .prog-tag {
+    background: #FAF5FF; border: 1px solid #D8B4FE;
+    border-radius: 16px; padding: 2px 8px;
+    font-size: 11px; font-weight: 700; color: #7C3AED;
+  }
+  .field-job { font-size: 11px; color: #667; line-height: 1.5; word-break: keep-all; }
+  .field-job strong { color: #C026D3; }
+
+  /* 로드맵 */
+  .roadmap { display: flex; flex-direction: column; }
+  .rm-step { display: flex; align-items: flex-start; gap: 16px; position: relative; }
+  .rm-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 19px; top: 44px;
+    width: 2px; height: 22px;
+    background: linear-gradient(#C026D3, #E879F9);
+  }
+  .rm-left { padding-bottom: 22px; }
+  .rm-circle {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 900; color: #fff; flex-shrink: 0;
+  }
+  .rc1 { background: linear-gradient(135deg, #6B21A8, #C026D3); }
+  .rc2 { background: linear-gradient(135deg, #C026D3, #DB2777); }
+  .rc3 { background: linear-gradient(135deg, #7C3AED, #6B21A8); }
+  .rc4 { background: linear-gradient(135deg, #0284C7, #0EA5E9); }
+  .rm-body {
+    background: #fff; border-radius: 12px;
+    padding: 13px 16px; flex: 1;
+    box-shadow: 0 2px 6px rgba(192,38,211,0.07);
+    margin-bottom: 22px;
+  }
+  .rm-title { font-size: 14px; font-weight: 800; color: #3B0764; margin-bottom: 4px; }
+  .rm-desc { font-size: 12px; color: #556; line-height: 1.55; word-break: keep-all; }
+  .rm-desc strong { color: #C026D3; }
+
+  /* 학원 리스트 */
+  .academy-list { display: flex; flex-direction: column; gap: 11px; }
+  .academy-item {
+    background: #fff;
+    border-left: 5px solid #C026D3;
+    border-radius: 0 12px 12px 0;
+    padding: 12px 16px;
+    box-shadow: 0 2px 6px rgba(192,38,211,0.07);
+  }
+  .academy-item:nth-child(2) { border-left-color: #7C3AED; }
+  .academy-item:nth-child(3) { border-left-color: #DB2777; }
+  .academy-item:nth-child(4) { border-left-color: #0284C7; }
+  .academy-item:nth-child(5) { border-left-color: #D97706; }
+  .academy-name { font-size: 14px; font-weight: 800; color: #3B0764; margin-bottom: 5px; }
+  .tag-wrap { display: flex; gap: 5px; flex-wrap: wrap; }
+  .tag {
+    background: #FAF5FF; border: 1px solid #D8B4FE;
+    border-radius: 20px; padding: 2px 9px;
+    font-size: 11px; font-weight: 700; color: #7C3AED;
+  }
+  .alert-purple {
+    background: #FAF5FF; border: 2px solid #C026D3;
+    border-radius: 12px; padding: 12px 16px;
+    font-size: 13px; color: #3B0764; line-height: 1.65;
+    word-break: keep-all; margin-top: 8px;
+  }
+  .alert-purple strong { color: #7C3AED; }
+
+  /* 연봉 카드 */
+  .salary-list { display: flex; flex-direction: column; gap: 14px; }
+  .salary-item {
+    background: #fff; border-radius: 14px;
+    padding: 16px 20px;
+    box-shadow: 0 2px 8px rgba(192,38,211,0.07);
+    display: flex; align-items: center; gap: 16px;
+  }
+  .salary-bar {
+    width: 6px; border-radius: 4px; align-self: stretch; flex-shrink: 0;
+  }
+  .sb-purple { background: linear-gradient(#6B21A8, #C026D3); }
+  .sb-blue   { background: linear-gradient(#0284C7, #0EA5E9); }
+  .sb-pink   { background: linear-gradient(#C026D3, #DB2777); }
+  .salary-info { flex: 1; }
+  .salary-title { font-size: 14px; font-weight: 800; color: #3B0764; margin-bottom: 4px; }
+  .salary-range { font-size: 22px; font-weight: 900; color: #C026D3; }
+  .salary-note { font-size: 11px; color: #667; margin-top: 3px; line-height: 1.45; }
+  .tip-box {
+    background: linear-gradient(135deg, #6B21A8, #C026D3);
+    border-radius: 14px; padding: 16px 20px;
+    font-size: 14px; color: #fff; line-height: 1.75; word-break: keep-all;
+    margin-top: 14px;
+  }
+  .tip-box strong { color: #F5D0FE; }
+
+  /* CTA */
+  .card-cta {
+    background: linear-gradient(145deg, #1a0526 0%, #6B21A8 50%, #C026D3 100%);
+  }
+  .card-cta .orb1 {
+    position: absolute; width: 320px; height: 320px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,121,249,0.2) 0%, transparent 70%);
+    top: -70px; right: -60px;
+  }
+  .card-cta .orb2 {
+    position: absolute; width: 180px; height: 180px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(251,146,60,0.12) 0%, transparent 70%);
+    bottom: 100px; left: -30px;
+  }
+  .card-cta .inner {
+    position: relative; z-index: 5;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    height: 100%; padding: 0 52px;
+    text-align: center; gap: 20px;
+  }
+  .cta-title { font-size: 36px; font-weight: 900; color: #fff; line-height: 1.3; word-break: keep-all; }
+  .cta-title span { color: #F5D0FE; }
+  .cta-sub { font-size: 16px; color: rgba(255,255,255,0.78); line-height: 1.8; word-break: keep-all; }
+  .path-chips { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+  .path-chip {
+    background: rgba(255,255,255,0.12);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    border-radius: 14px; padding: 14px 10px; text-align: center;
+  }
+  .pc-label { font-size: 14px; font-weight: 800; color: #fff; margin-bottom: 4px; }
+  .pc-desc { font-size: 11px; color: rgba(255,255,255,0.65); line-height: 1.4; word-break: keep-all; }
+  .card-cta .footer-bar { background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.12); }
+  .card-cta .footer-bar span { color: rgba(255,255,255,0.65); }
+</style>
+</head>
+<body>
+
+<div class="capture-guide">
+  <strong>캡처 방법 안내</strong><br>
+  각 카드 위에서 <strong>Win + Shift + S</strong> → 카드 영역 드래그 → 캡처 후 붙여넣기<br>
+  카드 크기: 800×800px | 총 7장
+</div>
+
+<!-- CARD 1: 표지 -->
+<div class="card card-cover">
+  <div class="orb1"></div><div class="orb2"></div>
+  <div class="badge">1 / 7</div>
+  <div class="inner">
+    <div class="palette-row">
+      <div class="palette-dot" style="background:#C026D3"></div>
+      <div class="palette-dot" style="background:#7C3AED"></div>
+      <div class="palette-dot" style="background:#DB2777"></div>
+      <div class="palette-dot" style="background:#FB923C"></div>
+      <div class="palette-dot" style="background:#0284C7"></div>
+    </div>
+    <div class="brand-tag">대전 디자인 교육 가이드</div>
+    <div class="main-title">대전<br><span>디자인 학원</span><br>완벽 가이드</div>
+    <div class="sub-copy">
+      그래픽 · UI/UX · 영상편집 과정 비교<br>
+      국비지원 + 취업 연봉 정보 총정리
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 디자인 교육 정보</span>
+    <span>#디자인학원 #대전</span>
+  </div>
+</div>
+
+<!-- CARD 2: 전망 -->
+<div class="card card-body">
+  <div class="header-strip"></div>
+  <div class="badge badge-dark">2 / 7</div>
+  <div class="inner">
+    <div class="section-label">WHY DESIGN</div>
+    <div class="section-title">지금 디자인을<br><span>배워야 하는 이유</span></div>
+    <div class="prospect-grid">
+      <div class="prospect-box hi">
+        <div class="pb-label-top">AI 대체 불가</div>
+        <div class="pb-num">직업 1위</div>
+        <div class="pb-label">UI/UX 디자이너<br>AI 시대 생존 직종</div>
+      </div>
+      <div class="prospect-box">
+        <div class="pb-label-top">시장 수요</div>
+        <div class="pb-num">급증 중</div>
+        <div class="pb-label">웹·앱 UX 중요성 증가<br>디자이너 인력 부족</div>
+      </div>
+      <div class="prospect-box">
+        <div class="pb-label-top">UI/UX 신입 연봉</div>
+        <div class="pb-num">3,000만+</div>
+        <div class="pb-label">IT 대기업<br>5,000만 원 이상</div>
+      </div>
+      <div class="prospect-box hi">
+        <div class="pb-label-top">영상 콘텐츠</div>
+        <div class="pb-num">폭발 성장</div>
+        <div class="pb-label">영상편집 전문가<br>수요 매년 증가</div>
+      </div>
+    </div>
+    <div style="margin-top:16px; background:#fff; border-radius:12px; padding:14px 18px; border-left:4px solid #C026D3; box-shadow:0 2px 6px rgba(192,38,211,0.08); font-size:13px; color:#3B0764; line-height:1.7; word-break:keep-all;">
+      포트폴리오 <strong style="color:#C026D3;">한 개</strong>가 연봉을 결정합니다 — 지금 시작이 가장 빠릅니다.
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 디자인 교육 정보</span>
+    <span>#디자인취업전망</span>
+  </div>
+</div>
+
+<!-- CARD 3: 분야 4가지 -->
+<div class="card card-body">
+  <div class="header-strip"></div>
+  <div class="badge badge-dark">3 / 7</div>
+  <div class="inner">
+    <div class="section-label">DESIGN FIELDS</div>
+    <div class="section-title">대전에서 배울 수 있는<br><span>디자인 분야 4가지</span></div>
+    <div class="field-grid">
+      <div class="field-box">
+        <div class="field-title">그래픽 디자인</div>
+        <div class="prog-tags">
+          <span class="prog-tag">포토샵</span>
+          <span class="prog-tag">일러스트</span>
+          <span class="prog-tag">인디자인</span>
+        </div>
+        <div class="field-job"><strong>출판·광고대행사</strong><br>SNS 콘텐츠 제작</div>
+      </div>
+      <div class="field-box">
+        <div class="field-title">UI/UX 디자인</div>
+        <div class="prog-tags">
+          <span class="prog-tag">피그마</span>
+          <span class="prog-tag">포토샵</span>
+          <span class="prog-tag">HTML/CSS</span>
+        </div>
+        <div class="field-job"><strong>IT기업·스타트업</strong><br>앱·서비스 디자이너</div>
+      </div>
+      <div class="field-box">
+        <div class="field-title">영상편집</div>
+        <div class="prog-tags">
+          <span class="prog-tag">프리미어</span>
+          <span class="prog-tag">에프터이펙트</span>
+        </div>
+        <div class="field-job"><strong>방송·유튜브</strong><br>광고영상 제작</div>
+      </div>
+      <div class="field-box">
+        <div class="field-title">웹디자인</div>
+        <div class="prog-tags">
+          <span class="prog-tag">HTML/CSS</span>
+          <span class="prog-tag">반응형웹</span>
+        </div>
+        <div class="field-job"><strong>웹에이전시</strong><br>쇼핑몰·퍼블리셔</div>
+      </div>
+    </div>
+    <div style="margin-top:14px; background:#fff; border-radius:12px; padding:12px 16px; border-left:4px solid #7C3AED; font-size:13px; color:#3B0764; line-height:1.65; word-break:keep-all; box-shadow:0 2px 6px rgba(192,38,211,0.07);">
+      <strong style="color:#7C3AED;">그래픽 + UI/UX 통합 과정</strong>이 취업에 가장 유리합니다.
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 디자인 교육 정보</span>
+    <span>#디자인분야</span>
+  </div>
+</div>
+
+<!-- CARD 4: 로드맵 -->
+<div class="card card-body">
+  <div class="header-strip"></div>
+  <div class="badge badge-dark">4 / 7</div>
+  <div class="inner">
+    <div class="section-label">ROADMAP</div>
+    <div class="section-title">디자이너 되는<br><span>학습 로드맵</span></div>
+    <div class="roadmap">
+      <div class="rm-step">
+        <div class="rm-left"><div class="rm-circle rc1">1</div></div>
+        <div class="rm-body">
+          <div class="rm-title">기초 툴 습득 (1~2개월)</div>
+          <div class="rm-desc"><strong>포토샵 · 일러스트레이터</strong> 기본기<br>레이어, 패스, 색상 이론 마스터</div>
+        </div>
+      </div>
+      <div class="rm-step">
+        <div class="rm-left"><div class="rm-circle rc2">2</div></div>
+        <div class="rm-body">
+          <div class="rm-title">전문 분야 심화 (2~3개월)</div>
+          <div class="rm-desc"><strong>피그마(UI/UX) · 프리미어(영상)</strong><br>· 인디자인(편집) 중 선택 집중</div>
+        </div>
+      </div>
+      <div class="rm-step">
+        <div class="rm-left"><div class="rm-circle rc3">3</div></div>
+        <div class="rm-body">
+          <div class="rm-title">포트폴리오 제작 (1~2개월)</div>
+          <div class="rm-desc">실무 프로젝트 3~5개 제작<br><strong>AI 도구 활용</strong>으로 완성도 UP</div>
+        </div>
+      </div>
+      <div class="rm-step">
+        <div class="rm-left"><div class="rm-circle rc4">4</div></div>
+        <div class="rm-body">
+          <div class="rm-title">취업 · 프리랜서 데뷔</div>
+          <div class="rm-desc">학원 <strong>취업 연계</strong> 활용<br>포트폴리오 리뷰 + 면접 코칭</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 디자인 교육 정보</span>
+    <span>#디자인로드맵</span>
+  </div>
+</div>
+
+<!-- CARD 5: 학원 추천 -->
+<div class="card card-body">
+  <div class="header-strip"></div>
+  <div class="badge badge-dark">5 / 7</div>
+  <div class="inner">
+    <div class="section-label">DAEJEON ACADEMY</div>
+    <div class="section-title">대전 <span>디자인 학원</span> 5곳</div>
+    <div class="academy-list">
+      <div class="academy-item">
+        <div class="academy-name">그린컴퓨터아트학원 (대전둔산)</div>
+        <div class="tag-wrap">
+          <span class="tag">UI/UX 웹앱디자인</span>
+          <span class="tag">AI 시각편집</span>
+          <span class="tag">국비 100%</span>
+        </div>
+      </div>
+      <div class="academy-item">
+        <div class="academy-name">대전세잔직업전문학교</div>
+        <div class="tag-wrap">
+          <span class="tag">포토샵·일러스트</span>
+          <span class="tag">영상편집</span>
+          <span class="tag">웹디자인 통합</span>
+        </div>
+      </div>
+      <div class="academy-item">
+        <div class="academy-name">SBS아카데미컴퓨터아트학원 대전점</div>
+        <div class="tag-wrap">
+          <span class="tag">웹디자인·퍼블리셔</span>
+          <span class="tag">편집디자인</span>
+          <span class="tag">전국 17개지점</span>
+        </div>
+      </div>
+      <div class="academy-item">
+        <div class="academy-name">더조은컴퓨터아카데미 (대전)</div>
+        <div class="tag-wrap">
+          <span class="tag">UI/UX 국비지원</span>
+          <span class="tag">훈련장려금</span>
+          <span class="tag">실무 프로젝트</span>
+        </div>
+      </div>
+      <div class="academy-item">
+        <div class="academy-name">하이미디어아카데미 (대전)</div>
+        <div class="tag-wrap">
+          <span class="tag">웹디자인</span>
+          <span class="tag">영상편집</span>
+          <span class="tag">소규모 실습</span>
+        </div>
+      </div>
+    </div>
+    <div class="alert-purple">
+      <strong>국민내일배움카드</strong>: 훈련비 최대 200만원 + 장려금 월 40만원<br>
+      고용24(work24.go.kr)에서 신청 후 수강 등록
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 디자인 교육 정보</span>
+    <span>#대전디자인학원</span>
+  </div>
+</div>
+
+<!-- CARD 6: 연봉 -->
+<div class="card card-body">
+  <div class="header-strip"></div>
+  <div class="badge badge-dark">6 / 7</div>
+  <div class="inner">
+    <div class="section-label">SALARY & CAREER</div>
+    <div class="section-title">디자이너<br><span>신입 연봉 현실</span></div>
+    <div class="salary-list">
+      <div class="salary-item">
+        <div class="salary-bar sb-purple"></div>
+        <div class="salary-info">
+          <div class="salary-title">UI/UX 디자이너</div>
+          <div class="salary-range">3,000~3,500만원</div>
+          <div class="salary-note">IT 대기업 5,000만원 이상 / AI 대체 불가 1위 직종</div>
+        </div>
+      </div>
+      <div class="salary-item">
+        <div class="salary-bar sb-blue"></div>
+        <div class="salary-info">
+          <div class="salary-title">웹 디자이너</div>
+          <div class="salary-range">2,876~4,500만원</div>
+          <div class="salary-note">HTML/CSS 퍼블리싱 병행 시 연봉 UP</div>
+        </div>
+      </div>
+      <div class="salary-item">
+        <div class="salary-bar sb-pink"></div>
+        <div class="salary-info">
+          <div class="salary-title">그래픽 디자이너</div>
+          <div class="salary-range">2,600~3,000만원</div>
+          <div class="salary-note">광고대행사·브랜딩 전문으로 연봉 상승 가능</div>
+        </div>
+      </div>
+    </div>
+    <div class="tip-box">
+      <strong>포트폴리오 퀄리티</strong>가 연봉을 결정합니다.<br>
+      학원에서 실무 프로젝트 3~5개 완성 후 취업 도전이 가장 효과적입니다.
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 디자인 교육 정보</span>
+    <span>#디자이너연봉</span>
+  </div>
+</div>
+
+<!-- CARD 7: CTA -->
+<div class="card card-cta">
+  <div class="orb1"></div><div class="orb2"></div>
+  <div class="badge">7 / 7</div>
+  <div class="inner">
+    <div class="cta-title">오늘부터<br><span>나만의 디자인</span><br>시작하세요</div>
+    <div class="cta-sub">
+      국비지원으로 부담 없이 배우고<br>
+      포트폴리오로 꿈의 취업을 잡으세요
+    </div>
+    <div class="path-chips">
+      <div class="path-chip">
+        <div class="pc-label">그래픽 디자인</div>
+        <div class="pc-desc">포토샵·일러스트<br>브랜드·출판</div>
+      </div>
+      <div class="path-chip">
+        <div class="pc-label">UI/UX 디자인</div>
+        <div class="pc-desc">피그마·웹앱<br>AI 대체 불가</div>
+      </div>
+      <div class="path-chip">
+        <div class="pc-label">영상편집</div>
+        <div class="pc-desc">프리미어·AE<br>유튜브·광고</div>
+      </div>
+      <div class="path-chip">
+        <div class="pc-label">국비지원</div>
+        <div class="pc-desc">최대 200만원<br>장려금 월 40만원</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>대전 디자인 교육 정보</span>
+    <span>#대전디자인학원</span>
+  </div>
+</div>
+
+</body>
+</html>
