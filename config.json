@@ -3,6 +3,5 @@
   "browserChannel": "msedge",
   "headless": false,
   "postsPerRun": 1,
-  "claudeTimeoutMinutes": 15,
-  "minChars": 1500
+  "claudeTimeoutMinutes": 15
 }
