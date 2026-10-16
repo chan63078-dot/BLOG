@@ -51,6 +51,7 @@ export async function publishPost(post, config, { dryRun = false } = {}) {
     headless: !!config.headless,
     viewport: { width: 1400, height: 900 },
     locale: 'ko-KR',
+    chromiumSandbox: true,
   });
   const page = context.pages()[0] ?? (await context.newPage());
   try {
