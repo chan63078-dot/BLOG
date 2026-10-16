@@ -9,6 +9,7 @@ const context = await chromium.launchPersistentContext(PROFILE_DIR, {
   headless: false,
   viewport: null,
   locale: 'ko-KR',
+  chromiumSandbox: true,
 });
 const page = context.pages()[0] ?? (await context.newPage());
 await page.goto('https://nid.naver.com/nidlogin.login?url=https%3A%2F%2Fblog.naver.com%2F' + config.blogId);
