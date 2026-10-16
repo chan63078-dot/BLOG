@@ -63,6 +63,34 @@ export function parsePost(text) {
   while (bodyLines.length && !bodyLines[0].trim()) bodyLines.shift();
 
   const body = bodyLines.join('\n').replace(/\n{3,}/g, '\n\n');
-  if (body.length < 500) throw new Error(`본문이 너무 짧습니다 (${body.length}자).`);
-  return { title, body, tags: [...new Set(tags)].slice(0, 30) };
+  const plainLength = plainText(body).length;
+  if (plainLength < 500) throw new Error(`본문이 너무 짧습니다 (${plainLength}자).`);
+  return { title, body, plainLength, tags: [...new Set(tags)].slice(0, 30) };
+}
+
+// 서식 기호를 뺀 실제 글자 (분량 계산용)
+export function plainText(body) {
+  return body
+    .split('\n')
+    .filter((l) => !/^-{3,}\s*$/.test(l) && !/^\|[\s:|-]+\|\s*$/.test(l))
+    .map((l) => l.replace(/^##\s+/, '').replace(/\*\*|==/g, '').replace(/^\||\|\s*$/g, '').replace(/\|/g, ' '))
+    .join('\n');
+}
+
+// CLAUDE.md 규칙 중 기계적으로 확인할 수 있는 것을 점검한다. 문제 목록을 돌려준다.
+export function checkPost(post, minChars = 1500) {
+  const problems = [];
+  const headings = post.body.split('\n').filter((l) => /^##\s+/.test(l)).length;
+  if (post.plainLength < minChars) problems.push(`본문이 ${post.plainLength}자로 ${minChars}자보다 짧습니다.`);
+  if (post.plainLength > 3000) problems.push(`본문이 ${post.plainLength}자로 너무 깁니다 (2,500자 안팎).`);
+  if (headings < 4 || headings > 6) problems.push(`소제목(##)이 ${headings}개입니다. 4~6개여야 합니다.`);
+  if (/koreait-daegu\.com|https?:\/\//i.test(post.body)) problems.push('본문에 링크가 있습니다. 링크를 빼야 합니다.');
+  if (/\[이미지 위치/.test(post.body)) problems.push('이미지 자리 표시가 있습니다.');
+  if (/^>\s/m.test(post.body)) problems.push('인용구(>)가 있습니다.');
+  if (post.body.split('\n').some((l) => /^\|.+\|\s*$/.test(l) && l.split('|').length - 2 > 2)) {
+    problems.push('3열 이상인 표가 있습니다. 2열까지만 씁니다.');
+  }
+  if (/\p{Extended_Pictographic}/u.test(post.body)) problems.push('본문에 이모지가 있습니다.');
+  if (post.tags.length < 5) problems.push(`태그가 ${post.tags.length}개입니다. 8~10개를 넣어야 합니다.`);
+  return problems;
 }

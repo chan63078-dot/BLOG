@@ -3,7 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
-import { ROOT, loadConfig, log, parsePost, today } from './common.mjs';
+import { ROOT, checkPost, loadConfig, log, parsePost, today } from './common.mjs';
 import { publishPost } from './publish.mjs';
 
 const TOPICS = path.join(ROOT, 'topics.txt');
@@ -64,6 +64,7 @@ async function writePost(topicLine, config) {
 
   const prompt = [
     'CLAUDE.md의 절차와 규칙에 따라 네이버 블로그 글을 작성해서 저장해줘.',
+    `오늘 날짜: ${today('-')}`,
     `메인키워드(주제): ${topic}`,
     promo ? `홍보: ${promo} (CTA 문단 포함)` : '정보성 글 (CTA 없음)',
     `저장 경로: ${rel}`,
@@ -74,6 +75,33 @@ async function writePost(topicLine, config) {
   if (!fs.existsSync(file)) throw new Error(`글 파일이 만들어지지 않았습니다: ${rel}`);
   log(`글 작성 완료: ${rel}`);
   return file;
+}
+
+// 규칙 점검에 걸리면 claude에게 한 번 고치게 하고, 그래도 안 되면 발행하지 않는다
+async function checkedPost(file, config) {
+  const rel = path.relative(ROOT, file).replaceAll('\\', '/');
+  const minChars = config.minChars ?? 1500;
+  for (let attempt = 0; ; attempt++) {
+    let problems;
+    let post;
+    try {
+      post = parsePost(fs.readFileSync(file, 'utf8'));
+      problems = checkPost(post, minChars);
+    } catch (err) {
+      problems = [err.message];
+    }
+    if (!problems.length) return post;
+    log(`규칙 점검에 걸림: ${problems.join(' / ')}`);
+    if (attempt >= 1) throw new Error(`고친 뒤에도 규칙에 맞지 않아 발행하지 않았습니다: ${rel}`);
+    const prompt = [
+      `${rel} 글이 CLAUDE.md 규칙에 맞지 않습니다. 아래 문제를 고쳐서 같은 경로에 다시 저장해줘.`,
+      `오늘 날짜: ${today('-')}`,
+      ...problems.map((p) => `- ${p}`),
+      '내용을 보강할 때도 CLAUDE.md의 사실 확인 규칙을 지켜줘.',
+    ].join('\n');
+    log('claude에게 수정 요청');
+    await runClaude(prompt, config.claudeTimeoutMinutes ?? 15);
+  }
 }
 
 async function processOne(config) {
@@ -92,7 +120,7 @@ async function processOne(config) {
     fs.writeFileSync(STATE, JSON.stringify({ pending: { topic: topicLine, file } }, null, 2), 'utf8');
   }
 
-  const post = parsePost(fs.readFileSync(file, 'utf8'));
+  const post = await checkedPost(file, config);
   if (noPublish) {
     log(`--no-publish: 발행하지 않음 (${post.title})`);
     return false;

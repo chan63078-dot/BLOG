@@ -26,11 +26,92 @@ async function editorFrame(page) {
   return frame;
 }
 
-async function typeBody(page, body) {
+// 서식 표기(CLAUDE.md 9장)를 에디터 서식으로 바꿔 입력한다.
+// 서식 적용에 실패하면 굵은 글씨/일반 글자로 대신 넣어서 발행 자체는 멈추지 않게 한다.
+const INLINE = /(\*\*[^*]+\*\*|==[^=]+==)/;
+
+async function typeBold(page, text) {
+  await page.keyboard.press('Control+B');
+  await page.keyboard.insertText(text);
+  await page.keyboard.press('Control+B');
+}
+
+async function typeInline(page, line) {
+  for (const part of line.split(INLINE).filter(Boolean)) {
+    const marked = part.match(/^(\*\*|==)(.+)\1$/);
+    // 형광펜(==)은 아직 굵은 글씨로 대신한다
+    if (marked) await typeBold(page, marked[2]);
+    else await page.keyboard.insertText(part);
+  }
+}
+
+async function setTextFormat(frame, name) {
+  await frame
+    .locator('button[data-name="text-format"], .se-text-format-toolbar-button')
+    .first()
+    .click({ timeout: 3000 });
+  await frame
+    .locator('[class*="text-format"] button, [class*="toolbar-option"] button, [role="option"]')
+    .filter({ hasText: new RegExp(`^\\s*${name}\\s*$`) })
+    .first()
+    .click({ timeout: 3000 });
+}
+
+async function typeHeading(page, frame, text) {
+  try {
+    await setTextFormat(frame, '소제목');
+    await page.keyboard.insertText(text);
+    await page.keyboard.press('Enter');
+    await setTextFormat(frame, '본문').catch(() => page.keyboard.press('Escape'));
+  } catch {
+    await page.keyboard.press('Escape');
+    log(`소제목 서식 적용 실패 → 굵은 글씨로 대신: ${text}`);
+    await typeBold(page, text);
+    await page.keyboard.press('Enter');
+  }
+}
+
+async function insertDivider(page, frame) {
+  try {
+    await frame
+      .locator('button[data-name="horizontal-line"], .se-insert-horizontal-line-default-toolbar-button')
+      .or(frame.locator('button:has-text("구분선")'))
+      .first()
+      .click({ timeout: 3000 });
+    await sleep(500);
+    // 구분선 아래 새 문단으로 커서를 옮긴다
+    await frame.locator('.se-component.se-text:not(.se-documentTitle) .se-text-paragraph').last().click();
+    await page.keyboard.press('End');
+  } catch {
+    log('구분선 삽입 실패 → 글자 구분선으로 대신');
+    await page.keyboard.insertText('────────────');
+    await page.keyboard.press('Enter');
+  }
+}
+
+export async function typeBody(page, frame, body) {
   const lines = body.split('\n');
   for (let i = 0; i < lines.length; i++) {
-    if (lines[i]) await page.keyboard.insertText(lines[i]);
-    if (i < lines.length - 1) await page.keyboard.press('Enter');
+    const line = lines[i];
+    const isLast = i === lines.length - 1;
+    if (/^##\s+/.test(line)) {
+      await typeHeading(page, frame, line.replace(/^##\s+/, ''));
+      continue;
+    }
+    if (/^-{3,}\s*$/.test(line)) {
+      await insertDivider(page, frame);
+      continue;
+    }
+    const cells = line.match(/^\|(.+)\|\s*$/)?.[1].split('|').map((c) => c.trim());
+    if (cells?.every((c) => /^:?-+:?$/.test(c))) continue; // 표 머리글 구분줄
+    if (cells) {
+      // 2열 표는 "항목: 내용" 줄로 입력한다
+      await typeBold(page, cells[0]);
+      if (cells[1]) await typeInline(page, `: ${cells.slice(1).join(' / ')}`);
+    } else if (line) {
+      await typeInline(page, line);
+    }
+    if (!isLast) await page.keyboard.press('Enter');
     if (i % 15 === 14) await sleep(300);
   }
 }
@@ -70,8 +151,8 @@ export async function publishPost(post, config, { dryRun = false } = {}) {
     await page.keyboard.insertText(post.title);
 
     await frame.locator('.se-component.se-text:not(.se-documentTitle) .se-text-paragraph').first().click();
-    await typeBody(page, post.body);
-    log(`에디터 입력 완료: ${post.title} (${post.body.length}자, 태그 ${post.tags.length}개)`);
+    await typeBody(page, frame, post.body);
+    log(`에디터 입력 완료: ${post.title} (${post.plainLength}자, 태그 ${post.tags.length}개)`);
 
     if (dryRun) {
       log('시험 실행: 발행 버튼은 누르지 않았습니다. 브라우저를 닫으면 끝납니다.');

@@ -41,6 +41,7 @@ npm install
 | `browserChannel` | `msedge`(기본) 또는 `chrome` |
 | `headless` | `false`면 브라우저 창이 보임. 처음엔 `false` 권장 |
 | `postsPerRun` | 한 번 실행할 때 발행할 글 수 (하루 1~2개 권장) |
+| `minChars` | 본문 최소 글자 수. 모자라면 Claude가 보강하고, 그래도 모자라면 발행하지 않음 |
 
 ## 3. 네이버 로그인 (최초 1회)
 
@@ -86,6 +87,17 @@ powershell -ExecutionPolicy Bypass -File setup-schedule.ps1 -Time 09:00
 - PC가 켜져 있고 **Windows에 로그인된 상태**여야 합니다 (브라우저를 띄우기 때문).
 - 지금 바로 시험: `Start-ScheduledTask -TaskName NaverBlogAgent`
 - 해제: `Unregister-ScheduledTask -TaskName NaverBlogAgent -Confirm:$false`
+
+## 글쓰기 규칙
+
+글쓰기 규칙은 `CLAUDE.md`에 있습니다(koreait_128 "세모지" 운영 규칙 기준). 말투·분량·금지 사항을 바꾸려면 이 파일을 고치면 됩니다.
+
+발행 전에 아래 항목을 자동으로 점검합니다. 걸리면 Claude에게 한 번 고치게 하고, 그래도 안 되면 **발행하지 않고** 주제를 남겨 둡니다.
+- 본문 1,500자 이상 (서식 기호 제외), 소제목 4~6개, 태그 5개 이상
+- 링크·학원 주소·이미지 자리 표시·인용구·이모지·3열 이상 표 없음
+
+에디터 서식: `## 소제목` → 소제목, `**굵게**` → 굵게, `---` → 구분선, `| 항목 | 내용 |` → "항목: 내용" 줄.
+(형광펜 `==...==`은 아직 굵은 글씨로 들어갑니다.)
 
 ## 결과 확인
 
