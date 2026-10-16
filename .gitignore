@@ -9,3 +9,9 @@ desktop.ini
 # 임시 파일
 *.tmp
 *.log
+
+# 블로그 에이전트
+node_modules/
+.naver-profile/
+logs/
+state.json

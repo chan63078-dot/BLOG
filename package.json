@@ -1,0 +1,16 @@
+{
+  "name": "naver-blog-agent",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "topics.txt 주제로 글을 쓰고 네이버 블로그에 자동 발행",
+  "scripts": {
+    "login": "node scripts/login.mjs",
+    "start": "node scripts/run.mjs",
+    "test-run": "node scripts/run.mjs --dry-run",
+    "publish-file": "node scripts/publish.mjs"
+  },
+  "dependencies": {
+    "playwright": "^1.48.0"
+  }
+}
