@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { chromium } from 'playwright';
-import { LOG_DIR, PROFILE_DIR, loadConfig, log, parsePost } from './common.mjs';
+import { IMAGE_LINE, LOG_DIR, PROFILE_DIR, browserOptions, loadConfig, log, parsePost } from './common.mjs';
 
 const POST_URL = /logNo=\d+|blog\.naver\.com\/[^/?]+\/\d{6,}/;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -71,6 +71,49 @@ async function typeHeading(page, frame, text) {
   }
 }
 
+// 사진·구분선처럼 블록을 넣은 뒤, 그 아래 새 문단 끝으로 커서를 옮긴다
+async function focusEnd(page, frame) {
+  await frame.locator('.se-component.se-text:not(.se-documentTitle) .se-text-paragraph').last().click();
+  await page.keyboard.press('End');
+}
+
+async function insertImage(page, frame, file, caption) {
+  const images = frame.locator('.se-component.se-image');
+  const before = await images.count();
+  try {
+    const [chooser] = await Promise.all([
+      page.waitForEvent('filechooser', { timeout: 10000 }),
+      frame
+        .locator('button[data-name="image"], .se-image-toolbar-button')
+        .or(frame.locator('button:has-text("사진")'))
+        .first()
+        .click(),
+    ]);
+    await chooser.setFiles(file);
+    await images.nth(before).waitFor({ timeout: 60000 });
+    await sleep(1000);
+  } catch (err) {
+    log(`사진 넣기 실패 (${path.basename(file)}): ${err.message.split('\n')[0]}`);
+    return;
+  }
+
+  let captioned = false;
+  if (caption) {
+    try {
+      await images.nth(before).locator('.se-caption .se-text-paragraph, [class*="caption"] .se-text-paragraph').first().click({ timeout: 3000 });
+      await page.keyboard.insertText(caption);
+      captioned = true;
+    } catch {
+      log('사진 설명 칸을 찾지 못해 본문 줄로 넣습니다.');
+    }
+  }
+  await focusEnd(page, frame);
+  if (caption && !captioned) {
+    await page.keyboard.insertText(caption);
+    await page.keyboard.press('Enter');
+  }
+}
+
 async function insertDivider(page, frame) {
   try {
     await frame
@@ -79,9 +122,7 @@ async function insertDivider(page, frame) {
       .first()
       .click({ timeout: 3000 });
     await sleep(500);
-    // 구분선 아래 새 문단으로 커서를 옮긴다
-    await frame.locator('.se-component.se-text:not(.se-documentTitle) .se-text-paragraph').last().click();
-    await page.keyboard.press('End');
+    await focusEnd(page, frame);
   } catch {
     log('구분선 삽입 실패 → 글자 구분선으로 대신');
     await page.keyboard.insertText('────────────');
@@ -89,17 +130,27 @@ async function insertDivider(page, frame) {
   }
 }
 
-export async function typeBody(page, frame, body) {
+export async function typeBody(page, frame, body, baseDir) {
   const lines = body.split('\n');
+  let afterBlock = false; // 사진·구분선 바로 뒤 빈 줄은 건너뛴다 (에디터가 이미 새 문단을 만듦)
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const isLast = i === lines.length - 1;
+    if (afterBlock && !line.trim()) continue;
+    afterBlock = false;
+    const image = line.trim().match(IMAGE_LINE);
+    if (image) {
+      await insertImage(page, frame, path.resolve(baseDir, image[1]), image[2]);
+      afterBlock = true;
+      continue;
+    }
     if (/^##\s+/.test(line)) {
       await typeHeading(page, frame, line.replace(/^##\s+/, ''));
       continue;
     }
     if (/^-{3,}\s*$/.test(line)) {
       await insertDivider(page, frame);
+      afterBlock = true;
       continue;
     }
     const cells = line.match(/^\|(.+)\|\s*$/)?.[1].split('|').map((c) => c.trim());
@@ -128,11 +179,10 @@ async function findPostUrl(page) {
 
 export async function publishPost(post, config, { dryRun = false } = {}) {
   const context = await chromium.launchPersistentContext(PROFILE_DIR, {
-    channel: config.browserChannel || undefined,
+    ...browserOptions(config),
     headless: !!config.headless,
     viewport: { width: 1400, height: 900 },
     locale: 'ko-KR',
-    chromiumSandbox: true,
   });
   const page = context.pages()[0] ?? (await context.newPage());
   try {
@@ -151,8 +201,8 @@ export async function publishPost(post, config, { dryRun = false } = {}) {
     await page.keyboard.insertText(post.title);
 
     await frame.locator('.se-component.se-text:not(.se-documentTitle) .se-text-paragraph').first().click();
-    await typeBody(page, frame, post.body);
-    log(`에디터 입력 완료: ${post.title} (${post.plainLength}자, 태그 ${post.tags.length}개)`);
+    await typeBody(page, frame, post.body, post.baseDir);
+    log(`에디터 입력 완료: ${post.title} (${post.plainLength}자, 사진 ${post.images.length}장, 태그 ${post.tags.length}개)`);
 
     if (dryRun) {
       log('시험 실행: 발행 버튼은 누르지 않았습니다. 브라우저를 닫으면 끝납니다.');
@@ -205,7 +255,7 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
     console.error('사용법: node scripts/publish.mjs output/파일.txt [--dry-run]');
     process.exit(1);
   }
-  const post = parsePost(fs.readFileSync(file, 'utf8'));
+  const post = parsePost(fs.readFileSync(file, 'utf8'), path.dirname(path.resolve(file)));
   const url = await publishPost(post, loadConfig(), { dryRun: process.argv.includes('--dry-run') });
   if (url) log(`발행 완료: ${url}`);
 }

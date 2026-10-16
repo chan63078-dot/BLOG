@@ -6,12 +6,25 @@ export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 export const PROFILE_DIR = path.join(ROOT, '.naver-profile');
 export const LOG_DIR = path.join(ROOT, 'logs');
 
+export function readConfig() {
+  return JSON.parse(fs.readFileSync(path.join(ROOT, 'config.json'), 'utf8'));
+}
+
 export function loadConfig() {
-  const config = JSON.parse(fs.readFileSync(path.join(ROOT, 'config.json'), 'utf8'));
+  const config = readConfig();
   if (!config.blogId || config.blogId.startsWith('여기에')) {
     throw new Error('config.json의 blogId에 네이버 아이디를 입력하세요.');
   }
   return config;
+}
+
+// browserChannel: msedge/chrome, browserPath: 브라우저 실행 파일을 직접 지정할 때
+export function browserOptions(config) {
+  return {
+    channel: config.browserPath ? undefined : config.browserChannel || undefined,
+    executablePath: config.browserPath || undefined,
+    chromiumSandbox: config.sandbox !== false,
+  };
 }
 
 // 날짜는 한국 시간 기준
@@ -30,9 +43,12 @@ export function log(...args) {
 const RULE = /^═{5,}\s*$/;
 const TAG_LINE = /^(#\S+\s*)+$/;
 const IMAGE_PLACEHOLDER = /^\[이미지 위치:.*\]\s*$/;
+// [[사진: images/01.png | 설명 (출처: …)]]
+export const IMAGE_LINE = /^\[\[사진:\s*([^|\]]+?)\s*(?:\|\s*(.*?))?\s*\]\]\s*$/;
 
-// output/*.txt 형식을 제목·본문·태그로 나눈다 (CLAUDE.md "파일 형식" 참고)
-export function parsePost(text) {
+// 글 파일을 제목·본문·태그·사진으로 나눈다 (CLAUDE.md "파일 형식" 참고)
+// baseDir: 사진 경로의 기준 폴더 (글 파일이 있는 폴더)
+export function parsePost(text, baseDir = ROOT) {
   const lines = text.replace(/^﻿/, '').replace(/\r\n/g, '\n').split('\n');
   const titleHeader = lines.findIndex((l) => l.includes('제목 칸'));
   const bodyHeader = lines.findIndex((l) => l.includes('본문 칸'));
@@ -65,21 +81,30 @@ export function parsePost(text) {
   const body = bodyLines.join('\n').replace(/\n{3,}/g, '\n\n');
   const plainLength = plainText(body).length;
   if (plainLength < 500) throw new Error(`본문이 너무 짧습니다 (${plainLength}자).`);
-  return { title, body, plainLength, tags: [...new Set(tags)].slice(0, 30) };
+  const images = body
+    .split('\n')
+    .map((l) => l.trim().match(IMAGE_LINE))
+    .filter(Boolean)
+    .map((m) => ({ file: path.resolve(baseDir, m[1]), caption: m[2] ?? '' }));
+  return { title, body, plainLength, images, baseDir, tags: [...new Set(tags)].slice(0, 30) };
 }
 
 // 서식 기호를 뺀 실제 글자 (분량 계산용)
 export function plainText(body) {
   return body
     .split('\n')
-    .filter((l) => !/^-{3,}\s*$/.test(l) && !/^\|[\s:|-]+\|\s*$/.test(l))
+    .filter((l) => !/^-{3,}\s*$/.test(l) && !/^\|[\s:|-]+\|\s*$/.test(l) && !IMAGE_LINE.test(l.trim()))
     .map((l) => l.replace(/^##\s+/, '').replace(/\*\*|==/g, '').replace(/^\||\|\s*$/g, '').replace(/\|/g, ' '))
     .join('\n');
 }
 
 // CLAUDE.md 규칙 중 기계적으로 확인할 수 있는 것을 점검한다. 문제 목록을 돌려준다.
-export function checkPost(post, minChars = 1500) {
+export function checkPost(post, { minChars = 1500, minImages = 5 } = {}) {
   const problems = [];
+  const missing = post.images.filter((img) => !fs.existsSync(img.file));
+  if (post.images.length < minImages) problems.push(`사진이 ${post.images.length}장입니다. ${minImages}장 이상 넣어야 합니다.`);
+  if (missing.length) problems.push(`없는 사진 파일: ${missing.map((i) => path.basename(i.file)).join(', ')}`);
+  if (post.images.some((img) => !img.caption)) problems.push('설명(캡션)이 없는 사진이 있습니다.');
   const headings = post.body.split('\n').filter((l) => /^##\s+/.test(l)).length;
   if (post.plainLength < minChars) problems.push(`본문이 ${post.plainLength}자로 ${minChars}자보다 짧습니다.`);
   if (post.plainLength > 3000) problems.push(`본문이 ${post.plainLength}자로 너무 깁니다 (2,500자 안팎).`);

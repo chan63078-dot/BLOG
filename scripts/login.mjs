@@ -1,15 +1,14 @@
 // 최초 1회: 브라우저를 열어 직접 네이버에 로그인한다.
 // 로그인 정보는 .naver-profile 폴더에 저장되고, 이후 자동 발행에서 그대로 쓴다.
 import { chromium } from 'playwright';
-import { PROFILE_DIR, loadConfig } from './common.mjs';
+import { PROFILE_DIR, browserOptions, loadConfig } from './common.mjs';
 
 const config = loadConfig();
 const context = await chromium.launchPersistentContext(PROFILE_DIR, {
-  channel: config.browserChannel || undefined,
+  ...browserOptions(config),
   headless: false,
   viewport: null,
   locale: 'ko-KR',
-  chromiumSandbox: true,
 });
 const page = context.pages()[0] ?? (await context.newPage());
 await page.goto('https://nid.naver.com/nidlogin.login?url=https%3A%2F%2Fblog.naver.com%2F' + config.blogId);
