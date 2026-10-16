@@ -8,7 +8,8 @@
     "login": "node scripts/login.mjs",
     "start": "node scripts/run.mjs",
     "test-run": "node scripts/run.mjs --dry-run",
-    "publish-file": "node scripts/publish.mjs"
+    "publish-file": "node scripts/publish.mjs",
+    "inspect": "node scripts/inspect-editor.mjs"
   },
   "dependencies": {
     "playwright": "^1.48.0"

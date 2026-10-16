@@ -47,12 +47,12 @@ async function typeInline(page, line) {
 
 async function setTextFormat(frame, name) {
   await frame
-    .locator('button[data-name="text-format"], .se-text-format-toolbar-button')
+    .locator('button[data-name="text-format"], .se-text-format-toolbar-button, button[class*="text-format"]')
     .first()
     .click({ timeout: 3000 });
   await frame
-    .locator('[class*="text-format"] button, [class*="toolbar-option"] button, [role="option"]')
-    .filter({ hasText: new RegExp(`^\\s*${name}\\s*$`) })
+    .locator('[class*="text-format"] button, [class*="toolbar-option"] button, [role="option"], li button')
+    .filter({ hasText: name, visible: true })
     .first()
     .click({ timeout: 3000 });
 }
@@ -94,7 +94,7 @@ async function insertImage(page, frame, file, caption) {
     await sleep(1000);
   } catch (err) {
     log(`사진 넣기 실패 (${path.basename(file)}): ${err.message.split('\n')[0]}`);
-    return;
+    return false;
   }
 
   let captioned = false;
@@ -112,6 +112,7 @@ async function insertImage(page, frame, file, caption) {
     await page.keyboard.insertText(caption);
     await page.keyboard.press('Enter');
   }
+  return captioned || !caption;
 }
 
 async function insertDivider(page, frame) {
@@ -140,8 +141,8 @@ export async function typeBody(page, frame, body, baseDir) {
     afterBlock = false;
     const image = line.trim().match(IMAGE_LINE);
     if (image) {
-      await insertImage(page, frame, path.resolve(baseDir, image[1]), image[2]);
-      afterBlock = true;
+      // 설명을 본문 줄로 넣었으면 다음 빈 줄은 살려서 소제목과 붙지 않게 한다
+      afterBlock = await insertImage(page, frame, path.resolve(baseDir, image[1]), image[2]);
       continue;
     }
     if (/^##\s+/.test(line)) {
