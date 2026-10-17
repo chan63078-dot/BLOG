@@ -1,0 +1,7 @@
+{
+  "blogId": "여기에_네이버_아이디",
+  "browserChannel": "msedge",
+  "headless": false,
+  "postsPerRun": 1,
+  "claudeTimeoutMinutes": 15
+}

@@ -3,9 +3,18 @@
 Thumbs.db
 desktop.ini
 
-# Claude Code 내부 파일
-.claude/
+# Claude Code 내부 파일 (자동 발행용 권한 설정만 공유)
+.claude/*
+!.claude/settings.json
 
 # 임시 파일
 *.tmp
 *.log
+
+# 블로그 에이전트
+node_modules/
+.naver-profile/
+logs/
+state.json
+output/*/images/
+output/*/cards/
