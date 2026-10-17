@@ -98,6 +98,21 @@ export function plainText(body) {
     .join('\n');
 }
 
+// CLAUDE.md 2-1장 금칙어 (제목·본문·사진 설명 모두 점검)
+const BANNED = [
+  ['여정', /여정/],
+  ['마법 같은', /마법\s*같/],
+  ['놀라운', /놀라운/],
+  ['함께 알아볼까요?', /알아볼까요/],
+  ['~해보시는 건 어떨까요?', /어떨까요/],
+  ['~에 대해 알아보겠습니다', /알아보겠습니다/],
+  ['완벽 정리', /완벽\s*정리/],
+  ['꼭 알아야 할', /꼭\s*알아야\s*할/],
+  ['최고', /최고/],
+  ['무조건', /무조건/],
+  ['100%', /100\s*%/],
+];
+
 // CLAUDE.md 규칙 중 기계적으로 확인할 수 있는 것을 점검한다. 문제 목록을 돌려준다.
 export function checkPost(post, { minChars = 1500, minImages = 5 } = {}) {
   const problems = [];
@@ -117,5 +132,7 @@ export function checkPost(post, { minChars = 1500, minImages = 5 } = {}) {
   }
   if (/\p{Extended_Pictographic}/u.test(post.body)) problems.push('본문에 이모지가 있습니다.');
   if (post.tags.length < 5) problems.push(`태그가 ${post.tags.length}개입니다. 8~10개를 넣어야 합니다.`);
+  const banned = BANNED.filter(([, re]) => re.test(post.title) || re.test(post.body)).map(([word]) => word);
+  if (banned.length) problems.push(`금칙어가 있습니다: ${banned.join(', ')} — 다른 표현으로 바꿔야 합니다.`);
   return problems;
 }
