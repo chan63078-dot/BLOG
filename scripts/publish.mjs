@@ -36,23 +36,44 @@ async function typeBold(page, text) {
   await page.keyboard.press('Control+B');
 }
 
-async function typeInline(page, line) {
+const HIGHLIGHT_COLOR = '#fff8b2'; // 글자 배경색 팔레트의 연노랑
+
+async function setBackgroundColor(frame, color) {
+  await frame.locator('button.se-background-color-toolbar-button:visible').first().click({ timeout: 3000 });
+  await frame.locator(`button.se-color-palette[data-color="${color}"]:visible`).first().click({ timeout: 3000 });
+}
+
+// 형광펜: 글자를 넣고 선택한 뒤 배경색을 칠하고, 뒤에 이어 쓰는 글자는 '색상 없음'으로 되돌린다
+async function typeHighlight(page, frame, text) {
+  await page.keyboard.insertText(text);
+  try {
+    for (let i = 0; i < text.length; i++) await page.keyboard.press('Shift+ArrowLeft');
+    await setBackgroundColor(frame, HIGHLIGHT_COLOR);
+    await page.keyboard.press('ArrowRight');
+    await setBackgroundColor(frame, '');
+  } catch {
+    await page.keyboard.press('Escape');
+    await page.keyboard.press('End');
+    log(`형광펜 적용 실패 → 일반 글자로 둡니다: ${text}`);
+  }
+}
+
+async function typeInline(page, frame, line) {
   for (const part of line.split(INLINE).filter(Boolean)) {
     const marked = part.match(/^(\*\*|==)(.+)\1$/);
-    // 형광펜(==)은 아직 굵은 글씨로 대신한다
-    if (marked) await typeBold(page, marked[2]);
+    if (marked?.[1] === '**') await typeBold(page, marked[2]);
+    else if (marked) await typeHighlight(page, frame, marked[2]);
     else await page.keyboard.insertText(part);
   }
 }
 
+// 문단 서식 메뉴의 항목은 글자("소제목 소제목")보다 data-value로 고르는 편이 확실하다
+const TEXT_FORMAT_VALUE = { 본문: 'text', 소제목: 'sectionTitle', 인용구: 'quotation' };
+
 async function setTextFormat(frame, name) {
+  await frame.locator('button.se-text-format-toolbar-button:visible').first().click({ timeout: 3000 });
   await frame
-    .locator('button[data-name="text-format"], .se-text-format-toolbar-button, button[class*="text-format"]')
-    .first()
-    .click({ timeout: 3000 });
-  await frame
-    .locator('[class*="text-format"] button, [class*="toolbar-option"] button, [role="option"], li button')
-    .filter({ hasText: name, visible: true })
+    .locator(`button[data-name="text-format"][data-value="${TEXT_FORMAT_VALUE[name]}"]:visible`)
     .first()
     .click({ timeout: 3000 });
 }
@@ -91,6 +112,8 @@ async function insertImage(page, frame, file, caption) {
     ]);
     await chooser.setFiles(file);
     await images.nth(before).waitFor({ timeout: 60000 });
+    // 올리는 중(전송중...)에는 사진 칸이 1px이라 설명 칸을 누를 수 없다 → 전송이 끝날 때까지 기다린다
+    await images.nth(before).locator('.se-is-progress').waitFor({ state: 'detached', timeout: 60000 }).catch(() => {});
     await sleep(1000);
   } catch (err) {
     log(`사진 넣기 실패 (${path.basename(file)}): ${err.message.split('\n')[0]}`);
@@ -100,7 +123,10 @@ async function insertImage(page, frame, file, caption) {
   let captioned = false;
   if (caption) {
     try {
-      await images.nth(before).locator('.se-caption .se-text-paragraph, [class*="caption"] .se-text-paragraph').first().click({ timeout: 3000 });
+      // 설명 칸은 사진을 선택해야 보인다
+      await images.nth(before).locator('img.se-image-resource').first().click({ timeout: 5000 });
+      await sleep(500);
+      await images.nth(before).locator('.se-caption .se-text-paragraph').first().click({ timeout: 5000 });
       await page.keyboard.insertText(caption);
       captioned = true;
     } catch {
@@ -159,9 +185,9 @@ export async function typeBody(page, frame, body, baseDir) {
     if (cells) {
       // 2열 표는 "항목: 내용" 줄로 입력한다
       await typeBold(page, cells[0]);
-      if (cells[1]) await typeInline(page, `: ${cells.slice(1).join(' / ')}`);
+      if (cells[1]) await typeInline(page, frame, `: ${cells.slice(1).join(' / ')}`);
     } else if (line) {
-      await typeInline(page, line);
+      await typeInline(page, frame, line);
     }
     if (!isLast) await page.keyboard.press('Enter');
     if (i % 15 === 14) await sleep(300);
