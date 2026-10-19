@@ -153,7 +153,19 @@ export async function publishTistory(post, config, { dryRun = false, editId = nu
     await page.goto(`https://${blog}.tistory.com/manage/newpost/${editId ?? ''}`, { waitUntil: 'domcontentloaded' });
     await page.waitForLoadState('networkidle', { timeout: 20000 }).catch(() => {});
     if (/auth\/login|accounts\.kakao/.test(page.url())) {
-      throw new Error('티스토리 로그인이 풀렸습니다. node scripts/tistory-login.mjs 로 다시 로그인하세요.');
+      // 티스토리 세션(TSSESSION)은 몇 시간이면 끝나지만 카카오 간편로그인은 약 30일 유지되므로 그걸로 다시 들어간다
+      log('[티스토리] 로그인이 풀려 카카오 간편로그인으로 다시 로그인합니다.');
+      const kakao = page.locator('a.link_kakao_id').first();
+      if (await kakao.count()) await kakao.click();
+      await page.waitForURL(/accounts\.kakao\.com|tistory\.com\/manage/, { timeout: 20000 }).catch(() => {});
+      const account = page.getByText(/^\S+@\S+\.\w+$/).first(); // 간편로그인에 저장된 계정
+      if (/accounts\.kakao/.test(page.url()) && (await account.count())) await account.click();
+      await page.waitForURL(new RegExp(`${blog}\\.tistory\\.com/manage`), { timeout: 30000 }).catch(() => {});
+      if (!new RegExp(`${blog}\\.tistory\\.com/manage`).test(page.url())) {
+        throw new Error('티스토리 로그인이 풀렸고 자동 재로그인도 안 됐습니다. node scripts/tistory-login.mjs 로 다시 로그인하세요.');
+      }
+      await page.waitForLoadState('networkidle', { timeout: 20000 }).catch(() => {});
+      await context.storageState({ path: TISTORY_SESSION }).catch(() => {});
     }
     await page.waitForFunction(() => window.tinymce && (window.tinymce.get('editor-tistory') || window.tinymce.activeEditor), null, { timeout: 30000 });
 
