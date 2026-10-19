@@ -9,7 +9,10 @@
     "start": "node scripts/run.mjs",
     "test-run": "node scripts/run.mjs --dry-run",
     "publish-file": "node scripts/publish.mjs",
-    "inspect": "node scripts/inspect-editor.mjs"
+    "inspect": "node scripts/inspect-editor.mjs",
+    "tistory-login": "node scripts/tistory-login.mjs",
+    "tistory": "node scripts/run.mjs --tistory",
+    "tistory-test": "node scripts/run.mjs --tistory --dry-run"
   },
   "dependencies": {
     "playwright": "^1.48.0"

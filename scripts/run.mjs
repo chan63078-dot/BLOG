@@ -1,16 +1,20 @@
 // 주제 정하기(topics.txt 또는 자동 선정) → claude로 글·사진 작성 → 규칙 점검 → 네이버 블로그 발행 → 기록
-// 옵션: --dry-run (발행 버튼 직전에 멈춤), --no-publish (글만 작성)
+// 옵션: --dry-run (발행 버튼 직전에 멈춤), --no-publish (글만 작성), --tistory (티스토리용: TISTORY.md 규칙, 별도 주제·기록 파일)
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
-import { ROOT, checkPost, loadConfig, log, parsePost, today } from './common.mjs';
+import { ROOT, checkPost, loadConfig, log as baseLog, parsePost, today } from './common.mjs';
 import { publishPost } from './publish.mjs';
+import { publishTistory } from './tistory.mjs';
 
-const TOPICS = path.join(ROOT, 'topics.txt');
-const DONE = path.join(ROOT, 'topics-done.txt');
-const STATE = path.join(ROOT, 'state.json');
+const tistory = process.argv.includes('--tistory');
+const suffix = tistory ? '-tistory' : '';
+const TOPICS = path.join(ROOT, `topics${suffix}.txt`);
+const DONE = path.join(ROOT, `topics-done${suffix}.txt`);
+const STATE = path.join(ROOT, `state${suffix}.json`);
 const dryRun = process.argv.includes('--dry-run');
 const noPublish = process.argv.includes('--no-publish');
+const log = (...args) => baseLog(...(tistory ? ['[티스토리]', ...args] : args));
 
 // topics.txt에 적힌 주제가 있으면 그것부터, 없으면 null (자동 선정)
 function nextTopicLine() {
@@ -43,7 +47,7 @@ const rel = (p) => path.relative(ROOT, p).replaceAll('\\', '/');
 
 // 글마다 output/날짜-번호/ 폴더를 만든다 (post.txt, images/)
 function newPostDir() {
-  const base = path.join(ROOT, 'output', today());
+  const base = path.join(ROOT, 'output', `${tistory ? 'tistory-' : ''}${today()}`);
   let n = 1;
   while (fs.existsSync(`${base}-${n}`)) n++;
   const dir = `${base}-${n}`;
@@ -75,11 +79,15 @@ async function writePost(topicLine, config) {
   const dir = newPostDir();
   const file = path.join(dir, 'post.txt');
   const prompt = [
-    'CLAUDE.md의 절차와 규칙에 따라 네이버 블로그 글과 사진을 만들어서 저장해줘.',
+    tistory
+      ? 'TISTORY.md를 먼저 읽고, TISTORY.md가 우선하는 항목 외에는 CLAUDE.md의 절차와 규칙에 따라 티스토리 블로그 글과 사진을 만들어서 저장해줘.'
+      : 'CLAUDE.md의 절차와 규칙에 따라 네이버 블로그 글과 사진을 만들어서 저장해줘.',
     `오늘 날짜: ${today('-')}`,
     topicLine
       ? `주제: ${topicLine}`
-      : '주제: 자동 선정 — CLAUDE.md "자동 주제 선정" 절차대로 오늘 검색 수요가 높은 주제를 직접 골라줘.',
+      : tistory
+        ? '주제: 자동 선정 — TISTORY.md "자동 주제 선정" 절차대로 직접 골라줘.'
+        : '주제: 자동 선정 — CLAUDE.md "자동 주제 선정" 절차대로 오늘 검색 수요가 높은 주제를 직접 골라줘.',
     `글 파일: ${rel(file)}`,
     `사진 폴더: ${rel(path.join(dir, 'images'))}`,
   ].join('\n');
@@ -111,7 +119,7 @@ async function checkedPost(file, config) {
     log(`규칙 점검에 걸림: ${problems.join(' / ')}`);
     if (attempt >= 1) throw new Error(`고친 뒤에도 규칙에 맞지 않아 발행하지 않았습니다: ${rel(file)}`);
     const prompt = [
-      `${rel(file)} 글이 CLAUDE.md 규칙에 맞지 않습니다. 아래 문제를 고쳐서 같은 경로에 다시 저장해줘.`,
+      `${rel(file)} 글이 ${tistory ? 'TISTORY.md·CLAUDE.md' : 'CLAUDE.md'} 규칙에 맞지 않습니다. 아래 문제를 고쳐서 같은 경로에 다시 저장해줘.`,
       `사진은 ${rel(path.join(path.dirname(file), 'images'))} 폴더에 만들어줘.`,
       `오늘 날짜: ${today('-')}`,
       ...problems.map((p) => `- ${p}`),
@@ -145,7 +153,7 @@ async function processOne(config) {
     return false;
   }
 
-  const url = await publishPost(post, config, { dryRun });
+  const url = await (tistory ? publishTistory : publishPost)(post, config, { dryRun });
   if (dryRun) return false;
 
   log(`✅ 발행 완료: ${post.title} → ${url}`);

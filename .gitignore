@@ -18,3 +18,5 @@ logs/
 state.json
 output/*/images/
 output/*/cards/
+.tistory-profile/
+state-tistory.json
