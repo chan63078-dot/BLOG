@@ -77,6 +77,35 @@ export function bodyToHtml(body, imageTags) {
   return out.join('\n').replace(/(<p data-ke-size="size16">&nbsp;<\/p>\n?){2,}/g, `${P('&nbsp;')}\n`);
 }
 
+// 글 끝에 넣을 "함께 보면 좋은 글": 이미 발행한 티스토리 글 중 제목 낱말이 많이 겹치는 2개
+// (같은 블로그 안의 글끼리 이어 주면 구글이 블로그 구조를 이해하기 쉽다. 네이버 글에는 링크를 넣지 않는다)
+export function relatedPostsHtml(title, count = 2) {
+  const done = path.join(ROOT, 'topics-done-tistory.txt');
+  if (!fs.existsSync(done)) return '';
+  const STOP = /^(방법|조건|정리|기준|확인|가지|신청|차이|비교|대상|기간|일정|달라지는|달라진|이후|이전|전에|까지|부터|얼마|어디서|무엇|언제|누가|유형별|계산|계산법|귀속|2\d{3}년?)$/;
+  const words = (s) =>
+    new Set(s.replace(/[^\p{L}\p{N}\s]/gu, ' ').split(/\s+/).filter((w) => w.length >= 2 && !/^\d+$/.test(w) && !STOP.test(w)));
+  const mine = words(title);
+  const seen = new Set();
+  const scored = fs
+    .readFileSync(done, 'utf8')
+    .split(/\r?\n/)
+    .map((l) => l.split('\t'))
+    .filter(([, t, url]) => t && /^https:\/\/[a-z0-9-]+\.tistory\.com\/\d+$/.test(url ?? ''))
+    .map(([, t, url]) => ({ title: t.replace(/^자동: /, ''), url }))
+    .filter((p) => p.title !== title && !seen.has(p.url) && seen.add(p.url))
+    .map((p) => ({ ...p, score: [...words(p.title)].filter((w) => mine.has(w) || [...mine].some((m) => m.length >= 3 && (w.includes(m) || m.includes(w)))).length }))
+    .filter((p) => p.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, count);
+  if (!scored.length) return '';
+  return [
+    P('&nbsp;'),
+    `<p data-ke-size="size16"><b>함께 보면 좋은 글</b></p>`,
+    `<ul data-ke-list-type="disc">${scored.map((p) => `<li><a href="${p.url}">${escapeHtml(p.title)}</a></li>`).join('')}</ul>`,
+  ].join('\n');
+}
+
 const editorJs = (fn, arg) => [`(arg) => { const ed = window.tinymce.get('editor-tistory') || window.tinymce.activeEditor; return (${fn})(ed, arg); }`, arg];
 
 export async function inEditor(page, fn, arg) {
@@ -180,7 +209,7 @@ export async function publishTistory(post, config, { dryRun = false, editId = nu
     }
 
     await page.locator('#post-title-inp').fill(post.title);
-    await inEditor(page, (ed, html) => ed.setContent(html), bodyToHtml(post.body, imageTags));
+    await inEditor(page, (ed, html) => ed.setContent(html), bodyToHtml(post.body, imageTags) + relatedPostsHtml(post.title));
     // 티스토리는 입력이 있을 때만 발행할 내용을 갱신한다. setContent 만으로는 마지막 사진 하나만 저장되므로
     // 변경 이벤트를 보내고, 본문 끝에 글자를 하나 쳤다가 지워서 실제 입력으로 알린다.
     await inEditor(page, (ed) => {

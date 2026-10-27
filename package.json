@@ -12,7 +12,8 @@
     "inspect": "node scripts/inspect-editor.mjs",
     "tistory-login": "node scripts/tistory-login.mjs",
     "tistory": "node scripts/run.mjs --tistory",
-    "tistory-test": "node scripts/run.mjs --tistory --dry-run"
+    "tistory-test": "node scripts/run.mjs --tistory --dry-run",
+    "weekly": "node scripts/weekly-report.mjs"
   },
   "dependencies": {
     "playwright": "^1.48.0"
