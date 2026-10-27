@@ -75,8 +75,23 @@ function runClaude(prompt, timeoutMinutes) {
   });
 }
 
+// 두 블로그의 최근 발행 제목 (같은 제목 틀·주제를 피하게 claude에게 알려준다)
+function recentTitles(n = 10) {
+  const read = (f) =>
+    fs.existsSync(f)
+      ? fs.readFileSync(f, 'utf8').split(/\r?\n/).filter(Boolean).map((l) => l.split('\t')[1]?.replace(/^자동: /, '')).filter(Boolean)
+      : [];
+  return {
+    naver: read(path.join(ROOT, 'topics-done.txt')).slice(-n),
+    tistory: read(path.join(ROOT, 'topics-done-tistory.txt')).slice(-n),
+  };
+}
+
 async function writePost(topicLine, config) {
   const dir = newPostDir();
+  const recent = recentTitles();
+  const mine = tistory ? recent.tistory : recent.naver;
+  const other = tistory ? recent.naver : recent.tistory;
   const file = path.join(dir, 'post.txt');
   const prompt = [
     tistory
@@ -90,6 +105,11 @@ async function writePost(topicLine, config) {
         : '주제: 자동 선정 — CLAUDE.md "자동 주제 선정" 절차대로 오늘 검색 수요가 높은 주제를 직접 골라줘.',
     `글 파일: ${rel(file)}`,
     `사진 폴더: ${rel(path.join(dir, 'images'))}`,
+    '',
+    `최근 발행 제목 (이 블로그, 오래된 것부터) — 제목 틀·도입·주제가 겹치지 않게 CLAUDE.md 5-2장대로 피해줘:`,
+    ...mine.map((t) => `- ${t}`),
+    `다른 블로그(${tistory ? '네이버' : '티스토리'})에 최근 올라간 주제 — 이것과도 겹치지 않는 주제로:`,
+    ...other.map((t) => `- ${t}`),
   ].join('\n');
 
   log(`글 작성 시작: ${topicLine ?? '(주제 자동 선정)'} → ${rel(dir)}`);

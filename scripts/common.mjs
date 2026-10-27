@@ -133,6 +133,9 @@ export function checkPost(post, { minChars = 1500, minImages = 5 } = {}) {
   if (/\p{Extended_Pictographic}/u.test(post.body)) problems.push('본문에 이모지가 있습니다.');
   if (post.tags.length < 5) problems.push(`태그가 ${post.tags.length}개입니다. 8~10개를 넣어야 합니다.`);
   const banned = BANNED.filter(([, re]) => re.test(post.title) || re.test(post.body)).map(([word]) => word);
-  if (banned.length) problems.push(`금칙어가 있습니다: ${banned.join(', ')} — 다른 표현으로 바꿔야 합니다.`);
+  if (banned.length) problems.push(`금칙어가 있습니다: ${banned.join(', ')}. 다른 표현으로 바꿔야 합니다.`);
+  // CLAUDE.md 5-2장: 자동 생성 글처럼 보이는 반복 패턴
+  if (/[—―]/.test(post.title + post.body)) problems.push('긴 줄표(—)가 있습니다. 쉼표나 문장 나누기로 바꿔야 합니다.');
+  if (/정리했습니다/.test(post.body)) problems.push('"정리했습니다"가 있습니다. 독자 상황이나 답으로 바로 시작하게 바꿔야 합니다.');
   return problems;
 }

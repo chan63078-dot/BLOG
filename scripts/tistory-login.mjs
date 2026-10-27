@@ -29,16 +29,29 @@ const DONE_FILE = path.join(ROOT, 'logs', 'tistory-login-done');
 fs.rmSync(DONE_FILE, { force: true });
 const deadline = Date.now() + 120 * 60 * 1000;
 let saved = false;
+const save = async () => {
+  try {
+    await context.storageState({ path: SESSION_FILE });
+    saved = true;
+  } catch {
+    // 창이 이미 닫혔으면 저장하지 못한다
+  }
+};
+// 카카오 로그인을 거쳐 티스토리로 돌아오면 그때 한 번 저장한다 (창을 바로 닫아도 남도록)
+let visitedKakao = false;
+page.on('framenavigated', (frame) => {
+  if (frame !== page.mainFrame()) return;
+  const url = frame.url();
+  if (/kakao\.com/.test(url)) visitedKakao = true;
+  else if (visitedKakao && /tistory\.com/.test(url) && !/auth\/login/.test(url)) {
+    setTimeout(() => save().then(() => saved && console.log('로그인을 감지해 저장했습니다. 이제 창을 닫아도 됩니다.')), 3000);
+  }
+});
 // 기다리는 동안 브라우저에는 아무 요청도 보내지 않는다 (화면 깜빡임 방지)
 while (Date.now() < deadline && !page.isClosed() && !fs.existsSync(DONE_FILE)) {
   await new Promise((r) => setTimeout(r, 3000));
 }
-try {
-  await context.storageState({ path: SESSION_FILE });
-  saved = true;
-} catch {
-  // 창을 먼저 닫으면 저장하지 못한다
-}
+if (!page.isClosed()) await save();
 await context.close().catch(() => {});
 console.log(saved ? '로그인 상태를 저장했습니다. 이제 로그인이 됐는지 확인합니다.' : '❌ 로그인 상태를 저장하지 못했습니다. 다시 실행하세요.');
 
