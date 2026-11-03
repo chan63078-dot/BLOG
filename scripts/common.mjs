@@ -114,7 +114,7 @@ const BANNED = [
 ];
 
 // CLAUDE.md 규칙 중 기계적으로 확인할 수 있는 것을 점검한다. 문제 목록을 돌려준다.
-export function checkPost(post, { minChars = 1500, minImages = 5 } = {}) {
+export function checkPost(post, { minChars = 1500, minImages = 5, maxTitle = 0 } = {}) {
   const problems = [];
   const missing = post.images.filter((img) => !fs.existsSync(img.file));
   if (post.images.length < minImages) problems.push(`사진이 ${post.images.length}장입니다. ${minImages}장 이상 넣어야 합니다.`);
@@ -134,6 +134,10 @@ export function checkPost(post, { minChars = 1500, minImages = 5 } = {}) {
   if (post.tags.length < 5) problems.push(`태그가 ${post.tags.length}개입니다. 8~10개를 넣어야 합니다.`);
   const banned = BANNED.filter(([, re]) => re.test(post.title) || re.test(post.body)).map(([word]) => word);
   if (banned.length) problems.push(`금칙어가 있습니다: ${banned.join(', ')}. 다른 표현으로 바꿔야 합니다.`);
+  // CLAUDE.md 7장: 제목 길이 (티스토리는 TISTORY.md 기준이라 maxTitle을 넘겨 끈다)
+  if (maxTitle && post.title.length > maxTitle) {
+    problems.push(`제목이 ${post.title.length}자입니다. ${maxTitle}자 이하(25~35자 권장)로 줄이고 키워드는 하나만 앞에 둡니다.`);
+  }
   // CLAUDE.md 5-2장: 자동 생성 글처럼 보이는 반복 패턴
   if (/[—―]/.test(post.title + post.body)) problems.push('긴 줄표(—)가 있습니다. 쉼표나 문장 나누기로 바꿔야 합니다.');
   if (/정리했습니다/.test(post.body)) problems.push('"정리했습니다"가 있습니다. 독자 상황이나 답으로 바로 시작하게 바꿔야 합니다.');

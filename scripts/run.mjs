@@ -106,7 +106,7 @@ async function writePost(topicLine, config) {
     `글 파일: ${rel(file)}`,
     `사진 폴더: ${rel(path.join(dir, 'images'))}`,
     '',
-    `최근 발행 제목 (이 블로그, 오래된 것부터) — 제목 틀·도입·주제가 겹치지 않게 CLAUDE.md 5-2장대로 피해줘:`,
+    `최근 발행 제목 (이 블로그, 오래된 것부터) — 제목 틀·도입·주제가 겹치지 않게 CLAUDE.md 5-2장대로 피해줘. 아래 예전 제목은 길이·틀을 따라 하지 말고 7장(25~35자) 기준으로:`,
     ...mine.map((t) => `- ${t}`),
     `다른 블로그(${tistory ? '네이버' : '티스토리'})에 최근 올라간 주제 — 이것과도 겹치지 않는 주제로:`,
     ...other.map((t) => `- ${t}`),
@@ -125,7 +125,7 @@ function readPost(file) {
 
 // 규칙 점검에 걸리면 claude에게 한 번 고치게 하고, 그래도 안 되면 발행하지 않는다
 async function checkedPost(file, config) {
-  const limits = { minChars: config.minChars ?? 1500, minImages: config.minImages ?? 5 };
+  const limits = { minChars: config.minChars ?? 1500, minImages: config.minImages ?? 5, maxTitle: tistory ? 0 : 40 };
   for (let attempt = 0; ; attempt++) {
     let problems;
     let post;
