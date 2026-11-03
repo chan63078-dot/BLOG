@@ -105,6 +105,7 @@ async function writePost(topicLine, config) {
         : '주제: 자동 선정 — CLAUDE.md "자동 주제 선정" 절차대로 오늘 검색 수요가 높은 주제를 직접 골라줘.',
     `글 파일: ${rel(file)}`,
     `사진 폴더: ${rel(path.join(dir, 'images'))}`,
+    '하루에 이 글 1건만 올립니다. 서두르지 말고 공고문 원문까지 읽어서, 같은 주제의 다른 글보다 구체적인 글(대상·금액·서류·접수처·문의처, 헷갈리는 예외)로 써줘.',
     '',
     `최근 발행 제목 (이 블로그, 오래된 것부터) — 제목 틀·도입·주제가 겹치지 않게 CLAUDE.md 5-2장대로 피해줘. 아래 예전 제목은 길이·틀을 따라 하지 말고 7장(25~35자) 기준으로:`,
     ...mine.map((t) => `- ${t}`),
@@ -117,6 +118,35 @@ async function writePost(topicLine, config) {
   if (!fs.existsSync(file)) throw new Error(`글 파일이 만들어지지 않았습니다: ${rel(file)}`);
   log(`글 작성 완료: ${rel(file)}`);
   return file;
+}
+
+// 다 쓴 글을 편집자처럼 한 번 더 검토한다 (사실 재확인·내용 보강·사진 확인).
+// 검토가 실패하거나 시간이 넘으면 검토 전 글로 되돌려 발행은 그대로 진행한다.
+async function reviewPost(file, config) {
+  const backup = `${file}.before-review`;
+  fs.copyFileSync(file, backup);
+  const prompt = [
+    `${rel(file)} 글을 발행 전에 편집자로서 검토하고, 고칠 곳은 고쳐서 같은 경로에 저장해줘.`,
+    `규칙: ${tistory ? 'TISTORY.md·CLAUDE.md' : 'CLAUDE.md'}. 사진 폴더: ${rel(path.join(path.dirname(file), 'images'))}`,
+    `오늘 날짜: ${today('-')}`,
+    '1. 사실: 글의 핵심 수치·날짜·대상·기관명을 WebFetch로 1차 출처(정부·지자체 공고문)에서 다시 확인해. 틀리거나 확인 안 되는 문장은 고치거나 뺀다.',
+    '2. 내용: 독자가 이 글만 보고 신청·확인까지 할 수 있는지 본다. 빠진 것(준비서류, 접수처, 문의 전화, 헷갈리는 예외)을 확인된 것만 보충한다.',
+    '3. 읽기: 휴대폰 기준으로 어색한 문장, 같은 끝맺음 반복, 기계적으로 보이는 틀을 다듬는다. 제목은 25~35자.',
+    '4. 사진: images/의 사진을 모두 Read로 열어 보고, 내용과 안 맞거나 잘리거나 오래된 화면은 다시 만든다.',
+    '5. CLAUDE.md 11장 체크리스트를 다시 점검한다.',
+    '고칠 것이 없으면 그대로 둔다. 끝나면 DONE만 출력.',
+  ].join('\n');
+  log('편집 검토 시작');
+  try {
+    await runClaude(prompt, config.reviewTimeoutMinutes ?? 25);
+    readPost(file);
+    log('편집 검토 완료');
+  } catch (err) {
+    fs.copyFileSync(backup, file);
+    log(`편집 검토 실패 → 검토 전 글로 진행: ${err.message.split('\n')[0]}`);
+  } finally {
+    fs.rmSync(backup, { force: true });
+  }
 }
 
 function readPost(file) {
@@ -164,6 +194,7 @@ async function processOne(config) {
   if (file) log(`이전에 작성한 글로 다시 시도: ${rel(file)}`);
   else {
     file = await writePost(topicLine, config);
+    if (config.reviewPass !== false) await reviewPost(file, config);
     fs.writeFileSync(STATE, JSON.stringify({ pending: { topic: topicLine, file } }, null, 2), 'utf8');
   }
 
