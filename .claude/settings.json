@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch",
+      "Read",
+      "Write",
+      "Edit",
+      "Bash(node scripts/capture.mjs:*)",
+      "Bash(node scripts/make-card.mjs:*)"
+    ]
+  }
+}
